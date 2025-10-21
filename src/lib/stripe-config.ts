@@ -1,0 +1,60 @@
+/**
+ * Stripe Configuration
+ * Define your subscription plans and pricing here
+ */
+
+export const STRIPE_PLANS = {
+  pro: {
+    name: 'Pro',
+    tier: 2,
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!, // Monthly price ID from Stripe
+    price: 9.99, // £9.99/month
+    currency: 'GBP',
+    features: [
+      'Unlimited bot conversations',
+      'Create up to 3 custom bots',
+      'File uploads (up to 10MB per bot)',
+      'Voice input recognition',
+      'Priority support',
+      'No ads',
+    ],
+  },
+  premium: {
+    name: 'Premium',
+    tier: 3,
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID!, // Monthly price ID from Stripe
+    price: 19.99, // £19.99/month
+    currency: 'GBP',
+    features: [
+      'Everything in Pro',
+      'Unlimited custom bots',
+      'File uploads (up to 50MB per bot)',
+      'Image recognition',
+      'Web search integration',
+      'Export conversation data',
+      'Advanced bot scheduling',
+      'Premium support',
+    ],
+  },
+} as const;
+
+export type StripePlanKey = keyof typeof STRIPE_PLANS;
+
+export const getTierFromPriceId = (priceId: string): number => {
+  for (const [_, plan] of Object.entries(STRIPE_PLANS)) {
+    if (plan.priceId === priceId) {
+      return plan.tier;
+    }
+  }
+  return 1; // Default to free tier
+};
+
+export const getPlanByTier = (tier: number): (typeof STRIPE_PLANS)[StripePlanKey] | null => {
+  for (const [_, plan] of Object.entries(STRIPE_PLANS)) {
+    if (plan.tier === tier) {
+      return plan;
+    }
+  }
+  return null;
+};
+

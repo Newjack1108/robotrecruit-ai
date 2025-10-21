@@ -1,0 +1,459 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  clerkId       String          @unique
+  email         String          @unique
+  tier          Int             @default(1)
+  stripeCustomerId String?      @unique
+  stripeSubscriptionId String?  @unique
+  subscriptionStatus String?    // active, canceled, past_due, etc.
+  subscriptionEndDate DateTime? // When subscription ends (for canceled)
+  promoTierUpgrade Int?         // Temporary tier upgrade from promo
+  promoExpiresAt   DateTime?    // When promo tier expires
+  
+  // Power-up Allowances (monthly subscription)
+  powerUpAllowance Int          @default(0) // Total power-ups purchased per month
+  powerUpUsed      Int          @default(0) // Power-ups used this month
+  allowanceResetAt DateTime?    // When the allowance resets
+  
+  // Tutorial progress
+  tutorialCompleted Boolean      @default(false)
+  tutorialStep      Int          @default(0) // Current step in tutorial (0 = not started)
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  conversations Conversation[]
+  customBots    Bot[]          @relation("CreatedBots")
+  promoRedemptions PromoRedemption[]
+  tickets       Ticket[]
+  hiredBots     HiredBot[]
+  botUpgrades   UserBotUpgrade[]
+  powerUpUsage  PowerUpUsage[]
+  forumPosts    ForumPost[]   @relation("ForumPosts")
+  forumReplies  ForumReply[]  @relation("ForumReplies")
+  notifications Notification[]
+  achievements  UserAchievement[]
+  
+  // Daily Challenges & Streaks
+  completedChallenges UserChallengeCompletion[]
+  currentStreak       Int      @default(0) // Current consecutive days
+  longestStreak       Int      @default(0) // All-time longest streak
+  lastCheckIn         DateTime? // Last daily check-in
+  totalCheckIns       Int      @default(0) // Total days checked in
+  streakPoints        Int      @default(0) // Points earned from streaks
+  
+  // Achievement Showcases
+  showcases           UserShowcase[]
+  kudosGiven          ShowcaseKudos[]
+  
+  // Arcade Games
+  gameScores          GameScore[]
+}
+
+model PromoCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  tierUpgrade Int      // What tier to upgrade to (1, 2, or 3)
+  durationDays Int     // How many days the upgrade lasts
+  maxUses     Int?     // Max number of times code can be used (null = unlimited)
+  usedCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime? // When the code itself expires
+  createdAt   DateTime @default(now())
+  createdBy   String   // Admin who created it
+  
+  redemptions PromoRedemption[]
+  
+  @@index([code])
+}
+
+model PromoRedemption {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promoCodeId String
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  redeemedAt  DateTime @default(now())
+  expiresAt   DateTime
+  
+  @@index([userId])
+  @@index([promoCodeId])
+  @@unique([userId, promoCodeId])
+}
+
+model Bot {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  description       String
+  imageUrl          String
+  avatarUrl         String?
+  introAudioUrl     String?  // Path to introduction audio file (WAV/MP3)
+  openaiAssistantId String   @unique
+  vectorStoreId     String?  // OpenAI Vector Store ID for file search
+  isSystemBot       Boolean  @default(true)
+  knowledgeArea     String
+  tier              Int      @default(1)
+  
+  // Power-ups
+  imageRecognition  Boolean  @default(false) // Can analyze uploaded images
+  voiceResponse     Boolean  @default(false) // Can respond with voice/audio
+  fileUpload        Boolean  @default(false) // Can accept file uploads for analysis
+  webSearch         Boolean  @default(false) // Can search the web for current info
+  scheduling        Boolean  @default(false) // Can set reminders and schedule tasks
+  dataExport        Boolean  @default(false) // Can export conversation data/reports
+  
+  creatorId         String?
+  creator           User?    @relation("CreatedBots", fields: [creatorId], references: [id])
+  
+  conversations     Conversation[]
+  files             BotFile[]
+  hiredBy           HiredBot[]
+  showcases         UserShowcase[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([slug])
+  @@index([isSystemBot])
+}
+
+model BotFile {
+  id              String   @id @default(cuid())
+  botId           String
+  bot             Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  fileName        String
+  fileSize        Int      // Size in bytes
+  fileType        String   // MIME type
+  openaiFileId    String   // OpenAI file ID
+  uploadedBy      String   // User who uploaded
+  createdAt       DateTime @default(now())
+  
+  @@index([botId])
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  title     String?
+  threadId  String?   // OpenAI thread ID for conversation continuity
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  botId     String
+  bot       Bot       @relation(fields: [botId], references: [id])
+  
+  messages  Message[]
+  activePowerUps Json? @default("[]") // Array of active power-ups for this conversation
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([botId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  role           String
+  content        String       @db.Text
+  
+  createdAt      DateTime     @default(now())
+  
+  @@index([conversationId])
+}
+
+model Ticket {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject     String
+  description String   @db.Text
+  status      String   @default("open") // open, in-progress, resolved, closed
+  priority    String   @default("medium") // low, medium, high, urgent
+  category    String   // technical, billing, feature-request, other
+  
+  responses   TicketResponse[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([priority])
+}
+
+model TicketResponse {
+  id          String   @id @default(cuid())
+  ticketId    String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  content     String   @db.Text
+  isStaff     Boolean  @default(false)
+  authorEmail String   // Email of responder (user or admin)
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([ticketId])
+}
+
+model HiredBot {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  hiredAt   DateTime @default(now())
+  
+  @@unique([userId, botId])
+  @@index([userId])
+  @@index([botId])
+}
+
+model UserBotUpgrade {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  botId        String
+  upgradeType  String   // imageRecognition, voiceResponse, fileUpload, webSearch, scheduling, dataExport
+  purchasedAt  DateTime @default(now())
+  expiresAt    DateTime? // null = permanent, otherwise subscription-based
+  
+  @@unique([userId, botId, upgradeType])
+  @@index([userId])
+  @@index([botId])
+}
+
+model PowerUpUsage {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  botId           String
+  powerUpType     String   // imageRecognition, voiceResponse, fileUpload, webSearch, scheduling, dataExport
+  conversationId  String?  // Optional: track which conversation used it
+  usedAt          DateTime @default(now())
+  
+  @@index([userId])
+  @@index([botId])
+  @@index([usedAt])
+}
+
+model Reminder {
+  id              String   @id @default(cuid())
+  userId          String
+  botId           String
+  conversationId  String?
+  title           String
+  description     String?  @db.Text
+  reminderTime    DateTime
+  isCompleted     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([reminderTime])
+  @@index([isCompleted])
+}
+
+model ForumCategory {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  icon        String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  
+  posts       ForumPost[]
+  
+  @@index([slug])
+}
+
+model ForumPost {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text
+  authorId    String
+  author      User     @relation("ForumPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  isPinned    Boolean  @default(false)
+  isLocked    Boolean  @default(false)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  replies     ForumReply[]
+  
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model ForumReply {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  authorId  String
+  author    User     @relation("ForumReplies", fields: [authorId], references: [id], onDelete: Cascade)
+  postId    String
+  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([postId])
+  @@index([authorId])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // "forum_reply", "support_update", "promo_expiring", "bot_update"
+  title       String
+  message     String
+  link        String?  // URL to navigate to
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  // Type-specific metadata (JSON for flexibility)
+  metadata    Json?
+  
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  key         String   @unique // "first_hire", "chat_master", "forum_regular"
+  name        String   // "First Hire"
+  description String   // "Hire your first bot"
+  icon        String   // "🎯"
+  category    String   // "getting_started", "social", "power_user", "collector"
+  tier        Int      @default(1) // 1 = Bronze, 2 = Silver, 3 = Gold
+  points      Int      @default(10) // Points awarded for unlocking
+  requirement Json     // Flexible requirements: { "hiredBots": 1 }
+  createdAt   DateTime @default(now())
+  
+  unlockedBy  UserAchievement[]
+  
+  @@index([category])
+  @@index([tier])
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime @default(now())
+  progress      Int      @default(100) // Percentage progress (100 = completed)
+  
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
+}
+
+model DailyChallenge {
+  id          String   @id @default(cuid())
+  key         String   @unique // "chat_with_3_bots", "send_20_messages", "make_forum_post"
+  title       String   // "Chat with 3 Different Bots"
+  description String   // "Explore the diversity of your AI team"
+  dayOfWeek   Int      // 0 = Sunday, 1 = Monday, etc. (for weekly rotation)
+  points      Int      @default(25) // Points awarded for completion
+  icon        String   // Emoji icon
+  requirement Json     // { "type": "chat_bots", "count": 3, "unique": true }
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  completions UserChallengeCompletion[]
+  
+  @@index([dayOfWeek])
+  @@index([isActive])
+}
+
+model UserChallengeCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeId String
+  challenge   DailyChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  completedAt DateTime @default(now())
+  progress    Int      @default(0) // Current progress (e.g., 2/3 bots chatted)
+  isCompleted Boolean  @default(false) // Whether challenge is fully completed
+  pointsEarned Int     @default(0) // Points earned for this completion
+  
+  @@unique([userId, challengeId, completedAt]) // Allow one completion per challenge per day
+  @@index([userId])
+  @@index([challengeId])
+  @@index([completedAt])
+}
+
+model UserShowcase {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // The Achievement
+  title       String   // "My First Beehive!", "Caught a 10lb Bass!"
+  description String   @db.Text // The story behind it
+  imageUrl    String   // Uploaded photo URL (from imgbb)
+  category    String   // "fishing", "beekeeping", "cooking", "fitness", "garden", "diy", "sport", "art", "other"
+  
+  // Bot Connection (optional but recommended)
+  relatedBotId String?
+  relatedBot   Bot?    @relation(fields: [relatedBotId], references: [id], onDelete: SetNull)
+  
+  // Engagement
+  kudosCount  Int      @default(0) // Likes/reactions
+  featured    Boolean  @default(false) // Admin can feature exceptional ones
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  kudos       ShowcaseKudos[] // Who gave kudos
+  
+  @@index([userId])
+  @@index([relatedBotId])
+  @@index([category])
+  @@index([featured])
+  @@index([createdAt])
+}
+
+model ShowcaseKudos {
+  id          String   @id @default(cuid())
+  showcaseId  String
+  showcase    UserShowcase @relation(fields: [showcaseId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  
+  @@unique([showcaseId, userId]) // One kudos per user per showcase
+  @@index([showcaseId])
+  @@index([userId])
+}
+
+model GameScore {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameType    String   // "bot_memory_match"
+  score       Int
+  moves       Int      // Number of attempts
+  timeSeconds Int      // Time to complete
+  difficulty  String   @default("normal") // "easy", "normal", "hard"
+  metadata    Json?    // { botsMatched: [...], perfectMatches: 3 }
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([gameType, score])
+  @@index([createdAt])
+}
