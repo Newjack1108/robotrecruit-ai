@@ -12,15 +12,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   webpack: (config) => {
+    // Handle video and audio files
     config.module.rules.push({
       test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
-      use: {
-        loader: 'file-loader',
-        options: {
-          publicPath: '/_next/static/media/',
-          outputPath: 'static/media/',
-          name: '[name].[hash].[ext]',
-        },
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/media/[name].[hash][ext]',
       },
     });
     return config;
