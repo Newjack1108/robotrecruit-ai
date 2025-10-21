@@ -4,6 +4,8 @@ import { StripeSettingsForm } from '@/components/admin/StripeSettingsForm';
 import { prisma } from '@/lib/db';
 import { CreditCard, Webhook, TrendingUp, AlertCircle } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminStripePage() {
   const { userId } = await auth();
   const user = await currentUser();

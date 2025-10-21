@@ -4,6 +4,8 @@ import { prisma } from '@/lib/db';
 import { BotSelector } from '@/components/bots/BotSelector';
 import { BotAdvisorToggle } from '@/components/bots/BotAdvisorToggle';
 
+export const dynamic = 'force-dynamic';
+
 export default async function BotsPage() {
   const { userId } = await auth();
 

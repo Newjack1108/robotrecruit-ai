@@ -9,6 +9,8 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { AchievementListener } from '@/components/achievements/AchievementListener';
 import { StreakCounter } from '@/components/streaks/StreakCounter';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardLayout({
   children,
 }: {
