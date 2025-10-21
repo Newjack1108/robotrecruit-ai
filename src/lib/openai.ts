@@ -1,8 +1,23 @@
 import OpenAI from 'openai'
 
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+// Lazy initialization to avoid build-time errors
+let openaiInstance: OpenAI | null = null;
+
+export function getOpenAI() {
+  if (!openaiInstance) {
+    openaiInstance = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openaiInstance;
+}
+
+// Backwards compatibility - but uses lazy initialization
+export const openai = new Proxy({} as OpenAI, {
+  get: (target, prop) => {
+    return (getOpenAI() as any)[prop];
+  }
+});
 
 export async function createThread() {
   const thread = await openai.beta.threads.create()
