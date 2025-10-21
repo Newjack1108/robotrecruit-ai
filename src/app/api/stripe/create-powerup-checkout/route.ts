@@ -1,12 +1,8 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import Stripe from 'stripe';
+import { stripe } from '@/lib/stripe';
 import { POWERUP_PACKAGES } from '@/lib/powerup-packages';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-});
 
 export async function POST(req: Request) {
   try {

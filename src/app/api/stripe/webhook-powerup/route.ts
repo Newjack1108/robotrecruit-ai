@@ -2,12 +2,9 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/db';
+import { stripe } from '@/lib/stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_POWERUP!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_POWERUP || '';
 
 export async function POST(req: Request) {
   const body = await req.text();
