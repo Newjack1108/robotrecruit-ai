@@ -9,6 +9,8 @@ import { FileUploadButton } from '@/components/chat/FileUploadButton';
 import { RemindersPanel } from '@/components/chat/RemindersPanel';
 import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
+import { LockedPowerUpCard } from '@/components/chat/LockedPowerUpCard';
+import { BotCapabilitiesCard } from '@/components/chat/BotCapabilitiesCard';
 import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -443,13 +445,44 @@ export function ChatInterface({
       {/* Bot Header Card - Redesigned */}
       <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 p-8">
-          {/* Left: Bot Image */}
+          {/* Left: Bot Image - Enhanced with Effects */}
           <div className="flex items-center justify-center md:col-span-1">
             <div className="relative w-80 h-80 group">
+              {/* Animated Glow Rings */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/30 via-blue-500/30 to-purple-500/30 blur-3xl animate-glow-pulse" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-pink-500/20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }} />
+              
+              {/* Rotating Holographic Border Ring */}
+              <div className="absolute inset-0 rounded-full opacity-40 animate-spin-very-slow">
+                <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-border" 
+                     style={{ 
+                       maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+                       WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)'
+                     }} 
+                />
+              </div>
+              
+              {/* Floating Particles */}
+              <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-60 animate-float"
+                    style={{
+                      left: `${15 + (i * 12)}%`,
+                      top: `${20 + (i % 3) * 25}%`,
+                      animationDelay: `${i * 0.4}s`,
+                      animationDuration: `${3 + (i % 3)}s`
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Bot Image */}
               <img 
                 src={botAvatar} 
-              alt={botName}
-                className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 drop-shadow-2xl"
+                alt={botName}
+                className="relative w-full h-full object-contain object-center group-hover:scale-110 transition-transform duration-500 drop-shadow-2xl filter group-hover:brightness-110 group-hover:drop-shadow-[0_0_30px_rgba(0,255,255,0.5)]"
               />
             </div>
           </div>
@@ -568,16 +601,63 @@ export function ChatInterface({
                       onActivate={() => activatePowerUp('dataExport')}
                     />
                   )}
-                  {!powerUps?.imageRecognition && !powerUps?.voiceResponse && !powerUps?.fileUpload && 
-                   !powerUps?.webSearch && !powerUps?.scheduling && !powerUps?.dataExport && (
-                    <div className="col-span-3 text-center text-gray-500 text-sm py-8">
-                      No power-ups available
-                    </div>
+                  {!powerUps?.imageRecognition && (
+                    <LockedPowerUpCard
+                      emoji="📷"
+                      label="Vision"
+                      description="Image Recognition"
+                    />
+                  )}
+                  {!powerUps?.voiceResponse && (
+                    <LockedPowerUpCard
+                      emoji="🎤"
+                      label="Voice"
+                      description="Voice Response"
+                    />
+                  )}
+                  {!powerUps?.fileUpload && (
+                    <LockedPowerUpCard
+                      emoji="📁"
+                      label="Files"
+                      description="File Upload"
+                    />
+                  )}
+                  {!powerUps?.webSearch && (
+                    <LockedPowerUpCard
+                      emoji="🌐"
+                      label="Web"
+                      description="Web Search"
+                    />
+                  )}
+                  {!powerUps?.scheduling && (
+                    <LockedPowerUpCard
+                      emoji="📅"
+                      label="Schedule"
+                      description="Scheduling"
+                    />
+                  )}
+                  {!powerUps?.dataExport && (
+                    <LockedPowerUpCard
+                      emoji="💾"
+                      label="Export"
+                      description="Data Export"
+                    />
                   )}
                 </div>
                 <p className="text-xs text-gray-400 text-center font-orbitron tracking-wide">
-                  CLICK TO ACTIVATE • 1 CREDIT
+                  {(powerUps?.imageRecognition || powerUps?.voiceResponse || powerUps?.fileUpload || 
+                    powerUps?.webSearch || powerUps?.scheduling || powerUps?.dataExport) 
+                    ? 'CLICK TO ACTIVATE • 1 CREDIT' 
+                    : 'UPGRADE TO UNLOCK POWER-UPS'}
                 </p>
+                
+                {/* Show Capabilities Card when no powerups */}
+                {!powerUps?.imageRecognition && !powerUps?.voiceResponse && !powerUps?.fileUpload && 
+                 !powerUps?.webSearch && !powerUps?.scheduling && !powerUps?.dataExport && (
+                  <div className="mt-6">
+                    <BotCapabilitiesCard />
+                  </div>
+                )}
               </>
             ) : (
               <>
