@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db';
-import { BotEditForm } from '@/components/admin/BotEditForm';
+import { BotEditFormWrapper } from '@/components/admin/BotEditFormWrapper';
 
 export default async function AdminBotsPage() {
   const bots = await prisma.bot.findMany({
@@ -80,7 +80,7 @@ export default async function AdminBotsPage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <BotEditForm bot={bot} />
+                  <BotEditFormWrapper bot={bot} />
                 </div>
               </div>
             </div>
