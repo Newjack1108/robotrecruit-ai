@@ -109,7 +109,7 @@ export default function PowerUpSuccessPage() {
           </Link>
 
           <Link href="/dashboard">
-            <Button variant="outline" className="font-bold px-8 py-6 text-lg">
+            <Button variant="outline" className="font-bold px-8 py-6 text-lg border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800">
               Go to Dashboard
             </Button>
           </Link>
