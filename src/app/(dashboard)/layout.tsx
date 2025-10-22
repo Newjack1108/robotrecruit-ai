@@ -180,8 +180,8 @@ export default async function DashboardLayout({
             </div>
 
             {/* User Section */}
-            <div className="flex items-center gap-4">
-              <Link href="/subscription">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link href="/subscription" className="hidden sm:block">
                 <div className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 border ${tierBadge.color} hover:scale-105 transition-transform cursor-pointer backdrop-blur-sm`}>
                   <span>{tierBadge.icon}</span>
                   <span>{tierBadge.name}</span>
@@ -189,7 +189,7 @@ export default async function DashboardLayout({
                 </div>
               </Link>
               
-              <StreakCounter variant="header" />
+              <StreakCounter variant="header" className="hidden sm:flex" />
               
               <NotificationBell />
               

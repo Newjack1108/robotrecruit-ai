@@ -18,9 +18,10 @@ interface StreakData {
 interface StreakCounterProps {
   variant?: 'header' | 'dashboard';
   onStreakUpdate?: () => void;
+  className?: string;
 }
 
-export function StreakCounter({ variant = 'header', onStreakUpdate }: StreakCounterProps) {
+export function StreakCounter({ variant = 'header', onStreakUpdate, className }: StreakCounterProps) {
   const [streakData, setStreakData] = useState<StreakData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
@@ -98,7 +99,7 @@ export function StreakCounter({ variant = 'header', onStreakUpdate }: StreakCoun
           streakData.canCheckInToday 
             ? 'text-orange-400 hover:text-orange-300 hover:bg-orange-500/10' 
             : 'text-gray-400'
-        }`}
+        } ${className || ''}`}
         title={streakData.canCheckInToday ? 'Click to check in!' : 'Already checked in today'}
       >
         <Flame className={`w-4 h-4 ${streakData.canCheckInToday ? 'animate-pulse' : ''}`} />

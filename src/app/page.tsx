@@ -8,6 +8,7 @@ import {
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { VimeoPlayer } from '@/components/ui/VimeoPlayer';
 
 export const dynamic = 'force-dynamic';
 
@@ -80,13 +81,16 @@ export default async function HomePage() {
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"></div>
               <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ paddingTop: '56.25%' }}>
-                <iframe 
-                  src="https://player.vimeo.com/video/1128148745?badge=0&amp;autopause=0&amp;autoplay=1&amp;loop=0&amp;muted=1&amp;background=1&amp;player_id=0&amp;app_id=58479" 
+                <VimeoPlayer
+                  videoId="1128148745"
+                  autoplay={true}
+                  muted={true}
+                  loop={true}
+                  background={false}
                   className="absolute top-0 left-0 w-full h-full"
-                  frameBorder="0" 
-                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write" 
                   title="RobotRecruit.AI Header Video"
-                ></iframe>
+                  showPlayButton={false}
+                />
               </div>
             </div>
 
@@ -107,13 +111,15 @@ export default async function HomePage() {
             {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6">
-                <iframe 
-                  src="https://player.vimeo.com/video/1128148719?badge=0&amp;autopause=0&amp;autoplay=1&amp;loop=0&amp;muted=0&amp;player_id=0&amp;app_id=58479" 
+                <VimeoPlayer
+                  videoId="1128148719"
+                  autoplay={false}
+                  muted={true}
+                  loop={false}
                   className="w-full aspect-square"
-                  frameBorder="0" 
-                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write" 
                   title="Boss Bot Introduction"
-                ></iframe>
+                  showPlayButton={true}
+                />
               </div>
               
               <Link href="/sign-up">
