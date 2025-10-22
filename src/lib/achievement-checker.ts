@@ -84,9 +84,12 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
   const totalKudosReceived = userShowcases.reduce((sum: number, showcase: any) => sum + showcase.kudosCount, 0);
   const featuredShowcase = userShowcases.some((showcase: any) => showcase.featured);
 
-  // Get arcade stats
+  // Get arcade stats - Bot Memory Match only
   const arcadeScores = await (prisma as any).gameScore.findMany({
-    where: { userId },
+    where: { 
+      userId,
+      gameType: 'bot_memory_match'
+    },
     orderBy: { score: 'desc' },
   });
 

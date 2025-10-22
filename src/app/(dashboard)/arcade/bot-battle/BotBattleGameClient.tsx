@@ -64,18 +64,6 @@ export function BotBattleGameClient({ userId }: BotBattleGameClientProps) {
 
   return (
     <>
-      {/* DEBUG INFO - REMOVE AFTER TESTING */}
-      <div className="fixed top-4 right-4 z-[100] bg-red-500 text-white p-4 rounded-lg text-xs font-mono max-w-xs">
-        <div className="font-bold mb-2">DEBUG v2.0</div>
-        <div>Complete: {gameComplete ? 'TRUE ✅' : 'FALSE ❌'}</div>
-        <div>Score: {finalScore}</div>
-        <div>Moves: {finalMoves}</div>
-        <div>Time: {finalTime}s</div>
-        <div className="mt-2 text-yellow-200">
-          {gameComplete ? 'Modal should show!' : 'Game in progress'}
-        </div>
-      </div>
-      
       {gameComplete ? (
         <GameOverModal
           score={finalScore}

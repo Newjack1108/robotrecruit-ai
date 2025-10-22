@@ -1,0 +1,13 @@
+art-bot: asst_IMJNsM042XgIDHH65629JctE
+bee-bot: asst_kJNsFej5JIkK8nZDGf41GeFF
+boss-bot: asst_alUd7fuSnuEuvwgTYUlUAqpc
+diy-bot: asst_4JY8RPNDTK1qGfZiWFlLY3tZ
+fit-bot: asst_O2JhZpPTJQWpEM7slx9dS8W0
+game-bot: asst_9WQVVHBERTK5LzTxDKa5WlU4
+melody-bot: asst_PvOCjbTdfGskehFlAVoa0Qrb
+scout-bot: asst_E1oIIJLqyQRamy230ptZjp2k
+garden-bot: asst_882kubBs2MYuqm5Ga6CqGWym
+chef-bot: asst_0jw4QjFr5Fl51itQbLFTh65T
+brewster-bot: asst_AhlnN51MZnq0cBEA54uT8dx7
+equi-bot: asst_IpyrQUjjhwHu4OX432Izgvxn
+fishing-bot: asst_6DFGAfVHejPA3rT9bB7CYgoC
