@@ -131,15 +131,15 @@ export default async function HomePage() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="/sign-up">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Link href="/sign-up" className="w-full sm:w-auto flex justify-center">
                 <Button className="group relative px-12 py-7 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xl font-bold rounded-xl shadow-2xl transition-all hover:scale-105">
                   <Rocket className="w-6 h-6 mr-2" />
                   Start Free Trial
                 </Button>
               </Link>
               
-              <Link href="/sign-in">
+              <Link href="/sign-in" className="w-full sm:w-auto flex justify-center">
                 <Button variant="outline" className="px-12 py-7 border-2 border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-xl font-bold rounded-xl backdrop-blur-sm transition-all hover:scale-105">
                   Sign In
                 </Button>
