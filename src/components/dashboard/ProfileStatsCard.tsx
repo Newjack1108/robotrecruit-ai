@@ -283,7 +283,7 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
           <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-full transition-all duration-500"
-              style={{ width: `${(achievementCount / totalAchievements) * 100}%` }}
+              style={{ width: `${totalAchievements > 0 ? (achievementCount / totalAchievements) * 100 : 0}%` }}
             ></div>
           </div>
         </div>

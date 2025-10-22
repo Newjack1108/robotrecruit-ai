@@ -63,7 +63,9 @@ export function ProfileStats({ initialData }: ProfileStatsProps) {
     achievementsByCategory[ach.category].push(ach);
   });
 
-  const completionRate = (unlockedAchievements.length / allAchievements.length * 100).toFixed(0);
+  const completionRate = allAchievements.length > 0 
+    ? (unlockedAchievements.length / allAchievements.length * 100).toFixed(0)
+    : '0';
 
   return (
     <div className="space-y-6">
