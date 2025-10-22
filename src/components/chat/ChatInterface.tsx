@@ -9,7 +9,7 @@ import { FileUploadButton } from '@/components/chat/FileUploadButton';
 import { RemindersPanel } from '@/components/chat/RemindersPanel';
 import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
-import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings } from 'lucide-react';
+import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -69,6 +69,7 @@ export function ChatInterface({
   const [powerUpAllowance, setPowerUpAllowance] = useState<number>(0);
   const [powerUpUsed, setPowerUpUsed] = useState<number>(0);
   const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
+  const [limitModal, setLimitModal] = useState<{ show: boolean; type: 'trial' | 'limit' | null; message: string }>({ show: false, type: null, message: '' });
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -351,6 +352,20 @@ export function ChatInterface({
       });
 
       if (!response.ok) {
+        // Check for trial/limit errors with JSON response
+        if (response.status === 403 || response.status === 429) {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            if (errorData.trialEnded) {
+              throw new Error('TRIAL_EXPIRED:' + errorData.message);
+            }
+            if (errorData.limitReached) {
+              throw new Error('LIMIT_REACHED:' + errorData.message);
+            }
+          }
+        }
+        
         const error = await response.text();
         if (response.status === 503) {
           throw new Error('This bot is not configured yet. Please contact an administrator.');
@@ -371,7 +386,18 @@ export function ChatInterface({
     } catch (error: any) {
       console.error('Failed to send message:', error);
       setMessages((prev) => prev.filter((m) => m.id !== tempUserMessage.id));
-      alert(error.message || 'Failed to send message. Please try again.');
+      
+      // Check for trial/limit errors
+      const errorMessage = error.message || '';
+      if (errorMessage.startsWith('TRIAL_EXPIRED:')) {
+        const message = errorMessage.replace('TRIAL_EXPIRED:', '');
+        setLimitModal({ show: true, type: 'trial', message });
+      } else if (errorMessage.startsWith('LIMIT_REACHED:')) {
+        const message = errorMessage.replace('LIMIT_REACHED:', '');
+        setLimitModal({ show: true, type: 'limit', message });
+      } else {
+        alert(errorMessage || 'Failed to send message. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -696,18 +722,15 @@ export function ChatInterface({
                           message.content.toLowerCase().includes('treatment') ||
                           message.content.toLowerCase().includes('lawyer') ||
                           message.content.toLowerCase().includes('attorney')) && (
-                          <div className="mt-3 pt-3 border-t border-yellow-500/20">
-                            <p className="text-yellow-400/90 text-xs flex items-start gap-1">
-                              <span className="flex-shrink-0">⚠️</span>
-                              <span>
-                                This information is for general knowledge only. Please consult qualified professionals for {
-                                  message.content.toLowerCase().includes('medical') || message.content.toLowerCase().includes('health') || message.content.toLowerCase().includes('diagnos') || message.content.toLowerCase().includes('treatment')
-                                    ? 'medical' 
-                                    : message.content.toLowerCase().includes('legal') || message.content.toLowerCase().includes('lawyer') || message.content.toLowerCase().includes('attorney')
-                                    ? 'legal'
-                                    : 'financial'
-                                } advice specific to your situation.
-                              </span>
+                          <div className="mt-2">
+                            <p className="text-gray-500 text-[10px] italic opacity-60">
+                              For general knowledge only. Consult qualified professionals for {
+                                message.content.toLowerCase().includes('medical') || message.content.toLowerCase().includes('health') || message.content.toLowerCase().includes('diagnos') || message.content.toLowerCase().includes('treatment')
+                                  ? 'medical' 
+                                  : message.content.toLowerCase().includes('legal') || message.content.toLowerCase().includes('lawyer') || message.content.toLowerCase().includes('attorney')
+                                  ? 'legal'
+                                  : 'financial'
+                              } advice.
                             </p>
                           </div>
                         )}
@@ -942,6 +965,50 @@ export function ChatInterface({
           </div>
         </div>
       </div>
+
+      {/* Trial/Limit Modal */}
+      {limitModal.show && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+                {limitModal.type === 'trial' ? (
+                  <Clock className="w-8 h-8 text-white" />
+                ) : (
+                  <MessageSquare className="w-8 h-8 text-white" />
+                )}
+              </div>
+              
+              <h3 className="text-2xl font-bold text-white font-orbitron">
+                {limitModal.type === 'trial' ? 'Trial Expired' : 'Daily Limit Reached'}
+              </h3>
+              
+              <p className="text-gray-300 text-base">
+                {limitModal.message}
+              </p>
+              
+              <div className="space-y-3 pt-4">
+                <button
+                  onClick={() => {
+                    setLimitModal({ show: false, type: null, message: '' });
+                    router.push('/subscription');
+                  }}
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-lg font-semibold transition-all shadow-lg"
+                >
+                  View Subscription Plans
+                </button>
+                
+                <button
+                  onClick={() => setLimitModal({ show: false, type: null, message: '' })}
+                  className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg font-medium transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

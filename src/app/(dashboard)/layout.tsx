@@ -8,6 +8,7 @@ import { Logo } from '@/components/ui/Logo';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { AchievementListener } from '@/components/achievements/AchievementListener';
 import { StreakCounter } from '@/components/streaks/StreakCounter';
+import { TrialStatusBanner } from '@/components/user/TrialStatusBanner';
 
 export const dynamic = 'force-dynamic';
 
@@ -200,6 +201,7 @@ export default async function DashboardLayout({
 
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-4 py-4 pb-20">
+        <TrialStatusBanner />
         {children}
       </main>
 

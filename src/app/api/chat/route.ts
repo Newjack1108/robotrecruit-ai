@@ -27,6 +27,77 @@ export async function POST(req: Request) {
       return new NextResponse('User not found', { status: 404 });
     }
 
+    // Check if user is a free user (tier 1, no subscription)
+    const isFreeUser = user.tier === 1 && !user.stripeCustomerId;
+    
+    if (isFreeUser) {
+      const now = new Date();
+      
+      // Initialize trial if not set (for existing users)
+      if (!user.trialEndsAt) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            trialEndsAt: new Date(user.createdAt.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 days from account creation
+          },
+        });
+        user.trialEndsAt = new Date(user.createdAt.getTime() + 7 * 24 * 60 * 60 * 1000);
+      }
+      
+      // Check if trial has expired
+      if (user.trialEndsAt && now > user.trialEndsAt) {
+        return new NextResponse(
+          JSON.stringify({
+            error: 'TRIAL_EXPIRED',
+            message: 'Your 7-day free trial has expired. Please subscribe to continue chatting with bots.',
+            trialEnded: true
+          }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Reset daily message counter if it's a new day
+      const lastReset = user.lastMessageReset ? new Date(user.lastMessageReset) : null;
+      const shouldReset = !lastReset || 
+        lastReset.getDate() !== now.getDate() || 
+        lastReset.getMonth() !== now.getMonth() || 
+        lastReset.getFullYear() !== now.getFullYear();
+      
+      if (shouldReset) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            messageCount: 0,
+            lastMessageReset: now,
+          },
+        });
+        user.messageCount = 0;
+        user.lastMessageReset = now;
+      }
+      
+      // Check if daily message limit is reached
+      if (user.messageCount >= user.dailyMessageLimit) {
+        const trialDaysLeft = user.trialEndsAt ? Math.ceil((user.trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+        return new NextResponse(
+          JSON.stringify({
+            error: 'DAILY_LIMIT_REACHED',
+            message: `You've reached your daily limit of ${user.dailyMessageLimit} messages. Upgrade to send unlimited messages!`,
+            limitReached: true,
+            trialDaysLeft
+          }),
+          { status: 429, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Increment message count
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          messageCount: user.messageCount + 1,
+        },
+      });
+    }
+
     const bot = await prisma.bot.findUnique({
       where: { id: botId },
     });

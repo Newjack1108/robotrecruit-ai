@@ -19,6 +19,12 @@ model User {
   promoTierUpgrade Int?         // Temporary tier upgrade from promo
   promoExpiresAt   DateTime?    // When promo tier expires
   
+  // Free Trial & Message Limits
+  trialEndsAt       DateTime?   // When 7-day trial expires (null = trial not started or subscribed)
+  messageCount      Int         @default(0) // Messages sent today
+  dailyMessageLimit Int         @default(10) // Free tier: 10 messages/day
+  lastMessageReset  DateTime?   // When daily counter was last reset
+  
   // Power-up Allowances (monthly subscription)
   powerUpAllowance Int          @default(0) // Total power-ups purchased per month
   powerUpUsed      Int          @default(0) // Power-ups used this month

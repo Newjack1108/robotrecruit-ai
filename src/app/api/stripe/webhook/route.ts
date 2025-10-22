@@ -119,10 +119,13 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     where: { id: userId },
     data: {
       tier,
+      trialEndsAt: null, // Clear trial - they're now a paid subscriber
+      messageCount: 0, // Reset message count
+      dailyMessageLimit: 999999, // Effectively unlimited for paid users
     },
   });
 
-  console.log(`[STRIPE_WEBHOOK] Subscription created for user ${userId}, tier ${tier}`);
+  console.log(`[STRIPE_WEBHOOK] Subscription created for user ${userId}, tier ${tier} - trial cleared`);
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
@@ -141,6 +144,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     where: { id: userId },
     data: {
       tier,
+      trialEndsAt: null, // Clear trial - they're now a paid subscriber
+      dailyMessageLimit: 999999, // Effectively unlimited for paid users
     },
   });
 
@@ -155,14 +160,21 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     return;
   }
 
-  // Downgrade to free tier
+  // Downgrade to free tier and restore trial period (7 days from now)
+  const now = new Date();
+  const trialEndsAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  
   await prisma.user.update({
     where: { id: userId },
     data: {
       tier: 1, // Free tier
+      trialEndsAt, // Give them a 7-day grace period
+      messageCount: 0,
+      dailyMessageLimit: 10, // Back to 10 messages per day
+      lastMessageReset: now,
     },
   });
 
-  console.log(`[STRIPE_WEBHOOK] Subscription deleted for user ${userId}, downgraded to free tier`);
+  console.log(`[STRIPE_WEBHOOK] Subscription deleted for user ${userId}, downgraded to free tier with 7-day grace period`);
 }
 
