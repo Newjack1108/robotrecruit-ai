@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Save, Eye, EyeOff, Image as ImageIcon, Mic, FileUp, Globe, Calendar, Download } from 'lucide-react';
 
-interface Bot {
+export interface Bot {
   id: string;
   name: string;
   openaiAssistantId: string;
@@ -17,7 +17,7 @@ interface Bot {
   dataExport: boolean;
 }
 
-interface BotEditFormProps {
+export interface BotEditFormProps {
   bot: Bot;
 }
 
