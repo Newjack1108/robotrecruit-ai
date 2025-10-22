@@ -109,6 +109,81 @@ export default function PurchasePowerUpsPage() {
           </div>
         </div>
 
+        {/* Floating Bot Avatars Section */}
+        <div className="relative mb-12 overflow-hidden rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-gray-900/95 via-cyan-900/10 to-blue-900/10 backdrop-blur-xl p-8">
+          {/* Background Effects */}
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 animate-pulse" />
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-glow-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-glow-pulse" style={{ animationDelay: '1s' }} />
+          
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-orbitron font-bold text-white mb-2">
+                🤖 Empower Your Entire Bot Team
+              </h2>
+              <p className="text-gray-300 text-lg">
+                One credit unlocks any powerup on any bot • Activate once per conversation
+              </p>
+            </div>
+
+            {/* Animated Bot Avatars Grid */}
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-4 mb-6">
+              {[
+                { name: 'Boss Bot', avatar: '/bots/boss-bot-avatar.png' },
+                { name: 'Bee Bot', avatar: '/bots/bee-bot-avatar.png' },
+                { name: 'Chef Bot', avatar: '/bots/chef-bot-avatar.png' },
+                { name: 'Melody Bot', avatar: '/bots/melody-bot-avatar.png' },
+                { name: 'Fit Bot', avatar: '/bots/fit-bot-avatar.png' },
+                { name: 'Art Bot', avatar: '/bots/art-bot-avatar.png' },
+                { name: 'DIY Bot', avatar: '/bots/diy-bot-avatar.png' },
+                { name: 'Scout Bot', avatar: '/bots/scout-bot-avatar.png' },
+              ].map((bot, index) => (
+                <div
+                  key={bot.name}
+                  className="relative group"
+                  style={{ 
+                    animation: `float ${3 + (index % 3)}s ease-in-out infinite`,
+                    animationDelay: `${index * 0.2}s` 
+                  }}
+                >
+                  {/* Glow Ring */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/30 to-blue-400/30 blur-md group-hover:blur-lg transition-all animate-pulse" />
+                  
+                  {/* Bot Avatar */}
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-cyan-400/50 bg-gray-800 p-1 group-hover:scale-110 group-hover:border-cyan-300 transition-all duration-300 overflow-hidden">
+                    <img 
+                      src={bot.avatar} 
+                      alt={bot.name}
+                      className="w-full h-full object-contain filter group-hover:brightness-110 transition-all"
+                    />
+                  </div>
+                  
+                  {/* Tooltip */}
+                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <span className="text-xs text-cyan-300 font-semibold">{bot.name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Feature Pills */}
+            <div className="flex flex-wrap justify-center gap-3 mt-8">
+              <div className="px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-sm font-semibold">
+                ✓ All Bots
+              </div>
+              <div className="px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm font-semibold">
+                ✓ All Features
+              </div>
+              <div className="px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-semibold">
+                ✓ Conversation Persistence
+              </div>
+              <div className="px-4 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 text-sm font-semibold">
+                ✓ No Expiration
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {POWERUP_PACKAGES.map((pkg, index) => {

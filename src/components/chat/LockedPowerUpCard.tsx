@@ -11,14 +11,15 @@ interface LockedPowerUpCardProps {
 
 export function LockedPowerUpCard({ emoji, label, description }: LockedPowerUpCardProps) {
   return (
-    <Link href="/powerups/purchase">
+    <Link href="/powerups/purchase" title="Get credits to unlock this powerup">
       <div className="relative group overflow-hidden rounded-xl border border-gray-700/50 bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-4 hover:border-cyan-500/50 transition-all cursor-pointer hover:scale-105 duration-300">
-        {/* Lock Overlay */}
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center opacity-100 group-hover:opacity-80 transition-opacity z-10">
-          <div className="relative">
+        {/* Lock Overlay with Credit Info */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex flex-col items-center justify-center opacity-100 group-hover:opacity-80 transition-opacity z-10">
+          <div className="relative mb-1">
             <div className="absolute inset-0 bg-yellow-500/30 blur-xl animate-pulse" />
             <Lock className="w-6 h-6 text-yellow-400 group-hover:scale-110 transition-transform relative" />
           </div>
+          <span className="text-[10px] text-yellow-300 font-semibold">1 Credit</span>
         </div>
         
         {/* Content (blurred in background) */}

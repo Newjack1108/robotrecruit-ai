@@ -54,16 +54,6 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
   // Check if bot is hired (skip for Boss Bot - always available)
   const isHired = bot.slug === 'boss-bot' || user.hiredBots.some(hb => hb.botId === bot.id);
   
-  // Get user's purchased upgrades for this bot
-  const userUpgrades = await prisma.userBotUpgrade.findMany({
-    where: {
-      userId: user.id,
-      botId: bot.id,
-    },
-  });
-  
-  const purchasedUpgrades = new Set(userUpgrades.map(u => u.upgradeType));
-  
   if (!isHired) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -92,6 +82,10 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
     );
   }
 
+  // All powerups available if user has credits - simplified unified system!
+  // Powerups are activated per-conversation using credits
+  const hasCredits = (user.powerUpAllowance - user.powerUpUsed) > 0;
+  
   return (
     <ChatInterface
       botId={bot.id}
@@ -100,16 +94,17 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
       botAvatar={bot.avatarUrl || bot.imageUrl}  // Small avatar for messages
       botSlug={bot.slug}
       botIntroAudio={bot.introAudioUrl}
-      imageRecognitionEnabled={bot.imageRecognition || purchasedUpgrades.has('imageRecognition')}
+      imageRecognitionEnabled={bot.imageRecognition}
       conversationId={params.conversation}
       isSystemBot={bot.isSystemBot}
       powerUps={{
-        imageRecognition: bot.imageRecognition || purchasedUpgrades.has('imageRecognition'),
-        voiceResponse: bot.voiceResponse || purchasedUpgrades.has('voiceResponse'),
-        fileUpload: bot.fileUpload || purchasedUpgrades.has('fileUpload'),
-        webSearch: bot.webSearch || purchasedUpgrades.has('webSearch'),
-        scheduling: bot.scheduling || purchasedUpgrades.has('scheduling'),
-        dataExport: bot.dataExport || purchasedUpgrades.has('dataExport'),
+        // All powerups available if user has credits
+        imageRecognition: hasCredits || bot.imageRecognition,
+        voiceResponse: hasCredits || bot.voiceResponse,
+        fileUpload: hasCredits || bot.fileUpload,
+        webSearch: hasCredits || bot.webSearch,
+        scheduling: hasCredits || bot.scheduling,
+        dataExport: hasCredits || bot.dataExport,
       }}
     />
   );

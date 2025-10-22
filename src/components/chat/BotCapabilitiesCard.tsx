@@ -50,8 +50,9 @@ export function BotCapabilitiesCard() {
           
           <div className="relative flex items-center justify-between">
             <div>
-              <p className="font-orbitron font-bold text-yellow-300 mb-1 text-lg">Unlock Power-Ups!</p>
-              <p className="text-sm text-gray-300">Add advanced capabilities & supercharge your bot</p>
+              <p className="font-orbitron font-bold text-yellow-300 mb-1 text-lg">⚡ Get Power-Up Credits!</p>
+              <p className="text-sm text-gray-300">1 credit = 1 powerup per conversation • All features unlocked</p>
+              <p className="text-xs text-yellow-200 mt-1">💡 Powerups persist in conversation history automatically</p>
             </div>
             <div className="relative">
               <div className="absolute inset-0 bg-yellow-500/30 blur-xl animate-pulse" />
