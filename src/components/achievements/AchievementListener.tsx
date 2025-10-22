@@ -51,6 +51,11 @@ export function AchievementListener() {
         const latest = recentlyUnlocked[0];
         setUnlockedAchievement(latest.achievement);
         setLastChecked(new Date());
+        
+        // Dispatch event to notify other components
+        window.dispatchEvent(new CustomEvent('achievementUnlocked', { 
+          detail: latest.achievement 
+        }));
       }
     } catch (error) {
       // Silently handle errors during development

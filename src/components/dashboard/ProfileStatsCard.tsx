@@ -18,6 +18,22 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
 
   useEffect(() => {
     fetchStats();
+    
+    // Refresh stats when achievements are unlocked
+    const handleAchievementUnlock = () => {
+      console.log('[ProfileStatsCard] Achievement unlocked, refreshing stats...');
+      fetchStats();
+    };
+    
+    window.addEventListener('achievementUnlocked', handleAchievementUnlock);
+    
+    // Also poll every 15 seconds to catch any updates
+    const interval = setInterval(fetchStats, 15000);
+    
+    return () => {
+      window.removeEventListener('achievementUnlocked', handleAchievementUnlock);
+      clearInterval(interval);
+    };
   }, []);
 
   async function fetchStats() {

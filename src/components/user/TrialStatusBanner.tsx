@@ -50,10 +50,8 @@ export function TrialStatusBanner() {
 
   const { trial, messages } = trialStatus;
 
-  // Don't show banner if trial is active and messages remaining > 3
-  if (trial.active && messages.remaining > 3 && trial.daysLeft > 2) {
-    return null;
-  }
+  // Always show banner for free users to encourage upgrades
+  // (Removed auto-hide logic)
 
   // Determine banner style based on urgency
   const isUrgent = trial.daysLeft <= 1 || messages.remaining <= 2;
