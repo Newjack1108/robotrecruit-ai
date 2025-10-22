@@ -9,6 +9,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { AchievementListener } from '@/components/achievements/AchievementListener';
 import { StreakCounter } from '@/components/streaks/StreakCounter';
 import { TrialStatusBanner } from '@/components/user/TrialStatusBanner';
+import { getTierPowerUpCredits } from '@/lib/powerup-credits';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,11 +42,26 @@ export default async function DashboardLayout({
   }
 
   if (!user) {
+    const initialTier = 1;
+    const initialCredits = getTierPowerUpCredits(initialTier);
+    
     user = await prisma.user.create({
       data: {
         clerkId: userId,
         email: clerkEmail,
-        tier: 1,
+        tier: initialTier,
+        powerUpAllowance: initialCredits, // Free startup credits!
+      },
+    });
+    
+    // Welcome notification with free credits info
+    await prisma.notification.create({
+      data: {
+        userId: user.id,
+        type: 'system',
+        title: '🎉 Welcome to Robot Recruit AI!',
+        message: `You've received ${initialCredits} free powerup credits to get started. Try out advanced features in any bot conversation!`,
+        link: '/chat',
       },
     });
   } else if (!user.email && clerkEmail) {

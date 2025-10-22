@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/lib/db';
 import { getTierFromPriceId } from '@/lib/stripe-config';
+import { getTierPowerUpCredits, getTierUpgradeCredits } from '@/lib/powerup-credits';
 import Stripe from 'stripe';
 
 export async function POST(request: Request) {
@@ -111,21 +112,49 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     return;
   }
 
-  // Get tier from price ID
+  // Get current user to check their old tier
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    console.error('[STRIPE_WEBHOOK] User not found:', userId);
+    return;
+  }
+
+  const oldTier = user.tier;
   const priceId = subscription.items.data[0].price.id;
-  const tier = getTierFromPriceId(priceId);
+  const newTier = getTierFromPriceId(priceId);
+  
+  // Calculate additional credits for tier upgrade
+  const additionalCredits = getTierUpgradeCredits(oldTier, newTier);
+  const newAllowance = user.powerUpAllowance + additionalCredits;
 
   await prisma.user.update({
     where: { id: userId },
     data: {
-      tier,
+      tier: newTier,
       trialEndsAt: null, // Clear trial - they're now a paid subscriber
       messageCount: 0, // Reset message count
       dailyMessageLimit: 999999, // Effectively unlimited for paid users
+      powerUpAllowance: newAllowance, // Add tier upgrade credits
     },
   });
 
-  console.log(`[STRIPE_WEBHOOK] Subscription created for user ${userId}, tier ${tier} - trial cleared`);
+  // Send notification about tier upgrade and credits
+  if (additionalCredits > 0) {
+    await prisma.notification.create({
+      data: {
+        userId: userId,
+        type: 'subscription',
+        title: '🚀 Tier Upgraded!',
+        message: `Welcome to ${newTier === 2 ? 'Pro' : 'Premium'}! You've received ${additionalCredits} bonus powerup credits. Total credits: ${newAllowance}`,
+        link: '/powerups/purchase',
+      },
+    });
+  }
+
+  console.log(`[STRIPE_WEBHOOK] Subscription created for user ${userId}, tier ${oldTier} -> ${newTier}, added ${additionalCredits} credits`);
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
@@ -136,20 +165,50 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     return;
   }
 
-  // Get tier from price ID
+  // Get current user to check their old tier
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    console.error('[STRIPE_WEBHOOK] User not found:', userId);
+    return;
+  }
+
+  const oldTier = user.tier;
   const priceId = subscription.items.data[0].price.id;
-  const tier = getTierFromPriceId(priceId);
+  const newTier = getTierFromPriceId(priceId);
+  
+  // Calculate additional credits for tier change
+  const additionalCredits = getTierUpgradeCredits(oldTier, newTier);
+  const newAllowance = user.powerUpAllowance + additionalCredits;
 
   await prisma.user.update({
     where: { id: userId },
     data: {
-      tier,
+      tier: newTier,
       trialEndsAt: null, // Clear trial - they're now a paid subscriber
       dailyMessageLimit: 999999, // Effectively unlimited for paid users
+      powerUpAllowance: newAllowance, // Add tier upgrade credits
     },
   });
 
-  console.log(`[STRIPE_WEBHOOK] Subscription updated for user ${userId}, tier ${tier}, status ${subscription.status}`);
+  // Send notification about tier change and credits
+  if (additionalCredits > 0) {
+    await prisma.notification.create({
+      data: {
+        userId: userId,
+        type: 'subscription',
+        title: newTier > oldTier ? '⬆️ Tier Upgraded!' : '🔄 Subscription Updated',
+        message: newTier > oldTier 
+          ? `Upgraded to ${newTier === 2 ? 'Pro' : 'Premium'}! You've received ${additionalCredits} bonus powerup credits.`
+          : `Your subscription has been updated.`,
+        link: '/powerups/purchase',
+      },
+    });
+  }
+
+  console.log(`[STRIPE_WEBHOOK] Subscription updated for user ${userId}, tier ${oldTier} -> ${newTier}, status ${subscription.status}, added ${additionalCredits} credits`);
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {

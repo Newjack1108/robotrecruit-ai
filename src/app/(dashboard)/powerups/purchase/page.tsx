@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { POWERUP_PACKAGES, getPricePerCredit } from '@/lib/powerup-packages';
-import { Check, Zap, Loader2, ArrowLeft } from 'lucide-react';
+import { Check, Zap, Loader2, ArrowLeft, Gift, Crown, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -182,6 +182,63 @@ export default function PurchasePowerUpsPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Free Credits Info Banner */}
+        <div className="mb-12 grid md:grid-cols-3 gap-6">
+          <div className="relative overflow-hidden rounded-2xl border-2 border-gray-700/50 bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-6 hover:border-gray-600 transition-all">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gray-500/10 rounded-full blur-2xl" />
+            <div className="relative">
+              <Gift className="w-10 h-10 text-gray-400 mb-3" />
+              <h3 className="text-xl font-orbitron font-bold text-white mb-2">Free Tier</h3>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-3xl font-bold text-gray-300">5</span>
+                <span className="text-gray-400">credits on signup</span>
+              </div>
+              <p className="text-sm text-gray-500">Try out powerup features</p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border-2 border-blue-500/50 bg-gradient-to-br from-blue-900/30 to-blue-800/30 p-6 hover:border-blue-400 transition-all">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl" />
+            <div className="relative">
+              <Rocket className="w-10 h-10 text-blue-400 mb-3" />
+              <h3 className="text-xl font-orbitron font-bold text-white mb-2">Pro Tier</h3>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-3xl font-bold text-blue-300">20</span>
+                <span className="text-gray-300">credits on upgrade</span>
+              </div>
+              <p className="text-sm text-blue-200">Regular powerup usage</p>
+              <Link href="/subscription">
+                <Button size="sm" className="mt-3 w-full bg-blue-600 hover:bg-blue-500">
+                  Upgrade to Pro
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border-2 border-purple-500/50 bg-gradient-to-br from-purple-900/30 via-pink-900/30 to-purple-800/30 p-6 hover:border-purple-400 transition-all">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl" />
+            <div className="relative">
+              <Crown className="w-10 h-10 text-purple-400 mb-3" />
+              <h3 className="text-xl font-orbitron font-bold text-white mb-2">Premium Tier</h3>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-3xl font-bold text-purple-300">50</span>
+                <span className="text-gray-300">credits on upgrade</span>
+              </div>
+              <p className="text-sm text-purple-200">Power user allocation</p>
+              <Link href="/subscription">
+                <Button size="sm" className="mt-3 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500">
+                  Upgrade to Premium
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-orbitron font-bold text-white mb-2">Need More Credits?</h2>
+          <p className="text-gray-400">Purchase additional powerup credits anytime</p>
         </div>
 
         {/* Pricing Cards */}
