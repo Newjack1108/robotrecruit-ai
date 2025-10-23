@@ -126,9 +126,14 @@ export default async function HomePage() {
                     loop
                     muted
                     playsInline
+                    preload="auto"
                     poster="/robot-bg.png"
+                    onError={(e) => console.error('Video error:', e)}
+                    onLoadStart={() => console.log('Video loading started')}
+                    onCanPlay={() => console.log('Video can play')}
                   >
                     <source src="/header-video.mp4" type="video/mp4" />
+                    <source src="/video/header-video.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
