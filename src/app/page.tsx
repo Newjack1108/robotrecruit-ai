@@ -8,8 +8,7 @@ import {
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ClickableVideo } from '@/components/ui/ClickableVideo';
-import { AutoplayVideo } from '@/components/ui/AutoplayVideo';
+import { VimeoPlayer } from '@/components/ui/VimeoPlayer';
 
 export const dynamic = 'force-dynamic';
 
@@ -120,15 +119,16 @@ export default async function HomePage() {
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"></div>
               <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ paddingTop: '56.25%' }}>
-                <div className="absolute top-0 left-0 w-full h-full">
-                  <AutoplayVideo
-                    src="/header-video.mp4"
-                    fallbackSrc="/video/header-video.mp4"
-                    poster="/robot-bg.png"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-                </div>
+                <VimeoPlayer
+                  videoId="1128148745"
+                  autoplay={true}
+                  muted={true}
+                  loop={true}
+                  background={false}
+                  className="absolute top-0 left-0 w-full h-full"
+                  title="RobotRecruit.AI Header Video"
+                  showPlayButton={false}
+                />
               </div>
             </div>
 
@@ -148,10 +148,15 @@ export default async function HomePage() {
 
             {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
-              <div className="w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6">
-                <ClickableVideo 
-                  src="/boss-intro.mp4"
-                  poster="/bots/boss-bot.png"
+              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6">
+                <VimeoPlayer
+                  videoId="1128148719"
+                  autoplay={false}
+                  muted={true}
+                  loop={false}
+                  className="w-full aspect-square"
+                  title="Boss Bot Introduction"
+                  showPlayButton={true}
                 />
               </div>
               
