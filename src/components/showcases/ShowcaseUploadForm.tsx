@@ -68,7 +68,7 @@ export default function ShowcaseUploadForm({ onSuccess, onCancel, availableBots 
 
       // Upload image to imgbb
       const formData = new FormData();
-      formData.append('image', imageFile);
+      formData.append('file', imageFile);
 
       setUploadProgress(30);
 
