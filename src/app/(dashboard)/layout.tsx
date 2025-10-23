@@ -225,8 +225,8 @@ export default async function DashboardLayout({
       <footer className="relative z-10 border-t border-gray-800 bg-gray-900/80 backdrop-blur-xl mt-auto">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 text-gray-400 text-sm">
-              <span>© 2024 Robot Recruit AI</span>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-4 text-gray-400 text-sm">
+              <span>© 2025 AI Works UK</span>
               <span className="hidden md:inline">|</span>
               <Link href="/privacy" className="hover:text-cyan-400 transition-colors">
                 Privacy Policy
@@ -234,6 +234,14 @@ export default async function DashboardLayout({
               <span>•</span>
               <Link href="/terms" className="hover:text-cyan-400 transition-colors">
                 Terms & Conditions
+              </Link>
+              <span>•</span>
+              <Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">
+                Disclaimer
+              </Link>
+              <span>•</span>
+              <Link href="/cookies" className="hover:text-cyan-400 transition-colors">
+                Cookies
               </Link>
             </div>
             <div className="text-gray-500 text-xs">

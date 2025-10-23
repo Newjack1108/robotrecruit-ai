@@ -43,6 +43,16 @@ export default async function SubscriptionPage({
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
+      {/* Legal Notice for Subscriptions */}
+      <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 text-sm text-gray-400 text-center">
+        <p>
+          By subscribing, you agree to our{' '}
+          <a href="/terms" className="text-cyan-400 hover:underline">Terms & Conditions</a>.
+          Payments are processed securely by Stripe. See our{' '}
+          <a href="/privacy" className="text-cyan-400 hover:underline">Privacy Policy</a> for details.
+        </p>
+      </div>
+
       {/* Success/Cancel Messages */}
       {showSuccess && (
         <div className="bg-green-900/20 border border-green-600/30 rounded-lg p-4 flex items-center gap-3">

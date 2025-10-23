@@ -47,6 +47,35 @@ export default async function SupportPage() {
           <TicketList />
         </div>
       </div>
+
+      {/* Legal Links Section */}
+      <div className="mt-12 pt-8 border-t border-gray-800">
+        <div className="text-center space-y-4">
+          <p className="text-gray-400 text-sm">
+            Need help with legal matters or have questions about our policies?
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-gray-400 text-sm">
+            <a href="/privacy" className="hover:text-cyan-400 transition-colors">
+              Privacy Policy
+            </a>
+            <span>•</span>
+            <a href="/terms" className="hover:text-cyan-400 transition-colors">
+              Terms & Conditions
+            </a>
+            <span>•</span>
+            <a href="/disclaimer" className="hover:text-cyan-400 transition-colors">
+              Disclaimer
+            </a>
+            <span>•</span>
+            <a href="/cookies" className="hover:text-cyan-400 transition-colors">
+              Cookie Policy
+            </a>
+          </div>
+          <p className="text-gray-500 text-xs">
+            Contact: <a href="mailto:service@robotrecruit.ai" className="text-cyan-400 hover:underline">service@robotrecruit.ai</a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
