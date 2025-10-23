@@ -3,12 +3,11 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Bot, Zap, Shield, Sparkles, CheckCircle, Star, Users, 
-  Rocket, Heart, Headphones, TrendingUp, Gift, Wrench, ChevronDown 
+  Rocket, Heart, Headphones, TrendingUp, Gift, Wrench, ChevronDown, Play 
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { VimeoPlayer } from '@/components/ui/VimeoPlayer';
 
 export const dynamic = 'force-dynamic';
 
@@ -119,16 +118,20 @@ export default async function HomePage() {
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"></div>
               <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ paddingTop: '56.25%' }}>
-                <VimeoPlayer
-                  videoId="1128148745"
-                  autoplay={true}
-                  muted={true}
-                  loop={true}
-                  background={false}
-                  className="absolute top-0 left-0 w-full h-full"
-                  title="RobotRecruit.AI Header Video"
-                  showPlayButton={false}
-                />
+                <div className="absolute top-0 left-0 w-full h-full">
+                  <video
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    poster="/robot-bg.png"
+                  >
+                    <source src="/header-video.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                </div>
               </div>
             </div>
 
@@ -148,16 +151,31 @@ export default async function HomePage() {
 
             {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
-              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6">
-                <VimeoPlayer
-                  videoId="1128148719"
-                  autoplay={false}
-                  muted={true}
-                  loop={false}
-                  className="w-full aspect-square"
-                  title="Boss Bot Introduction"
-                  showPlayButton={true}
-                />
+              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6 group cursor-pointer"
+                onClick={(e) => {
+                  const video = e.currentTarget.querySelector('video');
+                  const overlay = e.currentTarget.querySelector('.play-overlay');
+                  if (video && video.paused) {
+                    video.play();
+                    video.controls = true;
+                    if (overlay) (overlay as HTMLElement).style.display = 'none';
+                  }
+                }}>
+                <video
+                  className="w-full aspect-square object-cover"
+                  playsInline
+                  poster="/bots/boss-bot.png"
+                >
+                  <source src="/boss-intro.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                {/* Play button overlay */}
+                <div className="play-overlay absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/50 transition-all pointer-events-none">
+                  <div className="w-20 h-20 rounded-full bg-cyan-500/90 flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                    <Play className="w-10 h-10 text-white ml-1" fill="currentColor" />
+                  </div>
+                </div>
               </div>
               
               <Link href="/sign-up">
@@ -366,18 +384,18 @@ export default async function HomePage() {
                     <span className="text-cyan-300 font-orbitron font-semibold">FREE TRIAL</span>
                   </div>
                   <h3 className="text-4xl font-orbitron font-bold text-white">
-                    Try Risk-Free with Our 30-Day Trial
+                    Try Risk-Free with Our 7-Day Trial
                   </h3>
                   <p className="text-xl text-gray-300 leading-relaxed">
-                    Experience all premium features with absolutely no commitment. 
-                    Cancel anytime, and if you're not satisfied, we offer a full money-back guarantee.
+                    Experience our AI bots with a free 7-day trial. 
+                    No credit card required. Upgrade anytime for full access to all premium features.
                   </p>
                   <ul className="space-y-3">
                     {[
-                      'Full access to all premium bots',
-                      'Unlimited conversations and chat history',
-                      'Create up to 5 custom bots',
-                      'Priority support included',
+                      'Access to 2 specialist bots',
+                      '5 free powerup credits to try advanced features',
+                      'Up to 10 conversations',
+                      'Upgrade anytime for full access',
                     ].map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
@@ -391,9 +409,9 @@ export default async function HomePage() {
                   <Card className="relative bg-gray-900/80 backdrop-blur-xl border-cyan-500/50">
                     <CardContent className="p-8 text-center">
                       <div className="text-6xl mb-4">🎁</div>
-                      <h4 className="text-2xl font-orbitron font-bold text-white mb-2">30-Day Trial</h4>
-                      <p className="text-cyan-400 text-lg mb-4">Then only $9.99/month</p>
-                      <p className="text-gray-400 text-sm">Cancel anytime, no questions asked</p>
+                      <h4 className="text-2xl font-orbitron font-bold text-white mb-2">7-Day Free Trial</h4>
+                      <p className="text-cyan-400 text-lg mb-4">No credit card required</p>
+                      <p className="text-gray-400 text-sm">Upgrade to Pro ($9.99/mo) or Premium ($29.99/mo) anytime</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -512,7 +530,7 @@ export default async function HomePage() {
                 {
                   icon: Shield,
                   title: '100% Money-Back',
-                  desc: 'Not satisfied? Get a full refund within 30 days, no questions asked.',
+                  desc: 'Not satisfied with your paid plan? Get a full refund within 30 days, no questions asked.',
                   color: 'cyan',
                 },
                 {
@@ -555,7 +573,11 @@ export default async function HomePage() {
                 },
                 {
                   q: 'Is there really a free tier?',
-                  a: 'Absolutely! Our free tier includes access to Bee Bot, Chef Bot, and Boss Bot advisor. You can chat unlimited times and save your conversation history. Upgrade anytime for premium bots and custom bot creation.',
+                  a: 'Yes! Start with a 7-day free trial that includes access to 2 bots, 5 powerup credits, and up to 10 chats. After the trial, you can continue with our free tier (Boss Bot advisor) or upgrade to Pro or Premium for more bots, custom bot creation, and unlimited chats.',
+                },
+                {
+                  q: 'What\'s included in the free trial vs paid plans?',
+                  a: 'Free Trial (7 days): Access to 2 specialist bots, 5 powerup credits, and 10 chats. Pro Plan ($9.99/mo): Access to 5 bots, 20 powerup credits per month, custom bot creation, and unlimited chats. Premium Plan ($29.99/mo): All 13+ bots, 50 powerup credits, priority support, and advanced features.',
                 },
                 {
                   q: 'How do I create a custom bot?',
@@ -563,7 +585,7 @@ export default async function HomePage() {
                 },
                 {
                   q: 'What if I\'m not satisfied?',
-                  a: 'We offer a 30-day money-back guarantee. If you\'re not completely satisfied, contact our support team and we\'ll issue a full refund - no questions asked.',
+                  a: 'We offer a 7-day free trial - no credit card required. If you upgrade to a paid plan and are not completely satisfied, we offer a 30-day money-back guarantee on paid subscriptions.',
                 },
                 {
                   q: 'Can I use this for my business?',
