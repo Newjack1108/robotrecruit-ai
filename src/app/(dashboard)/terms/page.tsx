@@ -16,7 +16,7 @@ export default function TermsPage() {
         </div>
         <div>
           <h1 className="text-3xl font-bold text-white font-orbitron">Terms & Conditions</h1>
-          <p className="text-gray-400">Last Updated: 17 October 2024</p>
+          <p className="text-gray-400">Last Updated: 25 January 2025</p>
         </div>
       </div>
 
@@ -25,7 +25,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">1. Agreement to Terms</h2>
             <p className="text-gray-300">
-              These Terms and Conditions ("Terms") constitute a legally binding agreement between you ("User", "you", or "your") and Robot Recruit AI ("Company", "we", "us", or "our") governing your access to and use of the Robot Recruit AI platform, including our website, applications, and AI bot services (collectively, the "Service").
+              These Terms and Conditions ("Terms") constitute a legally binding agreement between you ("User", "you", or "your") and AI Works UK (trading as "Robot Recruit AI") ("Company", "we", "us", or "our") governing your access to and use of the Robot Recruit AI platform, including our website, applications, and AI bot services (collectively, the "Service").
             </p>
             <p className="text-gray-300 mt-4">
               <strong>By accessing or using the Service, you agree to be bound by these Terms.</strong> If you disagree with any part of these Terms, you must not access or use the Service.
@@ -324,7 +324,7 @@ export default function TermsPage() {
 
             <h3 className="text-xl font-semibold text-cyan-400 mb-3 mt-6">12.3 Informal Resolution</h3>
             <p className="text-gray-300">
-              Before initiating formal proceedings, we encourage you to contact us to seek an informal resolution: <a href="mailto:legal@robotrecruitai.com" className="text-cyan-400 hover:underline">legal@robotrecruitai.com</a>
+              Before initiating formal proceedings, we encourage you to contact us to seek an informal resolution: <a href="mailto:service@robotrecruit.ai" className="text-cyan-400 hover:underline">service@robotrecruit.ai</a>
             </p>
           </section>
 
@@ -367,12 +367,13 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">15. Contact Information</h2>
             <div className="bg-gray-800/50 p-6 rounded-lg mt-4">
-              <p className="text-gray-300"><strong>Company Name:</strong> Robot Recruit AI</p>
-              <p className="text-gray-300 mt-2"><strong>Registered Address:</strong> [Your Company Address, UK]</p>
-              <p className="text-gray-300 mt-2"><strong>Company Number:</strong> [Your Companies House Registration Number]</p>
-              <p className="text-gray-300 mt-2"><strong>VAT Number:</strong> [Your VAT Number if applicable]</p>
-              <p className="text-gray-300 mt-2"><strong>Email:</strong> <a href="mailto:legal@robotrecruitai.com" className="text-cyan-400 hover:underline">legal@robotrecruitai.com</a></p>
-              <p className="text-gray-300 mt-2"><strong>Support:</strong> <a href="mailto:support@robotrecruitai.com" className="text-cyan-400 hover:underline">support@robotrecruitai.com</a></p>
+              <p className="text-gray-300"><strong>Company Name:</strong> AI Works UK</p>
+              <p className="text-gray-300 mt-2"><strong>Trading As:</strong> RobotRecruit.AI</p>
+              <p className="text-gray-300 mt-2"><strong>Registered Address:</strong> Coach House, Ways Green, Cheshire, CW7 4AN</p>
+              <p className="text-gray-300 mt-2"><strong>Registered:</strong> England and Wales</p>
+              <p className="text-gray-300 mt-2"><strong>Company Number:</strong> [Pending registration]</p>
+              <p className="text-gray-300 mt-2"><strong>VAT Number:</strong> [Not VAT registered]</p>
+              <p className="text-gray-300 mt-2"><strong>Email:</strong> <a href="mailto:service@robotrecruit.ai" className="text-cyan-400 hover:underline">service@robotrecruit.ai</a></p>
             </div>
           </section>
 

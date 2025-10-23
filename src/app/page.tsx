@@ -643,13 +643,13 @@ export default async function HomePage() {
             <div className="text-center mb-6">
               <Logo size="md" />
               <p className="text-gray-500 mt-4">
-                © 2024 Robot Recruit AI - Built from recycled components with ❤️
+                © 2025 AI Works UK (trading as RobotRecruit.AI) - Built from recycled components with ❤️
               </p>
               <p className="text-gray-600 text-sm mt-2 italic">
                 "We're not here to take your job, we're here to help!"
               </p>
             </div>
-            <div className="flex items-center justify-center gap-6 text-gray-400 text-sm">
+            <div className="flex flex-wrap items-center justify-center gap-4 text-gray-400 text-sm">
               <Link href="/sign-in" className="hover:text-cyan-400 transition-colors">
                 Sign In
               </Link>
@@ -660,6 +660,14 @@ export default async function HomePage() {
               <span>•</span>
               <Link href="/terms" className="hover:text-cyan-400 transition-colors">
                 Terms & Conditions
+              </Link>
+              <span>•</span>
+              <Link href="/disclaimer" className="hover:text-cyan-400 transition-colors">
+                Disclaimer
+              </Link>
+              <span>•</span>
+              <Link href="/cookies" className="hover:text-cyan-400 transition-colors">
+                Cookie Policy
               </Link>
             </div>
           </div>

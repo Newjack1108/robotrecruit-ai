@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         </div>
         <div>
           <h1 className="text-3xl font-bold text-white font-orbitron">Privacy Policy</h1>
-          <p className="text-gray-400">Last Updated: 17 October 2024</p>
+          <p className="text-gray-400">Last Updated: 25 January 2025</p>
         </div>
       </div>
 
@@ -28,9 +28,10 @@ export default function PrivacyPage() {
               Robot Recruit AI ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our AI-powered bot recruitment and management platform (the "Service"). This policy complies with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.
             </p>
             <p className="text-gray-300 mt-4">
-              <strong>Data Controller:</strong> Robot Recruit AI<br />
-              <strong>Contact:</strong> [Your Company Address]<br />
-              <strong>Email:</strong> privacy@robotrecruitai.com
+              <strong>Data Controller:</strong> AI Works UK<br />
+              <strong>Company:</strong> Registered in England and Wales<br />
+              <strong>Address:</strong> Coach House, Ways Green, Cheshire, CW7 4AN<br />
+              <strong>Email:</strong> service@robotrecruit.ai
             </p>
           </section>
 
@@ -150,7 +151,7 @@ export default function PrivacyPage() {
               <li><strong>Rights Related to Automated Decision-Making:</strong> Not to be subject to decisions based solely on automated processing</li>
             </ul>
             <p className="text-gray-300 mt-4">
-              To exercise these rights, contact us at: <a href="mailto:privacy@robotrecruitai.com" className="text-cyan-400 hover:underline">privacy@robotrecruitai.com</a>
+              To exercise these rights, contact us at: <a href="mailto:service@robotrecruit.ai" className="text-cyan-400 hover:underline">service@robotrecruit.ai</a>
             </p>
             <p className="text-gray-300 mt-4">
               You also have the right to lodge a complaint with the UK Information Commissioner's Office (ICO): <a href="https://ico.org.uk" className="text-cyan-400 hover:underline">https://ico.org.uk</a>
@@ -235,10 +236,12 @@ export default function PrivacyPage() {
               If you have questions, concerns, or requests regarding this Privacy Policy or our data practices:
             </p>
             <div className="bg-gray-800/50 p-6 rounded-lg mt-4">
-              <p className="text-gray-300"><strong>Email:</strong> <a href="mailto:privacy@robotrecruitai.com" className="text-cyan-400 hover:underline">privacy@robotrecruitai.com</a></p>
+              <p className="text-gray-300"><strong>Company:</strong> AI Works UK</p>
+              <p className="text-gray-300 mt-2"><strong>Email:</strong> <a href="mailto:service@robotrecruit.ai" className="text-cyan-400 hover:underline">service@robotrecruit.ai</a></p>
               <p className="text-gray-300 mt-2"><strong>Support:</strong> Create a ticket through the platform</p>
-              <p className="text-gray-300 mt-2"><strong>Address:</strong> [Your Company Address, UK]</p>
-              <p className="text-gray-300 mt-2"><strong>ICO Registration:</strong> [Your ICO Registration Number]</p>
+              <p className="text-gray-300 mt-2"><strong>Address:</strong> Coach House, Ways Green, Cheshire, CW7 4AN</p>
+              <p className="text-gray-300 mt-2"><strong>Registered:</strong> England and Wales</p>
+              <p className="text-gray-300 mt-2"><strong>ICO Registration:</strong> [Pending - to be added]</p>
             </div>
           </section>
 
