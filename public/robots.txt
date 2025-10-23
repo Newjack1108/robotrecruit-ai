@@ -1,0 +1,26 @@
+# Robot Recruit AI - Robots.txt
+# Allow search engines to crawl public pages
+
+# Allow all crawlers by default
+User-agent: *
+Allow: /
+
+# Disallow authenticated/private areas
+Disallow: /dashboard
+Disallow: /chat
+Disallow: /admin
+Disallow: /profile
+Disallow: /powerups
+Disallow: /arcade
+Disallow: /community
+
+# Disallow auth pages
+Disallow: /sign-in
+Disallow: /sign-up
+
+# Disallow API routes
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://robotrecruit.ai/sitemap.xml
+

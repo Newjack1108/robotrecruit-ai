@@ -19,8 +19,46 @@ export default async function HomePage() {
     redirect('/dashboard');
   }
 
+  // Structured Data for SEO (JSON-LD)
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "RobotRecruit.AI",
+    "applicationCategory": "BusinessApplication",
+    "description": "AI-powered recruitment platform with specialized bots for every need. Expert guidance, 24/7 availability, and custom training capabilities.",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "GBP",
+      "description": "Free tier available forever"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "ratingCount": "1"
+    },
+    "featureList": [
+      "24/7 AI Bot Availability",
+      "Custom Bot Training",
+      "Multiple Specialized Bots",
+      "Image Recognition",
+      "Voice Response",
+      "File Upload",
+      "Web Search Integration",
+      "Scheduling Assistant",
+      "Data Export"
+    ]
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-gray-950">
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
       {/* Background Image with Overlay */}
       <div 
         className="fixed inset-0 z-0"
