@@ -11,17 +11,8 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
-  webpack: (config) => {
-    // Handle video and audio files
-    config.module.rules.push({
-      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
-      type: 'asset/resource',
-      generator: {
-        filename: 'static/media/[name].[hash][ext]',
-      },
-    });
-    return config;
-  },
+  // Note: Files in /public are served statically at the root path
+  // No need to process them with webpack
 };
 
 export default nextConfig;
