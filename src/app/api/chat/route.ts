@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { sendMessage, createThread } from '@/lib/openai';
 import { performWebSearch, shouldPerformWebSearch } from '@/lib/web-search';
 
+// Chat API v1.0.1 - Improved error handling
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
@@ -211,6 +212,9 @@ export async function POST(req: Request) {
       }
     }
 
+    console.log('[CHAT_DEBUG] Sending message to OpenAI...');
+    console.log('[CHAT_DEBUG] Bot:', bot.name, 'Assistant ID:', bot.openaiAssistantId);
+    
     const assistantResponse = await sendMessage(
       threadId,
       bot.openaiAssistantId,
@@ -218,6 +222,8 @@ export async function POST(req: Request) {
       imageUrl,
       fileId
     );
+    
+    console.log('[CHAT_DEBUG] Got response from OpenAI, length:', assistantResponse.length);
 
     const assistantMessage = await prisma.message.create({
       data: {
@@ -264,10 +270,12 @@ export async function POST(req: Request) {
       message: assistantMessage,
     });
   } catch (error) {
-    console.error('[CHAT_ERROR]', error);
+    console.error('[CHAT_ERROR] Full error object:', error);
+    console.error('[CHAT_ERROR] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     
     // Provide more specific error messages
     const errorMessage = error instanceof Error ? error.message : 'Internal Error';
+    console.error('[CHAT_ERROR] Error message:', errorMessage);
     
     // Check for common OpenAI errors
     if (errorMessage.includes('No assistant found') || errorMessage.includes('assistant')) {
