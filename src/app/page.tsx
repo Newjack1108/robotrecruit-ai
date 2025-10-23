@@ -9,6 +9,7 @@ import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ClickableVideo } from '@/components/ui/ClickableVideo';
+import { AutoplayVideo } from '@/components/ui/AutoplayVideo';
 
 export const dynamic = 'force-dynamic';
 
@@ -120,22 +121,12 @@ export default async function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"></div>
               <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ paddingTop: '56.25%' }}>
                 <div className="absolute top-0 left-0 w-full h-full">
-                  <video
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
+                  <AutoplayVideo
+                    src="/header-video.mp4"
+                    fallbackSrc="/video/header-video.mp4"
                     poster="/robot-bg.png"
-                    onError={(e) => console.error('Video error:', e)}
-                    onLoadStart={() => console.log('Video loading started')}
-                    onCanPlay={() => console.log('Video can play')}
-                  >
-                    <source src="/header-video.mp4" type="video/mp4" />
-                    <source src="/video/header-video.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+                    className="w-full h-full object-cover"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
                 </div>
               </div>
