@@ -265,7 +265,25 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error('[CHAT_ERROR]', error);
-    return new NextResponse('Internal Error', { status: 500 });
+    
+    // Provide more specific error messages
+    const errorMessage = error instanceof Error ? error.message : 'Internal Error';
+    
+    // Check for common OpenAI errors
+    if (errorMessage.includes('No assistant found') || errorMessage.includes('assistant')) {
+      return new NextResponse('Bot assistant not found. The bot may not be properly configured in OpenAI.', { status: 503 });
+    }
+    if (errorMessage.includes('No thread found') || errorMessage.includes('thread')) {
+      return new NextResponse('Chat thread error. Please start a new conversation.', { status: 500 });
+    }
+    if (errorMessage.includes('rate_limit')) {
+      return new NextResponse('OpenAI rate limit reached. Please try again in a moment.', { status: 429 });
+    }
+    if (errorMessage.includes('invalid_request_error')) {
+      return new NextResponse('Invalid request to OpenAI. Please check bot configuration.', { status: 500 });
+    }
+    
+    return new NextResponse(`Chat error: ${errorMessage}`, { status: 500 });
   }
 }
 

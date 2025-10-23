@@ -790,7 +790,7 @@ export function ChatInterface({
                     />
                     <div className="flex-1">
                       <div className="bg-gray-800/90 backdrop-blur-sm rounded-3xl rounded-tl-md px-5 py-3 shadow-lg">
-                        <p className="text-white text-[15px] leading-relaxed">{message.content}</p>
+                        <p className="text-white text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
                         
                         {/* Safety warning for sensitive topics */}
                         {(message.content.toLowerCase().includes('medical') || 
@@ -844,7 +844,7 @@ export function ChatInterface({
                         />
                     </div>
                     )}
-                    <p className="text-white text-[15px] leading-relaxed">{message.content}</p>
+                    <p className="text-white text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
                   </div>
               )}
             </div>
