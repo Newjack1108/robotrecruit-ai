@@ -4,7 +4,6 @@ import { prisma } from '@/lib/db';
 import { sendMessage, createThread } from '@/lib/openai';
 import { performWebSearch, shouldPerformWebSearch } from '@/lib/web-search';
 
-// Chat API v1.0.1 - Improved error handling
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
@@ -212,9 +211,6 @@ export async function POST(req: Request) {
       }
     }
 
-    console.log('[CHAT_DEBUG] Sending message to OpenAI...');
-    console.log('[CHAT_DEBUG] Bot:', bot.name, 'Assistant ID:', bot.openaiAssistantId);
-    
     const assistantResponse = await sendMessage(
       threadId,
       bot.openaiAssistantId,
@@ -222,8 +218,6 @@ export async function POST(req: Request) {
       imageUrl,
       fileId
     );
-    
-    console.log('[CHAT_DEBUG] Got response from OpenAI, length:', assistantResponse.length);
 
     const assistantMessage = await prisma.message.create({
       data: {
@@ -270,28 +264,26 @@ export async function POST(req: Request) {
       message: assistantMessage,
     });
   } catch (error) {
-    console.error('[CHAT_ERROR] Full error object:', error);
-    console.error('[CHAT_ERROR] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('[CHAT_ERROR]', error);
     
-    // Provide more specific error messages
+    // Provide user-friendly error messages
     const errorMessage = error instanceof Error ? error.message : 'Internal Error';
-    console.error('[CHAT_ERROR] Error message:', errorMessage);
     
-    // Check for common OpenAI errors
+    // Check for common OpenAI errors and provide friendly messages
     if (errorMessage.includes('No assistant found') || errorMessage.includes('assistant')) {
-      return new NextResponse('Bot assistant not found. The bot may not be properly configured in OpenAI.', { status: 503 });
+      return new NextResponse('This bot is temporarily unavailable. Please try another bot or contact support.', { status: 503 });
     }
     if (errorMessage.includes('No thread found') || errorMessage.includes('thread')) {
-      return new NextResponse('Chat thread error. Please start a new conversation.', { status: 500 });
+      return new NextResponse('Connection lost. Please refresh the page and start a new conversation.', { status: 500 });
     }
     if (errorMessage.includes('rate_limit')) {
-      return new NextResponse('OpenAI rate limit reached. Please try again in a moment.', { status: 429 });
+      return new NextResponse('We\'re experiencing high traffic. Please try again in a moment.', { status: 429 });
     }
-    if (errorMessage.includes('invalid_request_error')) {
-      return new NextResponse('Invalid request to OpenAI. Please check bot configuration.', { status: 500 });
+    if (errorMessage.includes('invalid_request_error') || errorMessage.includes('Unsupported')) {
+      return new NextResponse('This bot doesn\'t support that action. Try sending a text message instead.', { status: 400 });
     }
     
-    return new NextResponse(`Chat error: ${errorMessage}`, { status: 500 });
+    return new NextResponse('Something went wrong. Please try again or contact support if the issue persists.', { status: 500 });
   }
 }
 
