@@ -8,17 +8,21 @@ import { SHOWCASE_CATEGORIES } from '@/lib/showcase-categories';
 
 interface ShowcaseGalleryProps {
   userId?: string; // If provided, show only this user's showcases
+  botId?: string; // If provided, show only showcases for this bot
   currentUserId?: string; // The logged-in user's ID (for kudos/delete permissions)
   allowUpload?: boolean; // Show upload button
   limit?: number; // Max showcases to display
+  compact?: boolean; // Compact view for embedding in bot CVs
   availableBots?: Array<{ id: string; name: string; slug: string }>;
 }
 
 export default function ShowcaseGallery({
   userId,
+  botId,
   currentUserId,
   allowUpload = false,
   limit,
+  compact = false,
   availableBots = [],
 }: ShowcaseGalleryProps) {
   const [showcases, setShowcases] = useState<any[]>([]);
@@ -30,6 +34,7 @@ export default function ShowcaseGallery({
     try {
       const params = new URLSearchParams();
       if (userId) params.append('userId', userId);
+      if (botId) params.append('botId', botId);
       if (limit) params.append('limit', limit.toString());
       if (filterCategory !== 'all') params.append('category', filterCategory);
 
@@ -47,7 +52,7 @@ export default function ShowcaseGallery({
 
   useEffect(() => {
     fetchShowcases();
-  }, [userId, limit, filterCategory]);
+  }, [userId, botId, limit, filterCategory]);
 
   const handleUploadSuccess = () => {
     setShowUploadForm(false);
@@ -156,7 +161,11 @@ export default function ShowcaseGallery({
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className={`grid gap-6 ${
+          compact 
+            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+            : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+        }`}>
           {showcases.map((showcase) => (
             <ShowcaseCard
               key={showcase.id}

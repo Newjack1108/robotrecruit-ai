@@ -1,12 +1,13 @@
 import { prisma } from '@/lib/db';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { MessageSquare, Star, ArrowLeft, Briefcase, Award, Zap, Target, Users as UsersIcon, TrendingUp, Clock, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, Star, ArrowLeft, Briefcase, Award, Zap, Target, Users as UsersIcon, TrendingUp, Clock, CheckCircle2, Trophy, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HireButton } from '@/components/bots/HireButton';
 import { BotUpgradeShop } from '@/components/bots/BotUpgradeShop';
+import ShowcaseGallery from '@/components/showcases/ShowcaseGallery';
 import { auth } from '@clerk/nextjs/server';
 
 interface BotProfilePageProps {
@@ -396,6 +397,31 @@ export default async function BotCVPage({ params }: BotProfilePageProps) {
     notFound();
   }
 
+  // Get showcases related to this bot
+  const showcases = await prisma.userShowcase.findMany({
+    where: { relatedBotId: bot.id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          tier: true,
+        },
+      },
+      kudos: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+    orderBy: [
+      { featured: 'desc' },
+      { kudosCount: 'desc' },
+      { createdAt: 'desc' },
+    ],
+    take: 6,
+  });
+
   // Custom bots don't have profile pages - redirect to dashboard
   if (!bot.isSystemBot) {
     redirect('/dashboard');
@@ -649,6 +675,43 @@ export default async function BotCVPage({ params }: BotProfilePageProps) {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Success Stories - User Showcases */}
+      {showcases.length > 0 && (
+        <Card className="bg-gray-900/80 backdrop-blur-xl border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-2xl font-orbitron text-white flex items-center gap-2">
+              <Trophy className="w-6 h-6 text-yellow-400" />
+              Success Stories
+              <span className="text-sm font-normal text-gray-400 ml-2">
+                ({showcases.length} achievement{showcases.length !== 1 ? 's' : ''})
+              </span>
+            </CardTitle>
+            <p className="text-gray-400 text-sm">
+              Real achievements from users who worked with {bot.name}
+            </p>
+          </CardHeader>
+          <CardContent>
+            <ShowcaseGallery 
+              botId={bot.id}
+              currentUserId={user.id}
+              limit={6}
+              compact={true}
+            />
+            
+            {showcases.length >= 6 && (
+              <div className="mt-6 text-center">
+                <Link href={`/community/showcases?bot=${bot.slug}`}>
+                  <Button variant="outline" className="text-cyan-400 border-cyan-500/50 hover:bg-cyan-500/10">
+                    View All Success Stories
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

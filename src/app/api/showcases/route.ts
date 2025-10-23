@@ -12,6 +12,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const userId = searchParams.get('userId');
+    const botId = searchParams.get('botId');
     const featured = searchParams.get('featured') === 'true';
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = parseInt(searchParams.get('offset') || '0');
@@ -19,9 +20,10 @@ export async function GET(request: Request) {
     const where: any = {};
     if (category && category !== 'all') where.category = category;
     if (userId) where.userId = userId;
+    if (botId) where.relatedBotId = botId;
     if (featured) where.featured = true;
 
-    const showcases = await (prisma as any).userShowcase.findMany({
+    const showcases = await prisma.userShowcase.findMany({
       where,
       include: {
         user: {
@@ -103,7 +105,7 @@ export async function POST(request: Request) {
     }
 
     // Create showcase
-    const showcase = await (prisma as any).userShowcase.create({
+    const showcase = await prisma.userShowcase.create({
       data: {
         userId: user.id,
         title,
@@ -132,7 +134,7 @@ export async function POST(request: Request) {
     });
 
     // Check for "first showcase" achievement
-    const showcaseCount = await (prisma as any).userShowcase.count({
+    const showcaseCount = await prisma.userShowcase.count({
       where: { userId: user.id },
     });
 
