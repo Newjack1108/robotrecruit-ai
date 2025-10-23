@@ -124,7 +124,7 @@ export default async function HomePage() {
                   autoplay={true}
                   muted={true}
                   loop={true}
-                  background={false}
+                  background={true}
                   className="absolute top-0 left-0 w-full h-full"
                   title="RobotRecruit.AI Header Video"
                   showPlayButton={false}
