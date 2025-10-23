@@ -137,17 +137,23 @@ export default async function ArcadePage() {
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-lg font-bold text-cyan-400 mb-3 flex items-center gap-2">
-                <Target className="w-5 h-5" />
-                Bot Memory Match
-              </h3>
+              <Link href="/arcade/bot-memory" className="group">
+                <h3 className="text-lg font-bold text-cyan-400 mb-3 flex items-center gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
+                  <Target className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Memory Match
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
               <Leaderboard gameType="bot_memory_match" period="daily" limit={5} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-purple-400 mb-3 flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                Bot Battle Arena
-              </h3>
+              <Link href="/arcade/bot-battle" className="group">
+                <h3 className="text-lg font-bold text-purple-400 mb-3 flex items-center gap-2 hover:text-purple-300 transition-colors cursor-pointer">
+                  <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Battle Arena
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
               <Leaderboard gameType="bot_battle_arena" period="daily" limit={5} />
             </div>
           </div>

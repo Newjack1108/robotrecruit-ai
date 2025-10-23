@@ -10,6 +10,7 @@ import { AchievementListener } from '@/components/achievements/AchievementListen
 import { StreakCounter } from '@/components/streaks/StreakCounter';
 import { TrialStatusBanner } from '@/components/user/TrialStatusBanner';
 import { getTierPowerUpCredits } from '@/lib/powerup-credits';
+import { MobileNav } from '@/components/navigation/MobileNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -197,6 +198,8 @@ export default async function DashboardLayout({
 
             {/* User Section */}
             <div className="flex items-center gap-2 sm:gap-4">
+              <MobileNav />
+              
               <Link href="/subscription" className="hidden sm:block">
                 <div className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 border ${tierBadge.color} hover:scale-105 transition-transform cursor-pointer backdrop-blur-sm`}>
                   <span>{tierBadge.icon}</span>
