@@ -17,17 +17,27 @@ export function AchievementListener() {
   const [lastChecked, setLastChecked] = useState<Date>(new Date());
 
   useEffect(() => {
-    // Check for new achievements every 10 seconds
-    const interval = setInterval(checkForNewAchievements, 10000);
+    // Check for new achievements every 30 seconds (reduced frequency to prevent flickering)
+    const interval = setInterval(checkForNewAchievements, 30000);
     
     return () => clearInterval(interval);
   }, [lastChecked]);
 
   async function checkForNewAchievements() {
     try {
-      const response = await fetch('/api/user/stats');
+      const response = await fetch('/api/user/stats', {
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
       if (!response.ok) {
-        // Silently fail if API isn't ready yet (e.g., during dev server restart)
+        // Handle specific error codes
+        if (response.status === 502 || response.status === 500) {
+          console.warn('Achievement API temporarily unavailable, will retry later');
+          return;
+        }
         console.debug('Achievement check skipped - API not ready');
         return;
       }
@@ -58,7 +68,7 @@ export function AchievementListener() {
         }));
       }
     } catch (error) {
-      // Silently handle errors during development
+      // Silently handle errors - don't spam console in production
       console.debug('Achievement check error (this is normal during dev):', error);
     }
   }

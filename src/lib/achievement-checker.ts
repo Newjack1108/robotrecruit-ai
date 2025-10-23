@@ -33,14 +33,20 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     include: {
       hiredBots: true,
       conversations: true,
-      powerUpUsage: true,
-      customBots: true,
+      customBots: {
+        where: { creatorId: userId }
+      },
     },
   }) as any; // Type assertion for Prisma client regeneration
 
   if (!user) {
     throw new Error('User not found');
   }
+  
+  // Get power-up usage count separately to avoid relation issues
+  const powerUpUsageCount = await prisma.powerUpUsage.count({
+    where: { userId },
+  }).catch(() => 0); // Gracefully handle if table doesn't exist yet
 
   // Get achievements separately
   const userAchievements = await (prisma as any).userAchievement.findMany({
@@ -144,8 +150,8 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     conversations: user.conversations.length,
     forumPosts,
     forumReplies,
-    powerUpUsed: user.powerUpUsage.length,
-    customBots: user.customBots.length,
+    powerUpUsed: powerUpUsageCount,
+    customBots: user.customBots?.length || 0,
     tutorialCompleted: user.tutorialCompleted,
     allSystemBotsHired,
     showcases: userShowcases.length,
