@@ -3,11 +3,12 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Bot, Zap, Shield, Sparkles, CheckCircle, Star, Users, 
-  Rocket, Heart, Headphones, TrendingUp, Gift, Wrench, ChevronDown, Play 
+  Rocket, Heart, Headphones, TrendingUp, Gift, Wrench, ChevronDown 
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ClickableVideo } from '@/components/ui/ClickableVideo';
 
 export const dynamic = 'force-dynamic';
 
@@ -151,31 +152,11 @@ export default async function HomePage() {
 
             {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
-              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6 group cursor-pointer"
-                onClick={(e) => {
-                  const video = e.currentTarget.querySelector('video');
-                  const overlay = e.currentTarget.querySelector('.play-overlay');
-                  if (video && video.paused) {
-                    video.play();
-                    video.controls = true;
-                    if (overlay) (overlay as HTMLElement).style.display = 'none';
-                  }
-                }}>
-                <video
-                  className="w-full aspect-square object-cover"
-                  playsInline
+              <div className="w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6">
+                <ClickableVideo 
+                  src="/boss-intro.mp4"
                   poster="/bots/boss-bot.png"
-                >
-                  <source src="/boss-intro.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                
-                {/* Play button overlay */}
-                <div className="play-overlay absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/50 transition-all pointer-events-none">
-                  <div className="w-20 h-20 rounded-full bg-cyan-500/90 flex items-center justify-center transform group-hover:scale-110 transition-transform">
-                    <Play className="w-10 h-10 text-white ml-1" fill="currentColor" />
-                  </div>
-                </div>
+                />
               </div>
               
               <Link href="/sign-up">
