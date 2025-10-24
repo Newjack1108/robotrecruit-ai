@@ -27,8 +27,16 @@ export async function POST(req: Request) {
       return new NextResponse('User not found', { status: 404 });
     }
 
-    // Check if user is a free user (tier 1, no subscription)
-    const isFreeUser = user.tier === 1 && !user.stripeCustomerId;
+    // Calculate effective tier (considering promo upgrades)
+    let effectiveTier = user.tier;
+    if (user.promoTierUpgrade && user.promoExpiresAt) {
+      if (new Date(user.promoExpiresAt) > new Date()) {
+        effectiveTier = user.promoTierUpgrade;
+      }
+    }
+
+    // Check if user is a free user (tier 1, no subscription, no active promo)
+    const isFreeUser = effectiveTier === 1 && !user.stripeCustomerId;
     
     if (isFreeUser) {
       const now = new Date();
@@ -106,7 +114,7 @@ export async function POST(req: Request) {
       return new NextResponse('Bot not found', { status: 404 });
     }
 
-    if (bot.tier > user.tier) {
+    if (bot.tier > effectiveTier) {
       return new NextResponse('Upgrade required to access this bot', { status: 403 });
     }
 

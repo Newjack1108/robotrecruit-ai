@@ -20,6 +20,8 @@ export async function GET() {
         dailyMessageLimit: true,
         lastMessageReset: true,
         createdAt: true,
+        promoTierUpgrade: true,
+        promoExpiresAt: true,
       },
     });
 
@@ -28,7 +30,16 @@ export async function GET() {
     }
 
     const now = new Date();
-    const isFreeUser = user.tier === 1 && !user.stripeCustomerId;
+    
+    // Calculate effective tier (considering promo upgrades)
+    let effectiveTier = user.tier;
+    if (user.promoTierUpgrade && user.promoExpiresAt) {
+      if (new Date(user.promoExpiresAt) > now) {
+        effectiveTier = user.promoTierUpgrade;
+      }
+    }
+    
+    const isFreeUser = effectiveTier === 1 && !user.stripeCustomerId;
     
     // Calculate trial status
     let trialEndsAt = user.trialEndsAt;
