@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MapPin, Cloud, Fish, Plus, Calendar } from 'lucide-react';
+import { MapPin, Cloud, Fish, Plus, Calendar, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface CatchReport {
@@ -55,6 +55,13 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
       setWeather(null);
       onDataChange('weather', null);
     }
+  };
+
+  const clearLocation = () => {
+    setVenue('');
+    setWeather(null);
+    onDataChange('venue', '');
+    onDataChange('weather', null);
   };
 
   const fetchWeather = async () => {
@@ -149,11 +156,20 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
         </h3>
         <div className="flex gap-2">
           <Input
-            placeholder="Enter venue name..."
+            placeholder="Enter location (city, postcode, venue name)..."
             value={venue}
             onChange={(e) => updateVenue(e.target.value)}
             className="flex-1 bg-gray-900 border-gray-600"
           />
+          {venue && (
+            <Button 
+              onClick={clearLocation} 
+              variant="outline"
+              className="bg-red-900/50 hover:bg-red-900 border-red-700 text-red-400 hover:text-red-300"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          )}
           <Button 
             onClick={fetchWeather} 
             disabled={!venue.trim()}
