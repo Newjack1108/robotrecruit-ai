@@ -9,7 +9,6 @@ import { FileUploadButton } from '@/components/chat/FileUploadButton';
 import { RemindersPanel } from '@/components/chat/RemindersPanel';
 import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
-import { LockedPowerUpCard } from '@/components/chat/LockedPowerUpCard';
 import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
 import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench } from 'lucide-react';
 import Link from 'next/link';
@@ -600,48 +599,6 @@ export function ChatInterface({
                       isActive={activePowerUps.has('dataExport')}
                       isEnabled={true}
                       onActivate={() => activatePowerUp('dataExport')}
-                    />
-                  )}
-                  {!powerUps?.imageRecognition && (
-                    <LockedPowerUpCard
-                      emoji="📷"
-                      label="Vision"
-                      description="Image Recognition"
-                    />
-                  )}
-                  {!powerUps?.voiceResponse && (
-                    <LockedPowerUpCard
-                      emoji="🎤"
-                      label="Voice"
-                      description="Voice Response"
-                    />
-                  )}
-                  {!powerUps?.fileUpload && (
-                    <LockedPowerUpCard
-                      emoji="📁"
-                      label="Files"
-                      description="File Upload"
-                    />
-                  )}
-                  {!powerUps?.webSearch && (
-                    <LockedPowerUpCard
-                      emoji="🌐"
-                      label="Web"
-                      description="Web Search"
-                    />
-                  )}
-                  {!powerUps?.scheduling && (
-                    <LockedPowerUpCard
-                      emoji="📅"
-                      label="Schedule"
-                      description="Scheduling"
-                    />
-                  )}
-                  {!powerUps?.dataExport && (
-                    <LockedPowerUpCard
-                      emoji="💾"
-                      label="Export"
-                      description="Data Export"
                     />
                   )}
                 </div>

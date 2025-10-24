@@ -82,9 +82,8 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
     );
   }
 
-  // All powerups available if user has credits - simplified unified system!
-  // Powerups are activated per-conversation using credits
-  const hasCredits = (user.powerUpAllowance - user.powerUpUsed) > 0;
+  // Only show powerups that admin has enabled for this bot
+  // Users activate them per-conversation using credits
   
   return (
     <ChatInterface
@@ -98,13 +97,13 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
       conversationId={params.conversation}
       isSystemBot={bot.isSystemBot}
       powerUps={{
-        // All powerups available if user has credits
-        imageRecognition: hasCredits || bot.imageRecognition,
-        voiceResponse: hasCredits || bot.voiceResponse,
-        fileUpload: hasCredits || bot.fileUpload,
-        webSearch: hasCredits || bot.webSearch,
-        scheduling: hasCredits || bot.scheduling,
-        dataExport: hasCredits || bot.dataExport,
+        // Only show powerups enabled by admin for this specific bot
+        imageRecognition: bot.imageRecognition,
+        voiceResponse: bot.voiceResponse,
+        fileUpload: bot.fileUpload,
+        webSearch: bot.webSearch,
+        scheduling: bot.scheduling,
+        dataExport: bot.dataExport,
       }}
     />
   );
