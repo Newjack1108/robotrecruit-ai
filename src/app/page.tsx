@@ -8,6 +8,7 @@ import {
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { VimeoPlayer } from '@/components/ui/VimeoPlayer';
 
 export const dynamic = 'force-dynamic';
 
@@ -114,26 +115,19 @@ export default async function HomePage() {
               <Logo size="xl" />
             </div>
 
-            {/* Hero Image */}
+            {/* Hero Video */}
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"></div>
-              <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden">
-                <img 
-                  src="/background.jpg" 
-                  alt="RobotRecruit.AI - AI-Powered Recruitment Platform"
-                  className="w-full h-auto rounded-2xl"
-                  style={{ minHeight: '400px', objectFit: 'cover' }}
+              <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ padding: '56.09% 0 0 0', position: 'relative' }}>
+                <VimeoPlayer
+                  videoId="1128148745"
+                  autoplay={true}
+                  muted={true}
+                  loop={true}
+                  background={true}
+                  title="RobotRecruit.AI Header Video"
+                  showPlayButton={false}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent flex items-center justify-center">
-                  <div className="text-center px-8">
-                    <h2 className="text-4xl md:text-6xl font-orbitron font-bold text-white mb-4 drop-shadow-2xl">
-                      Welcome to the Future
-                    </h2>
-                    <p className="text-xl md:text-2xl text-cyan-300 drop-shadow-xl">
-                      AI-Powered Recruitment Solutions
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -151,16 +145,17 @@ export default async function HomePage() {
               Expert guidance, 24/7 availability, and custom training capabilities.
             </p>
 
-            {/* Boss Bot Section */}
+            {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
-              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6 bg-gradient-to-br from-purple-900/50 to-blue-900/50 border-2 border-purple-500/30">
-                <div className="aspect-square flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <div className="text-8xl mb-6">🤖</div>
-                    <h3 className="text-3xl font-orbitron font-bold text-white mb-2">Boss Bot</h3>
-                    <p className="text-cyan-400 text-lg">Your AI Business Advisor</p>
-                  </div>
-                </div>
+              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6" style={{ padding: '100% 0 0 0', position: 'relative' }}>
+                <VimeoPlayer
+                  videoId="1128148719"
+                  autoplay={false}
+                  muted={true}
+                  loop={false}
+                  title="Boss Bot Introduction"
+                  showPlayButton={true}
+                />
               </div>
               
               <Link href="/sign-up">
