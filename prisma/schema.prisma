@@ -63,6 +63,10 @@ model User {
   
   // Arcade Games
   gameScores          GameScore[]
+  
+  // Bot Slots Game
+  dailySlotSpins      DailySlotSpins[]  @relation("DailySlotSpins")
+  slotSpinHistory     SlotSpinHistory[] @relation("SlotSpinHistory")
 }
 
 model PromoCode {
@@ -445,6 +449,35 @@ model ShowcaseKudos {
   @@unique([showcaseId, userId]) // One kudos per user per showcase
   @@index([showcaseId])
   @@index([userId])
+}
+
+// Bot Slots Game Models
+model DailySlotSpins {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("DailySlotSpins", fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime
+  spinsUsed   Int      @default(0)
+  spinsTotal  Int      @default(10)
+  lastResetAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+}
+
+model SlotSpinHistory {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("SlotSpinHistory", fields: [userId], references: [id], onDelete: Cascade)
+  result      String[] // The 3 bots that landed [bot1, bot2, bot3]
+  pointsWon   Int
+  creditsWon  Int
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model GameScore {

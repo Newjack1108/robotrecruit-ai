@@ -231,6 +231,48 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
                 </div>
               </div>
             </div>
+
+            {/* Bot Jackpot Slots */}
+            {(stats.stats?.botSlotsHighScore || 0) > 0 && (
+              <div className="pt-3 border-t border-cyan-500/10">
+                <p className="text-xs text-yellow-400/70 mb-2">Bot Jackpot 🎰</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      {(stats.stats?.botSlotsJackpots || 0) > 0 && <Zap className="w-4 h-4 text-yellow-400" />}
+                      <p className="text-lg font-bold text-white">{stats.stats?.botSlotsHighScore || 0}</p>
+                    </div>
+                    <p className="text-xs text-gray-400">High Score</p>
+                  </div>
+                  <div className="text-center">
+                    {(stats.stats?.botSlotsJackpots || 0) > 0 ? (
+                      <>
+                        <p className="text-lg font-bold text-yellow-400">🎰 {stats.stats?.botSlotsJackpots}</p>
+                        <p className="text-xs text-yellow-400/70">Jackpots</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-lg font-bold text-white">-</p>
+                        <p className="text-xs text-gray-400">Jackpots</p>
+                      </>
+                    )}
+                  </div>
+                  <div className="text-center">
+                    {(stats.stats?.botSlotsCreditsWon || 0) > 0 ? (
+                      <>
+                        <p className="text-lg font-bold text-purple-400">💎 {stats.stats?.botSlotsCreditsWon}</p>
+                        <p className="text-xs text-purple-400/70">Credits Won</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-lg font-bold text-white">-</p>
+                        <p className="text-xs text-gray-400">Credits Won</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             {stats.stats?.perfectGame && (
               <div className="mt-3 pt-3 border-t border-cyan-500/20">
                 <div className="flex items-center justify-center gap-2 text-yellow-400">

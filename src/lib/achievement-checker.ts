@@ -21,6 +21,9 @@ export interface UserStats {
   botBattleHighScore: number;
   botBattlePerfectGame: boolean;
   botBattleMaxStreak: number;
+  botSlotsHighScore: number;
+  botSlotsJackpots: number;
+  botSlotsCreditsWon: number;
   totalPoints: number;
 }
 
@@ -143,6 +146,34 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     return Math.max(max, metadata?.maxStreak || 0);
   }, 0);
 
+  // Get Bot Slots specific stats
+  const slotScores = await (prisma as any).gameScore.findMany({
+    where: { 
+      userId,
+      gameType: 'bot_slots'
+    },
+    orderBy: { score: 'desc' },
+  });
+
+  const slotHistory = await (prisma as any).slotSpinHistory.findMany({
+    where: { userId },
+    select: {
+      result: true,
+      creditsWon: true,
+    },
+  });
+
+  const botSlotsHighScore = slotScores.length > 0 ? slotScores[0].score : 0;
+  
+  // Count jackpots (all three matching)
+  const botSlotsJackpots = slotHistory.filter((spin: any) => {
+    const result = spin.result;
+    return result[0] === result[1] && result[1] === result[2];
+  }).length;
+  
+  // Sum credits won
+  const botSlotsCreditsWon = slotHistory.reduce((sum: number, spin: any) => sum + (spin.creditsWon || 0), 0);
+
   const totalPoints = userAchievements.reduce((sum: number, ua: any) => sum + ua.achievement.points, 0);
 
   return {
@@ -164,6 +195,9 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     botBattleHighScore,
     botBattlePerfectGame,
     botBattleMaxStreak,
+    botSlotsHighScore,
+    botSlotsJackpots,
+    botSlotsCreditsWon,
     totalPoints,
   };
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Leaderboard } from '@/components/arcade/Leaderboard';
-import { Gamepad2, Trophy, PlayCircle, Target, Zap } from 'lucide-react';
+import { Gamepad2, Trophy, PlayCircle, Target, Zap, Coins } from 'lucide-react';
 
 export default async function ArcadePage() {
   const { userId } = await auth();
@@ -33,7 +33,52 @@ export default async function ArcadePage() {
         </div>
 
         {/* Game Cards Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Bot Jackpot Slots Card */}
+          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-500/30 overflow-hidden">
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 blur-xl" />
+              
+              <div className="relative p-6">
+                <div className="space-y-4">
+                  {/* Game Info */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                        <Coins className="w-6 h-6 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">Bot Jackpot</h2>
+                    </div>
+                    <p className="text-gray-300">
+                      Match 3 bots to win big! Daily free spins with points and rare credit prizes!
+                    </p>
+                  </div>
+
+                  {/* Features */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-sm text-gray-300">
+                      <Zap className="w-4 h-4 text-yellow-400" />
+                      <span>10 free spins daily</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-gray-300">
+                      <Trophy className="w-4 h-4 text-yellow-400" />
+                      <span>Win powerup credits!</span>
+                    </div>
+                  </div>
+
+                  {/* Play Button */}
+                  <Link href="/arcade/bot-slots">
+                    <Button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-4 rounded-lg transform transition-transform hover:scale-105 group">
+                      <PlayCircle className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                      Spin Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* Bot Memory Match Card */}
         <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-cyan-500/30 overflow-hidden">
             <div className="relative">
@@ -135,7 +180,17 @@ export default async function ArcadePage() {
             <p className="text-sm text-gray-400 mt-2">Resets daily at midnight UTC</p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
+            <div>
+              <Link href="/arcade/bot-slots" className="group">
+                <h3 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 hover:text-yellow-300 transition-colors cursor-pointer">
+                  <Coins className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Jackpot
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
+              <Leaderboard gameType="bot_slots" period="daily" limit={5} />
+            </div>
             <div>
               <Link href="/arcade/bot-memory" className="group">
                 <h3 className="text-lg font-bold text-cyan-400 mb-3 flex items-center gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
