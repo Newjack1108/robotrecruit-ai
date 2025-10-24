@@ -30,23 +30,34 @@ export function VimeoPlayer({
   const [hasInteracted, setHasInteracted] = useState(autoplay);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Build Vimeo URL with proper parameters
+  // Build Vimeo URL with proper parameters (matching Vimeo's official embed code)
   const getVimeoUrl = () => {
     const params = new URLSearchParams({
       badge: '0',
       autopause: '0',
-      // Background videos should always autoplay
-      autoplay: (background || autoplay) ? '1' : '0',
-      loop: loop ? '1' : '0',
-      muted: muted ? '1' : '0',
       player_id: '0',
       app_id: '58479',
-      playsinline: '1', // Critical for iOS
     });
 
+    // Add optional parameters
+    if (background || autoplay) {
+      params.append('autoplay', '1');
+    }
+    
+    if (loop) {
+      params.append('loop', '1');
+    }
+    
+    if (muted) {
+      params.append('muted', '1');
+    }
+    
     if (background) {
       params.append('background', '1');
     }
+
+    // iOS compatibility
+    params.append('playsinline', '1');
 
     return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
   };
@@ -68,7 +79,8 @@ export function VimeoPlayer({
         src={getVimeoUrl()}
         className={className}
         frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
         title={title}
         loading="lazy"
