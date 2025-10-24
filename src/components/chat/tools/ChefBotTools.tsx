@@ -6,25 +6,47 @@ import { Input } from '@/components/ui/input';
 import { Timer, Play, Pause, RotateCcw, Plus, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
+interface ShoppingListItem {
+  id: string;
+  item: string;
+  purchased: boolean;
+}
+
 interface ChefBotToolsProps {
   conversationId: string;
   onDataChange: (toolType: string, data: any) => void;
   initialData?: {
     timers?: Array<{ id: string; duration: number; remaining: number; isRunning: boolean; label: string }>;
-    ingredients?: string[];
+    shoppingList?: ShoppingListItem[];
     recipe?: string;
   };
+  itemsToAdd?: string[]; // Items to add from external source (e.g., detected ingredients)
 }
 
-export function ChefBotTools({ conversationId, onDataChange, initialData }: ChefBotToolsProps) {
+export function ChefBotTools({ conversationId, onDataChange, initialData, itemsToAdd }: ChefBotToolsProps) {
   const [timers, setTimers] = useState(initialData?.timers || [
     { id: '1', duration: 0, remaining: 0, isRunning: false, label: 'Timer 1' },
     { id: '2', duration: 0, remaining: 0, isRunning: false, label: 'Timer 2' },
   ]);
-  const [ingredients, setIngredients] = useState<string[]>(initialData?.ingredients || []);
-  const [newIngredient, setNewIngredient] = useState('');
+  const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>(initialData?.shoppingList || []);
+  const [newItem, setNewItem] = useState('');
   const [recipe, setRecipe] = useState(initialData?.recipe || '');
   const [timerInputs, setTimerInputs] = useState<Record<string, string>>({ '1': '', '2': '' });
+
+  // Handle externally added items (e.g., from detected ingredients)
+  useEffect(() => {
+    if (itemsToAdd && itemsToAdd.length > 0) {
+      const newItems: ShoppingListItem[] = itemsToAdd.map(item => ({
+        id: `${Date.now()}-${Math.random()}`,
+        item: item,
+        purchased: false,
+      }));
+      const updated = [...shoppingList, ...newItems];
+      setShoppingList(updated);
+      onDataChange('shoppingList', updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemsToAdd]);
 
   // Timer countdown logic
   useEffect(() => {
@@ -123,18 +145,31 @@ export function ChefBotTools({ conversationId, onDataChange, initialData }: Chef
     });
   };
 
-  const addIngredient = () => {
-    if (!newIngredient.trim()) return;
-    const updated = [...ingredients, newIngredient.trim()];
-    setIngredients(updated);
-    setNewIngredient('');
-    onDataChange('ingredients', updated);
+  const addShoppingItem = () => {
+    if (!newItem.trim()) return;
+    const newShoppingItem: ShoppingListItem = {
+      id: Date.now().toString(),
+      item: newItem.trim(),
+      purchased: false,
+    };
+    const updated = [...shoppingList, newShoppingItem];
+    setShoppingList(updated);
+    setNewItem('');
+    onDataChange('shoppingList', updated);
   };
 
-  const removeIngredient = (index: number) => {
-    const updated = ingredients.filter((_, i) => i !== index);
-    setIngredients(updated);
-    onDataChange('ingredients', updated);
+  const removeShoppingItem = (id: string) => {
+    const updated = shoppingList.filter(item => item.id !== id);
+    setShoppingList(updated);
+    onDataChange('shoppingList', updated);
+  };
+
+  const togglePurchased = (id: string) => {
+    const updated = shoppingList.map(item =>
+      item.id === id ? { ...item, purchased: !item.purchased } : item
+    );
+    setShoppingList(updated);
+    onDataChange('shoppingList', updated);
   };
 
   const updateRecipe = (value: string) => {
@@ -198,30 +233,38 @@ export function ChefBotTools({ conversationId, onDataChange, initialData }: Chef
         </div>
       </Card>
 
-      {/* Ingredients Board */}
+      {/* Shopping List */}
       <Card className="p-4 bg-gray-900/50 border-cyan-500/30">
-        <h3 className="text-lg font-semibold text-cyan-400 mb-3">Ingredients</h3>
+        <h3 className="text-lg font-semibold text-cyan-400 mb-3">Shopping List</h3>
         <div className="flex gap-2 mb-3">
           <Input
-            placeholder="Add ingredient..."
-            value={newIngredient}
-            onChange={(e) => setNewIngredient(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && addIngredient()}
+            placeholder="Add item to shopping list..."
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && addShoppingItem()}
             className="flex-1 bg-gray-900 border-gray-600 text-white"
           />
-          <Button onClick={addIngredient} size="sm" className="bg-cyan-600 hover:bg-cyan-700">
+          <Button onClick={addShoppingItem} size="sm" className="bg-cyan-600 hover:bg-cyan-700">
             <Plus className="w-4 h-4" />
           </Button>
         </div>
         <div className="space-y-2 max-h-48 overflow-y-auto">
-          {ingredients.length === 0 ? (
-            <p className="text-gray-500 text-sm italic">No ingredients added yet</p>
+          {shoppingList.length === 0 ? (
+            <p className="text-gray-500 text-sm italic">No items in shopping list</p>
           ) : (
-            ingredients.map((ingredient, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-800/50 rounded px-3 py-2 border border-gray-700">
-                <span className="text-white">{ingredient}</span>
+            shoppingList.map((item) => (
+              <div key={item.id} className="flex items-center gap-3 bg-gray-800/50 rounded px-3 py-2 border border-gray-700">
+                <input
+                  type="checkbox"
+                  checked={item.purchased}
+                  onChange={() => togglePurchased(item.id)}
+                  className="w-4 h-4 rounded border-gray-600 bg-gray-900 text-cyan-600 focus:ring-cyan-500 focus:ring-offset-gray-900 cursor-pointer"
+                />
+                <span className={`flex-1 ${item.purchased ? 'line-through text-gray-500' : 'text-white'}`}>
+                  {item.item}
+                </span>
                 <button
-                  onClick={() => removeIngredient(index)}
+                  onClick={() => removeShoppingItem(item.id)}
                   className="text-red-400 hover:text-red-300"
                 >
                   <X className="w-4 h-4" />

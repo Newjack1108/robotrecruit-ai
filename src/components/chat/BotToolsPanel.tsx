@@ -12,6 +12,7 @@ interface BotToolsPanelProps {
   conversationId?: string;
   isVisible?: boolean;
   onClose?: () => void;
+  itemsToAdd?: string[]; // For Chef Bot - items to add to shopping list
 }
 
 // Map of bot slugs to their tool components
@@ -21,7 +22,7 @@ const BOT_TOOLS_MAP: { [key: string]: boolean } = {
   'bee-bot': true,
 };
 
-export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClose }: BotToolsPanelProps) {
+export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClose, itemsToAdd }: BotToolsPanelProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [toolsData, setToolsData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -179,9 +180,10 @@ export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClo
                   onDataChange={handleDataChange}
                   initialData={{
                     timers: toolsData.timers,
-                    ingredients: toolsData.ingredients,
+                    shoppingList: toolsData.shoppingList,
                     recipe: toolsData.recipe,
                   }}
+                  itemsToAdd={itemsToAdd}
                 />
               )}
               {botSlug === 'fishing-bot' && (

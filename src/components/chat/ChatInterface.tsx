@@ -10,7 +10,8 @@ import { RemindersPanel } from '@/components/chat/RemindersPanel';
 import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
 import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
-import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench } from 'lucide-react';
+import { detectIngredients } from '@/lib/ingredient-parser';
+import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -72,6 +73,8 @@ export function ChatInterface({
   const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
   const [limitModal, setLimitModal] = useState<{ show: boolean; type: 'trial' | 'limit' | null; message: string }>({ show: false, type: null, message: '' });
   const [showBotTools, setShowBotTools] = useState(false);
+  const [detectedIngredients, setDetectedIngredients] = useState<Record<string, string[]>>({}); // messageId -> ingredients[]
+  const [itemsToAddToList, setItemsToAddToList] = useState<string[]>([]); // Items to pass to ChefBotTools
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,6 +82,25 @@ export function ChatInterface({
   useEffect(() => {
     loadPowerUpAllowance();
   }, []);
+
+  // Detect ingredients in Chef Bot messages (only for chef-bot)
+  useEffect(() => {
+    if (botSlug === 'chef-bot' && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      
+      // Only detect in assistant messages that haven't been processed yet
+      if (lastMessage.role === 'assistant' && !detectedIngredients[lastMessage.id]) {
+        const ingredients = detectIngredients(lastMessage.content);
+        
+        if (ingredients) {
+          setDetectedIngredients(prev => ({
+            ...prev,
+            [lastMessage.id]: ingredients
+          }));
+        }
+      }
+    }
+  }, [messages, botSlug, detectedIngredients]);
 
   const loadPowerUpAllowance = async () => {
     try {
@@ -90,6 +112,30 @@ export function ChatInterface({
       }
     } catch (error) {
       console.error('Failed to load power-up allowance:', error);
+    }
+  };
+
+  // Add a single ingredient to shopping list
+  const addIngredientToList = (ingredient: string) => {
+    setItemsToAddToList([ingredient]);
+    // Clear after a short delay so it can trigger the ChefBotTools useEffect
+    setTimeout(() => setItemsToAddToList([]), 100);
+    
+    // Show tools panel if not already visible
+    if (!showBotTools) {
+      setShowBotTools(true);
+    }
+  };
+
+  // Add all detected ingredients to shopping list
+  const addAllIngredientsToList = (ingredients: string[]) => {
+    setItemsToAddToList(ingredients);
+    // Clear after a short delay
+    setTimeout(() => setItemsToAddToList([]), 100);
+    
+    // Show tools panel if not already visible
+    if (!showBotTools) {
+      setShowBotTools(true);
     }
   };
 
@@ -768,6 +814,45 @@ export function ChatInterface({
                           </div>
                         )}
                       </div>
+                      
+                      {/* Detected Ingredients - Add to Shopping List (Chef Bot Only) */}
+                      {botSlug === 'chef-bot' && detectedIngredients[message.id] && (
+                        <div className="mt-2 p-3 bg-cyan-900/20 border border-cyan-500/30 rounded-xl">
+                          <div className="flex items-center gap-2 mb-2">
+                            <ShoppingCart className="w-4 h-4 text-cyan-400" />
+                            <p className="text-xs text-cyan-400 font-semibold">
+                              Ingredients detected ({detectedIngredients[message.id].length})
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            {detectedIngredients[message.id].slice(0, 5).map((ingredient, idx) => (
+                              <Button
+                                key={idx}
+                                size="sm"
+                                onClick={() => addIngredientToList(ingredient)}
+                                className="bg-cyan-600 hover:bg-cyan-700 text-xs h-7 px-2"
+                              >
+                                + {ingredient.length > 30 ? ingredient.substring(0, 30) + '...' : ingredient}
+                              </Button>
+                            ))}
+                            {detectedIngredients[message.id].length > 5 && (
+                              <span className="text-xs text-gray-400 self-center">
+                                +{detectedIngredients[message.id].length - 5} more
+                              </span>
+                            )}
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => addAllIngredientsToList(detectedIngredients[message.id])}
+                            className="w-full text-xs h-7 border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10"
+                          >
+                            <ShoppingCart className="w-3 h-3 mr-1" />
+                            Add All to Shopping List
+                          </Button>
+                        </div>
+                      )}
+                      
                       {/* Report Button - Shows on hover */}
                       <button
                         onClick={() => handleReportMessage(message.id)}
@@ -1024,6 +1109,7 @@ export function ChatInterface({
             conversationId={conversationId}
             isVisible={showBotTools}
             onClose={() => setShowBotTools(false)}
+            itemsToAdd={itemsToAddToList}
           />
         </div>
       )}
