@@ -170,7 +170,7 @@ export default async function ArcadePage() {
           </Card>
         </div>
 
-        {/* Leaderboards Section */}
+        {/* Today's Leaderboards Section */}
         <div className="space-y-6">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
@@ -210,6 +210,50 @@ export default async function ArcadePage() {
                 </h3>
               </Link>
               <Leaderboard gameType="bot_battle_arena" period="daily" limit={5} />
+            </div>
+          </div>
+        </div>
+
+        {/* Lifetime Top Scores Section */}
+        <div className="space-y-6 pb-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+              <Trophy className="w-8 h-8 text-yellow-400 animate-pulse" />
+              Lifetime Top Scores
+            </h2>
+            <p className="text-sm text-gray-400 mt-2">All-time highest scores across all games</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <div>
+              <Link href="/arcade/bot-slots" className="group">
+                <h3 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 hover:text-yellow-300 transition-colors cursor-pointer">
+                  <Coins className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Jackpot
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
+              <Leaderboard gameType="bot_slots" period="alltime" limit={5} />
+            </div>
+            <div>
+              <Link href="/arcade/bot-memory" className="group">
+                <h3 className="text-lg font-bold text-cyan-400 mb-3 flex items-center gap-2 hover:text-cyan-300 transition-colors cursor-pointer">
+                  <Target className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Memory Match
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
+              <Leaderboard gameType="bot_memory_match" period="alltime" limit={5} />
+            </div>
+            <div>
+              <Link href="/arcade/bot-battle" className="group">
+                <h3 className="text-lg font-bold text-purple-400 mb-3 flex items-center gap-2 hover:text-purple-300 transition-colors cursor-pointer">
+                  <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Battle Arena
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
+              <Leaderboard gameType="bot_battle_arena" period="alltime" limit={5} />
             </div>
           </div>
         </div>
