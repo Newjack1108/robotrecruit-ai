@@ -73,12 +73,12 @@ export function VimeoPlayer({
   };
 
   return (
-    <div className={`relative ${containerClassName}`}>
+    <>
     <iframe
       ref={iframeRef}
       src={getVimeoUrl()}
-      className={className}
-      style={{ border: 0 }}
+      className={className || "w-full h-full"}
+      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
       allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
       referrerPolicy="strict-origin-when-cross-origin"
       title={title}
@@ -106,7 +106,7 @@ export function VimeoPlayer({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

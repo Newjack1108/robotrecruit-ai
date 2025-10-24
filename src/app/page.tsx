@@ -118,14 +118,13 @@ export default async function HomePage() {
             {/* Hero Video */}
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 blur-3xl"></div>
-              <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ paddingTop: '56.25%' }}>
+              <div className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden" style={{ padding: '56.09% 0 0 0', position: 'relative' }}>
                 <VimeoPlayer
                   videoId="1128148745"
                   autoplay={true}
                   muted={true}
                   loop={true}
                   background={true}
-                  className="absolute top-0 left-0 w-full h-full"
                   title="RobotRecruit.AI Header Video"
                   showPlayButton={false}
                 />
@@ -148,13 +147,12 @@ export default async function HomePage() {
 
             {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
-              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6">
+              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6" style={{ padding: '100% 0 0 0', position: 'relative' }}>
                 <VimeoPlayer
                   videoId="1128148719"
                   autoplay={false}
                   muted={true}
                   loop={false}
-                  className="w-full aspect-square"
                   title="Boss Bot Introduction"
                   showPlayButton={true}
                 />
