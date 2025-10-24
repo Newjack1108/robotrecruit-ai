@@ -35,7 +35,8 @@ export function VimeoPlayer({
     const params = new URLSearchParams({
       badge: '0',
       autopause: '0',
-      autoplay: (autoplay && hasInteracted) ? '1' : '0',
+      // Background videos should always autoplay
+      autoplay: (background || autoplay) ? '1' : '0',
       loop: loop ? '1' : '0',
       muted: muted ? '1' : '0',
       player_id: '0',
