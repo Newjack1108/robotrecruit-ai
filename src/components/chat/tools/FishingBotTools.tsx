@@ -39,6 +39,7 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
   const [weather, setWeather] = useState<WeatherData | null>(initialData?.weather || null);
   const [catches, setCatches] = useState<CatchReport[]>(initialData?.catches || []);
   const [showCatchForm, setShowCatchForm] = useState(false);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
   const [newCatch, setNewCatch] = useState<Partial<CatchReport>>({
     species: '',
     weight: '',
@@ -65,28 +66,57 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
   };
 
   const fetchWeather = async () => {
-    if (!venue.trim()) return;
+    if (!venue.trim()) {
+      alert('Please enter a location first.');
+      return;
+    }
+    
+    setIsLoadingWeather(true);
     
     try {
+      console.log('Fetching weather for:', venue);
+      
       // Using Open-Meteo API (free, no API key needed)
       // First, geocode the venue name
-      const geoResponse = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(venue)}&count=1&language=en&format=json`
-      );
+      const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(venue)}&count=1&language=en&format=json`;
+      console.log('Geocoding URL:', geoUrl);
+      
+      const geoResponse = await fetch(geoUrl);
+      
+      if (!geoResponse.ok) {
+        console.error('Geocoding API error:', geoResponse.status);
+        alert('Error connecting to location service. Please try again.');
+        setIsLoadingWeather(false);
+        return;
+      }
+      
       const geoData = await geoResponse.json();
+      console.log('Geocoding result:', geoData);
       
       if (!geoData.results || geoData.results.length === 0) {
-        alert('Location not found. Try a different venue name.');
+        alert(`Location "${venue}" not found. Try:\n- A city name (e.g., "London")\n- A postcode (e.g., "SW1A 1AA")\n- A landmark (e.g., "Lake District")`);
+        setIsLoadingWeather(false);
         return;
       }
       
       const { latitude, longitude } = geoData.results[0];
+      console.log('Coordinates:', latitude, longitude);
       
       // Fetch weather data
-      const weatherResponse = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,pressure_msl,weather_code,wind_speed_10m&temperature_unit=celsius&wind_speed_unit=mph`
-      );
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,pressure_msl,weather_code,wind_speed_10m&temperature_unit=celsius&wind_speed_unit=mph`;
+      console.log('Weather URL:', weatherUrl);
+      
+      const weatherResponse = await fetch(weatherUrl);
+      
+      if (!weatherResponse.ok) {
+        console.error('Weather API error:', weatherResponse.status);
+        alert('Error fetching weather data. Please try again.');
+        setIsLoadingWeather(false);
+        return;
+      }
+      
       const weatherData = await weatherResponse.json();
+      console.log('Weather data:', weatherData);
       
       const weatherCodes: { [key: number]: string } = {
         0: 'Clear sky',
@@ -123,6 +153,8 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
     } catch (error) {
       console.error('Error fetching weather:', error);
       alert('Failed to fetch weather data. Please try again.');
+    } finally {
+      setIsLoadingWeather(false);
     }
   };
 
@@ -156,10 +188,11 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
         </h3>
         <div className="flex gap-2">
           <Input
+            type="text"
             placeholder="Enter location (city, postcode, venue name)..."
             value={venue}
             onChange={(e) => updateVenue(e.target.value)}
-            className="flex-1 bg-gray-900 border-gray-600"
+            className="flex-1 bg-gray-900 border-gray-600 text-white"
           />
           {venue && (
             <Button 
@@ -172,11 +205,20 @@ export function FishingBotTools({ conversationId, onDataChange, initialData }: F
           )}
           <Button 
             onClick={fetchWeather} 
-            disabled={!venue.trim()}
+            disabled={!venue.trim() || isLoadingWeather}
             className="bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50"
           >
-            <Cloud className="w-4 h-4 mr-2" />
-            Get Weather
+            {isLoadingWeather ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                Loading...
+              </>
+            ) : (
+              <>
+                <Cloud className="w-4 h-4 mr-2" />
+                Get Weather
+              </>
+            )}
           </Button>
         </div>
         {venue && (
