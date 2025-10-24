@@ -108,7 +108,7 @@ export default async function HomePage() {
       <div className="relative z-10">
         
         {/* Hero Section */}
-        <section className="container mx-auto px-4 pt-20 pb-32">
+        <section className="container mx-auto px-4 pt-20 pb-12">
           <div className="max-w-6xl mx-auto">
             {/* Logo */}
             <div className="flex justify-center mb-12">
@@ -140,14 +140,14 @@ export default async function HomePage() {
               "We're not here to take your job, we're here to help!"
             </p>
 
-            <p className="text-xl text-gray-300 text-center max-w-3xl mx-auto mb-12 leading-relaxed">
+            <p className="text-xl text-gray-300 text-center max-w-3xl mx-auto mb-6 leading-relaxed">
               Your AI-powered recruitment agency with specialized bots for every need. 
               Expert guidance, 24/7 availability, and custom training capabilities.
             </p>
 
             {/* Boss Bot Video */}
-            <div className="flex flex-col items-center mb-8">
-              <div className="relative w-full max-w-2xl mx-auto rounded-2xl shadow-2xl overflow-hidden mb-4" style={{ padding: '100% 0 0 0', position: 'relative' }}>
+            <div className="flex flex-col items-center mb-4">
+              <div className="relative w-full max-w-2xl mx-auto rounded-2xl shadow-2xl overflow-hidden mb-2" style={{ padding: '100% 0 0 0', position: 'relative' }}>
                 <VimeoPlayer
                   videoId="1128148719"
                   autoplay={false}
@@ -189,7 +189,7 @@ export default async function HomePage() {
         </section>
 
         {/* Why Specialized Bots Section */}
-        <section className="py-20 bg-gradient-to-b from-purple-950/30 via-cyan-950/20 to-transparent">
+        <section className="py-10 bg-gradient-to-b from-purple-950/30 via-cyan-950/20 to-transparent">
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
