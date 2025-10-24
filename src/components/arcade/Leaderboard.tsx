@@ -104,46 +104,51 @@ export function Leaderboard({
           <div
             key={`${entry.userId}-${entry.createdAt}`}
             className={`
-              p-4 flex items-center gap-4 transition-colors
+              p-4 transition-colors
               ${index < 3 ? 'bg-gradient-to-r from-cyan-900/20 to-transparent' : ''}
               ${index % 2 === 0 ? 'bg-gray-900/20' : 'bg-gray-900/10'}
               hover:bg-cyan-900/10
             `}
           >
-            {/* Rank */}
-            <div className="flex-shrink-0 w-12 flex justify-center">
-              {getRankIcon(entry.rank)}
-            </div>
-
-            {/* User Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-white truncate">{entry.userName}</span>
-                {getTierBadge(entry.tier)}
+            <div className="flex items-start gap-4">
+              {/* Rank */}
+              <div className="flex-shrink-0 w-12 flex justify-center pt-1">
+                {getRankIcon(entry.rank)}
               </div>
-            </div>
 
-            {/* Stats */}
-            {showStats && (
-              <div className="hidden md:flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-1 text-gray-400">
-                  <MousePointerClick className="w-4 h-4" />
-                  <span>{entry.moves}</span>
+              {/* Main Content */}
+              <div className="flex-1 min-w-0">
+                {/* Player Name & Tier - Prominent */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg font-bold text-white truncate">{entry.userName}</span>
+                  {getTierBadge(entry.tier)}
                 </div>
-                <div className="flex items-center gap-1 text-gray-400">
-                  <Timer className="w-4 h-4" />
-                  <span>{formatTime(entry.timeSeconds)}</span>
+
+                {/* Stats Row */}
+                <div className="flex items-center gap-4">
+                  {showStats && (
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-1 text-gray-400">
+                        <MousePointerClick className="w-4 h-4" />
+                        <span>{entry.moves}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-400">
+                        <Timer className="w-4 h-4" />
+                        <span>{formatTime(entry.timeSeconds)}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
 
-            {/* Score */}
-            <div className="flex-shrink-0">
-              <div className="text-right">
-                <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                  {entry.score}
+              {/* Score - Right Aligned */}
+              <div className="flex-shrink-0">
+                <div className="text-right">
+                  <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    {entry.score}
+                  </div>
+                  <div className="text-xs text-gray-500">points</div>
                 </div>
-                <div className="text-xs text-gray-500">points</div>
               </div>
             </div>
           </div>
