@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Wrench } from 'lucide-react';
+import { ChevronDown, ChevronUp, Wrench, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChefBotTools } from './tools/ChefBotTools';
 import { FishingBotTools } from './tools/FishingBotTools';
@@ -10,6 +10,8 @@ import { BeeBotTools } from './tools/BeeBotTools';
 interface BotToolsPanelProps {
   botSlug: string;
   conversationId?: string;
+  isVisible?: boolean;
+  onClose?: () => void;
 }
 
 // Map of bot slugs to their tool components
@@ -19,7 +21,7 @@ const BOT_TOOLS_MAP: { [key: string]: boolean } = {
   'bee-bot': true,
 };
 
-export function BotToolsPanel({ botSlug, conversationId }: BotToolsPanelProps) {
+export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClose }: BotToolsPanelProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [toolsData, setToolsData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -120,26 +122,46 @@ export function BotToolsPanel({ botSlug, conversationId }: BotToolsPanelProps) {
     );
   }
 
+  if (!isVisible) return null;
+
   return (
-    <div className="border-t border-gray-700 bg-gray-900/30">
+    <div className="w-full bg-gray-900 rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
       {/* Header */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-4 hover:bg-gray-800/50 transition-colors"
-      >
-        <div className="flex items-center gap-2">
-          <Wrench className="w-5 h-5 text-cyan-400" />
-          <span className="font-semibold text-white">Bot Tools</span>
-          <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">
-            {botSlug.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-          </span>
+      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700">
+        <div className="flex items-center gap-3">
+          <div className="bg-cyan-500/10 p-2 rounded-lg">
+            <Wrench className="w-5 h-5 text-cyan-400" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-white font-orbitron">Bot Tools</h3>
+            <p className="text-xs text-gray-400">
+              {botSlug.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </p>
+          </div>
         </div>
-        {isExpanded ? (
-          <ChevronUp className="w-5 h-5 text-gray-400" />
-        ) : (
-          <ChevronDown className="w-5 h-5 text-gray-400" />
-        )}
-      </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+            title={isExpanded ? "Collapse" : "Expand"}
+          >
+            {isExpanded ? (
+              <ChevronUp className="w-5 h-5 text-gray-400" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-gray-400" />
+            )}
+          </button>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-white"
+              title="Close Tools"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Content */}
       {isExpanded && (

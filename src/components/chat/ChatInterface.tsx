@@ -12,7 +12,7 @@ import { ConversationHistory } from '@/components/chat/ConversationHistory';
 import { LockedPowerUpCard } from '@/components/chat/LockedPowerUpCard';
 import { BotCapabilitiesCard } from '@/components/chat/BotCapabilitiesCard';
 import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
-import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock } from 'lucide-react';
+import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -73,6 +73,7 @@ export function ChatInterface({
   const [powerUpUsed, setPowerUpUsed] = useState<number>(0);
   const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
   const [limitModal, setLimitModal] = useState<{ show: boolean; type: 'trial' | 'limit' | null; message: string }>({ show: false, type: null, message: '' });
+  const [showBotTools, setShowBotTools] = useState(false);
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -895,9 +896,6 @@ export function ChatInterface({
         </div>
       </div>
 
-        {/* Bot-Specific Tools Panel */}
-        <BotToolsPanel botSlug={botSlug} conversationId={conversationId} />
-
         {/* Input Area - Phone Style */}
         <div className="bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 p-4">
           {/* Image Preview */}
@@ -988,6 +986,23 @@ export function ChatInterface({
                 disabled={isLoading}
               className="flex-1 bg-gray-800/80 border-gray-700 rounded-full px-5 py-3 text-white placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:border-transparent text-base h-12"
               />
+              
+              {/* Bot Tools Button - Only for bots with tools */}
+              {(botSlug === 'chef-bot' || botSlug === 'fishing-bot' || botSlug === 'bee-bot') && (
+                <Button 
+                  onClick={() => setShowBotTools(!showBotTools)} 
+                  className={`h-12 w-12 rounded-full shadow-lg flex-shrink-0 ${
+                    showBotTools 
+                      ? 'bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500' 
+                      : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                  size="icon"
+                  title="Bot Tools"
+                >
+                  <Wrench className="w-5 h-5" />
+                </Button>
+              )}
+              
               <Button 
                 onClick={sendMessage} 
               disabled={(!input.trim() && !selectedImage && !selectedFile) || isLoading}
@@ -1049,6 +1064,18 @@ export function ChatInterface({
           </div>
         </div>
       </div>
+
+      {/* Bot-Specific Tools Panel - Full Width Below Chat */}
+      {showBotTools && (
+        <div className="mt-4">
+          <BotToolsPanel 
+            botSlug={botSlug} 
+            conversationId={conversationId}
+            isVisible={showBotTools}
+            onClose={() => setShowBotTools(false)}
+          />
+        </div>
+      )}
 
       {/* Trial/Limit Modal */}
       {limitModal.show && (
