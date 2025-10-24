@@ -78,17 +78,28 @@ export function VimeoPlayer({
         ref={iframeRef}
         src={getVimeoUrl()}
         className={className}
-        frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+        style={{ 
+          border: 0, 
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%', 
+          height: '100%',
+          minHeight: '100%'
+        }}
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
         referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
         title={title}
-        loading="lazy"
         onError={(e) => {
           console.error('[VimeoPlayer] Failed to load video:', videoId, e);
         }}
-        onLoad={() => {
+        onLoad={(e) => {
           console.log('[VimeoPlayer] Video loaded successfully:', videoId);
+          console.log('[VimeoPlayer] Iframe dimensions:', {
+            width: e.currentTarget.offsetWidth,
+            height: e.currentTarget.offsetHeight,
+            src: e.currentTarget.src
+          });
         }}
       />
       
