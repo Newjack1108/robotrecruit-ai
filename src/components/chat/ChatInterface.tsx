@@ -523,12 +523,15 @@ export function ChatInterface({
                     POWER-UPS
                   </h3>
                   <div className="flex items-center gap-3">
-                    <div className={`text-sm font-orbitron font-bold ${
-                      powerUpAllowance - powerUpUsed === 0 ? 'text-red-400' : 
-                      powerUpAllowance - powerUpUsed < 5 ? 'text-yellow-400' : 
-                      'text-cyan-400'
-                    }`}>
-                      {powerUpUsed}/{powerUpAllowance}
+                    <div className="flex flex-col items-end">
+                      <div className={`text-sm font-orbitron font-bold ${
+                        powerUpAllowance - powerUpUsed === 0 ? 'text-red-400' : 
+                        powerUpAllowance - powerUpUsed < 5 ? 'text-yellow-400' : 
+                        'text-cyan-400'
+                      }`}>
+                        {powerUpAllowance - powerUpUsed}
+                      </div>
+                      <span className="text-[10px] text-gray-400">Remaining</span>
                     </div>
                     <Link href="/powerups/purchase">
                       <Button 

@@ -118,9 +118,8 @@ export default async function DashboardPage() {
     }
   };
 
-  // Count power-ups
-  const enabledPowerUps = allBots.filter(bot => bot.imageRecognition && hiredBotIds.has(bot.id)).length;
-  const totalPowerUps = allBots.filter(bot => bot.imageRecognition).length;
+  // Get power-up credits (remaining)
+  const remainingCredits = user.powerUpAllowance - user.powerUpUsed;
 
   // Determine if we should show tutorial (new users who haven't completed it)
   const shouldShowTutorial = !(user as any).tutorialCompleted && (user as any).tutorialStep === 0;
@@ -183,8 +182,12 @@ export default async function DashboardPage() {
                   <Zap className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-xs">Power-Up Credits</p>
-                  <p className="text-xl font-bold text-white">{enabledPowerUps}/{totalPowerUps}</p>
+                  <p className="text-gray-400 text-xs">Credits Remaining</p>
+                  <p className={`text-xl font-bold ${
+                    remainingCredits === 0 ? 'text-red-400' : 
+                    remainingCredits < 5 ? 'text-yellow-400' : 
+                    'text-white'
+                  }`}>{remainingCredits}</p>
                 </div>
               </div>
             </div>
