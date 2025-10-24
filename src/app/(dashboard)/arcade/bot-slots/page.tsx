@@ -63,12 +63,12 @@ export default function BotSlotsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-950/30 to-cyan-950/20 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         
         {/* Back Button */}
         <Link href="/arcade">
-          <Button variant="ghost" className="text-gray-400 hover:text-white">
+          <Button variant="ghost" className="text-gray-400 hover:text-cyan-400 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Arcade
           </Button>
@@ -76,30 +76,30 @@ export default function BotSlotsPage() {
 
         {/* Game Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-orbitron font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-orbitron font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             🎰 Bot Jackpot
           </h1>
-          <p className="text-gray-400">Match the bots to win points and credits!</p>
+          <p className="text-gray-300 text-lg">Match the bots to win points and credits!</p>
         </div>
 
         {/* Stats Bar */}
         <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-gray-800/50 border-cyan-500/30 p-4 text-center">
+          <Card className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 backdrop-blur-xl border-cyan-500/50 p-4 text-center hover:border-cyan-400/70 transition-all">
             <Zap className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
             <div className="text-2xl font-bold text-white">{spinsLeft}</div>
-            <div className="text-sm text-gray-400">Spins Left</div>
+            <div className="text-sm text-cyan-200/70">Spins Left</div>
           </Card>
           
-          <Card className="bg-gray-800/50 border-yellow-500/30 p-4 text-center">
+          <Card className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 backdrop-blur-xl border-purple-500/50 p-4 text-center hover:border-purple-400/70 transition-all">
             <Trophy className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
             <div className="text-2xl font-bold text-white">{totalPoints}</div>
-            <div className="text-sm text-gray-400">Points Won</div>
+            <div className="text-sm text-purple-200/70">Points Won</div>
           </Card>
           
-          <Card className="bg-gray-800/50 border-purple-500/30 p-4 text-center">
-            <Clock className="w-6 h-6 text-purple-400 mx-auto mb-2" />
+          <Card className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 backdrop-blur-xl border-blue-500/50 p-4 text-center hover:border-blue-400/70 transition-all">
+            <Clock className="w-6 h-6 text-blue-400 mx-auto mb-2" />
             <div className="text-sm font-bold text-white">{timeToReset}</div>
-            <div className="text-xs text-gray-400">Until Reset</div>
+            <div className="text-xs text-blue-200/70">Until Reset</div>
           </Card>
         </div>
 
@@ -111,26 +111,32 @@ export default function BotSlotsPage() {
         />
 
         {/* Rewards Table */}
-        <Card className="bg-gray-800/30 border-gray-700 p-6">
-          <h3 className="text-xl font-bold text-white mb-4">Winning Combinations</h3>
+        <Card className="bg-gradient-to-br from-gray-900/60 to-cyan-900/30 backdrop-blur-xl border-cyan-500/30 p-6">
+          <h3 className="text-2xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-4">Winning Combinations</h3>
           <div className="space-y-3">
-            <div className="flex justify-between items-center p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
-              <span className="text-white font-semibold">🎰 Three of a Kind</span>
-              <span className="text-yellow-400 font-bold">1,000 pts + 1 Credit!</span>
+            <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/50 hover:border-purple-400 transition-colors">
+              <span className="text-white font-semibold flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-yellow-400" />
+                Three of a Kind
+              </span>
+              <span className="text-yellow-400 font-bold text-lg">1,000 pts + 1 Credit!</span>
             </div>
-            <div className="flex justify-between items-center p-3 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
-              <span className="text-white">✨ Two Matching</span>
-              <span className="text-cyan-400">100 points</span>
+            <div className="flex justify-between items-center p-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/50 hover:border-cyan-400 transition-colors">
+              <span className="text-white flex items-center gap-2">
+                <Zap className="w-5 h-5 text-cyan-400" />
+                Two Matching
+              </span>
+              <span className="text-cyan-400 font-bold">100 points</span>
             </div>
-            <div className="flex justify-between items-center p-3 bg-gray-700/30 rounded-lg border border-gray-600">
-              <span className="text-gray-400">❌ No Match</span>
-              <span className="text-gray-500">10 points</span>
+            <div className="flex justify-between items-center p-4 bg-gray-800/30 rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
+              <span className="text-gray-300">❌ No Match</span>
+              <span className="text-gray-400">10 points</span>
             </div>
           </div>
           
-          <div className="mt-4 p-4 bg-purple-500/10 rounded-lg border border-purple-500/30">
-            <p className="text-sm text-purple-300 text-center">
-              💎 <strong>Credits are rare!</strong> Only jackpots award credits. 
+          <div className="mt-6 p-4 bg-gradient-to-r from-purple-900/40 to-pink-900/40 rounded-lg border border-purple-500/50 backdrop-blur-sm">
+            <p className="text-sm text-purple-200 text-center leading-relaxed">
+              💎 <strong className="text-yellow-300">Credits are rare!</strong> Only jackpots award credits. 
               Points boost your leaderboard ranking!
             </p>
           </div>
@@ -138,13 +144,16 @@ export default function BotSlotsPage() {
 
         {/* Daily Reset Info */}
         {spinsLeft === 0 && (
-          <Card className="bg-red-900/20 border-red-500/50 p-6 text-center">
-            <h3 className="text-xl font-bold text-red-400 mb-2">Out of Spins! 😢</h3>
-            <p className="text-gray-300 mb-4">
-              Come back in <strong>{timeToReset}</strong> for 10 more free spins!
+          <Card className="bg-gradient-to-br from-red-900/30 to-orange-900/30 backdrop-blur-xl border-orange-500/50 p-8 text-center">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+              <Clock className="w-10 h-10 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold font-orbitron text-white mb-3">Out of Spins!</h3>
+            <p className="text-gray-200 text-lg mb-6">
+              Come back in <strong className="text-orange-400">{timeToReset}</strong> for 10 more free spins!
             </p>
             <Link href="/arcade">
-              <Button className="bg-cyan-600 hover:bg-cyan-500">
+              <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg">
                 Play Other Games
               </Button>
             </Link>
