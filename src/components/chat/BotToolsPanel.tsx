@@ -26,6 +26,11 @@ export function BotToolsPanel({ botSlug, conversationId }: BotToolsPanelProps) {
 
   // Check if this bot has tools
   const hasTools = BOT_TOOLS_MAP[botSlug];
+  
+  // Debug logging
+  console.log('BotToolsPanel - botSlug:', botSlug);
+  console.log('BotToolsPanel - hasTools:', hasTools);
+  console.log('BotToolsPanel - conversationId:', conversationId);
 
   useEffect(() => {
     if (conversationId && hasTools) {
