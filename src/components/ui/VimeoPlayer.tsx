@@ -71,6 +71,13 @@ export function VimeoPlayer({
         allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
         allowFullScreen
         title={title}
+        loading="lazy"
+        onError={(e) => {
+          console.error('[VimeoPlayer] Failed to load video:', videoId, e);
+        }}
+        onLoad={() => {
+          console.log('[VimeoPlayer] Video loaded successfully:', videoId);
+        }}
       />
       
       {/* Play Button Overlay for mobile/manual play */}
