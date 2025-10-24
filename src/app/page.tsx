@@ -147,7 +147,7 @@ export default async function HomePage() {
 
             {/* Boss Bot Video */}
             <div className="flex flex-col items-center mb-8">
-              <div className="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden mb-6" style={{ padding: '100% 0 0 0', position: 'relative' }}>
+              <div className="relative w-full max-w-2xl mx-auto rounded-2xl shadow-2xl overflow-hidden mb-4" style={{ padding: '100% 0 0 0', position: 'relative' }}>
                 <VimeoPlayer
                   videoId="1128148719"
                   autoplay={false}
