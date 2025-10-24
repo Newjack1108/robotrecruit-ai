@@ -46,7 +46,22 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ success: true, gameScore }, { status: 201 });
+    // Update lifetime high score if this is a new record
+    // @ts-expect-error - Prisma type refresh needed
+    if (score > user.lifetimeHighScore) {
+      await prisma.user.update({
+        where: { id: user.id },
+        // @ts-expect-error - Prisma type refresh needed
+        data: { lifetimeHighScore: score }
+      });
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      gameScore,
+      // @ts-expect-error - Prisma type refresh needed
+      newLifetimeRecord: score > user.lifetimeHighScore
+    }, { status: 201 });
   } catch (error) {
     console.error('[ARCADE_SCORES_POST]', error);
     return NextResponse.json(

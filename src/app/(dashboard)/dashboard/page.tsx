@@ -121,6 +121,11 @@ export default async function DashboardPage() {
   // Get power-up credits (remaining)
   const remainingCredits = user.powerUpAllowance - user.powerUpUsed;
 
+  // Get arcade stats
+  const arcadeGamesPlayed = await (prisma as any).gameScore.count({
+    where: { userId: user.id }
+  });
+
   // Determine if we should show tutorial (new users who haven't completed it)
   const shouldShowTutorial = !(user as any).tutorialCompleted && (user as any).tutorialStep === 0;
   const tutorialStep = (user as any).tutorialStep || 1;
@@ -151,7 +156,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+          <div className={`grid grid-cols-1 ${arcadeGamesPlayed > 0 ? 'md:grid-cols-4' : 'md:grid-cols-3'} gap-3 mt-4`}>
             <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
               <div className="flex items-center gap-2.5">
                 <div className="bg-cyan-500/20 p-2 rounded-lg">
@@ -191,6 +196,21 @@ export default async function DashboardPage() {
                 </div>
               </div>
             </div>
+
+            {arcadeGamesPlayed > 0 && (
+              <div className="bg-gradient-to-br from-yellow-900/30 to-orange-900/30 backdrop-blur-sm rounded-lg p-3 border border-yellow-500/30">
+                <div className="flex items-center gap-2.5">
+                  <div className="bg-yellow-500/20 p-2 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <div>
+                    <p className="text-yellow-400/70 text-xs font-semibold">Lifetime Record</p>
+                    {/* @ts-expect-error - Prisma type refresh needed */}
+                    <p className="text-xl font-black text-yellow-400 font-mono">{user.lifetimeHighScore.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

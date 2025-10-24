@@ -151,6 +151,26 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
               <Gamepad2 className="w-4 h-4 text-cyan-400" />
               <h4 className="text-xs font-semibold text-cyan-400">Arcade Stats</h4>
             </div>
+
+            {/* Lifetime High Score - Prominent Display */}
+            {/* @ts-expect-error - Prisma type refresh needed */}
+            {stats.user?.lifetimeHighScore > 0 && (
+              <div className="mb-3 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg p-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Trophy className="w-4 h-4 text-yellow-400 animate-pulse" />
+                    <span className="text-[10px] font-semibold text-yellow-400/90">LIFETIME RECORD</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-yellow-400" />
+                    {/* @ts-expect-error - Prisma type refresh needed */}
+                    <span className="text-xl font-black text-yellow-400 font-mono">
+                      {stats.user.lifetimeHighScore.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Bot Memory Match */}
             <div className="mb-2">
