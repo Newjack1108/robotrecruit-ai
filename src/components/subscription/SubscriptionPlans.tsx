@@ -74,7 +74,9 @@ export function SubscriptionPlans({
       description: 'Get started with basic bots',
       features: [
         'Access to Boss Bot',
-        'Access to 1 specialty bot',
+        'Hire up to 2 specialist bots',
+        '5 FREE power-up credits to try features',
+        '10 messages per day limit',
         'Basic conversation features',
         'Community support',
       ],
