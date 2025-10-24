@@ -127,64 +127,64 @@ export default async function DashboardPage() {
   const tutorialStep = (user as any).tutorialStep || 1;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 dashboard-content">
+    <div className="max-w-7xl mx-auto space-y-5 dashboard-content">
       {/* Welcome Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-900/30 via-blue-900/30 to-purple-900/30 border border-cyan-500/30 p-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-900/30 via-blue-900/30 to-purple-900/30 border border-cyan-500/30 p-5">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-4xl font-orbitron font-bold text-white mb-2">
+              <h1 className="text-2xl md:text-3xl font-orbitron font-bold text-white mb-1">
                 Welcome Back, Boss! 👔
               </h1>
-              <p className="text-gray-300 text-lg">
-                Your AI workforce is standing by for your command
+              <p className="text-gray-300 text-sm md:text-base">
+                Your AI workforce is standing by
               </p>
             </div>
             <div className="text-right">
-              <Badge className={`${getTierColor(effectiveTier)} border text-lg px-4 py-2 mb-2`}>
-                {getTierName(effectiveTier)} Agency
+              <Badge className={`${getTierColor(effectiveTier)} border text-sm px-3 py-1 mb-1`}>
+                {getTierName(effectiveTier)}
               </Badge>
-              <p className="text-xs text-gray-400">Agency Director</p>
+              <p className="text-[10px] text-gray-400">Agency</p>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="bg-cyan-500/20 p-3 rounded-lg">
-                  <Users className="w-6 h-6 text-cyan-400" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-cyan-500/20 p-2 rounded-lg">
+                  <Users className="w-5 h-5 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm">Active Employees</p>
-                  <p className="text-2xl font-bold text-white">{hiredBots.length}/{hireLimit}</p>
+                  <p className="text-gray-400 text-xs">Active Employees</p>
+                  <p className="text-xl font-bold text-white">{hiredBots.length}/{hireLimit}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-500/20 p-3 rounded-lg">
-                  <MessageSquare className="w-6 h-6 text-green-400" />
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-green-500/20 p-2 rounded-lg">
+                  <MessageSquare className="w-5 h-5 text-green-400" />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm">Tasks Delegated</p>
-                  <p className="text-2xl font-bold text-white">{totalMessages}</p>
+                  <p className="text-gray-400 text-xs">Tasks Delegated</p>
+                  <p className="text-xl font-bold text-white">{totalMessages}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="bg-purple-500/20 p-3 rounded-lg">
-                  <Zap className="w-6 h-6 text-purple-400" />
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-purple-500/20 p-2 rounded-lg">
+                  <Zap className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm">Employee Upgrades</p>
-                  <p className="text-2xl font-bold text-white">{enabledPowerUps}/{totalPowerUps}</p>
+                  <p className="text-gray-400 text-xs">Power-Up Credits</p>
+                  <p className="text-xl font-bold text-white">{enabledPowerUps}/{totalPowerUps}</p>
                 </div>
               </div>
             </div>

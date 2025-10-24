@@ -67,8 +67,8 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
   const achievementCount = stats.unlockedAchievements?.length || 0;
   const totalAchievements = stats.allAchievements?.length || 0;
 
-  // Get recent achievements (last 3)
-  const recentAchievements = stats.unlockedAchievements?.slice(0, 3) || [];
+  // Get recent achievements (last 2 for compact display)
+  const recentAchievements = stats.unlockedAchievements?.slice(0, 2) || [];
 
   const getTierColor = (tier: number) => {
     switch (tier) {
@@ -90,102 +90,102 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
 
   return (
     <Card className="bg-gradient-to-br from-yellow-900/30 via-orange-900/30 to-red-900/30 border-yellow-500/30 hover:border-yellow-400/50 transition-all profile-stats-card">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-yellow-500/20 p-3 rounded-lg">
-              <Trophy className="w-8 h-8 text-yellow-400" />
+          <div className="flex items-center gap-2">
+            <div className="bg-yellow-500/20 p-2 rounded-lg">
+              <Trophy className="w-5 h-5 text-yellow-400" />
             </div>
             <div>
-              <CardTitle className="text-white text-2xl font-orbitron">Profile & Achievements</CardTitle>
-              <p className="text-gray-400 text-sm mt-1">Your progress and accolades</p>
+              <CardTitle className="text-white text-lg font-orbitron">Profile & Achievements</CardTitle>
+              <p className="text-gray-400 text-xs">Your progress and accolades</p>
             </div>
           </div>
           <Link href="/profile">
             <Button 
               variant="ghost" 
               size="sm"
-              className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10"
+              className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 text-xs h-8 px-2"
             >
-              View Full Profile
-              <ChevronRight className="w-4 h-4 ml-1" />
+              Full Profile
+              <ChevronRight className="w-3 h-3 ml-1" />
             </Button>
           </Link>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 pt-0">
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center hover:border-yellow-500/30 transition-colors">
-            <Trophy className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{achievementCount}</p>
-            <p className="text-xs text-gray-400">Achievements</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-yellow-500/30 transition-colors">
+            <Trophy className="w-4 h-4 text-yellow-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{achievementCount}</p>
+            <p className="text-[10px] text-gray-400">Achievements</p>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center hover:border-orange-500/30 transition-colors">
-            <Star className="w-6 h-6 text-orange-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{totalPoints}</p>
-            <p className="text-xs text-gray-400">Total Points</p>
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-orange-500/30 transition-colors">
+            <Star className="w-4 h-4 text-orange-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{totalPoints}</p>
+            <p className="text-[10px] text-gray-400">Total Points</p>
           </div>
 
           <Link href="/arcade" className="block">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center hover:border-cyan-500/50 transition-colors cursor-pointer group">
-              <Gamepad2 className="w-6 h-6 text-cyan-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-              <p className="text-2xl font-bold text-white">{Math.max(stats.stats?.arcadeHighScore || 0, stats.stats?.botBattleHighScore || 0)}</p>
-              <p className="text-xs text-gray-400">Arcade High Score</p>
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-cyan-500/50 transition-colors cursor-pointer group">
+              <Gamepad2 className="w-4 h-4 text-cyan-400 mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <p className="text-xl font-bold text-white">{Math.max(stats.stats?.arcadeHighScore || 0, stats.stats?.botBattleHighScore || 0)}</p>
+              <p className="text-[10px] text-gray-400">Arcade Score</p>
             </div>
           </Link>
 
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center hover:border-purple-500/30 transition-colors">
-            <Award className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{Math.round((achievementCount / totalAchievements) * 100)}%</p>
-            <p className="text-xs text-gray-400">Completion</p>
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-purple-500/30 transition-colors">
+            <Award className="w-4 h-4 text-purple-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{Math.round((achievementCount / totalAchievements) * 100)}%</p>
+            <p className="text-[10px] text-gray-400">Completion</p>
           </div>
         </div>
 
         {/* Arcade Stats Row */}
         {stats.stats?.arcadeGamesPlayed > 0 && (
-          <div className="bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/20 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Gamepad2 className="w-5 h-5 text-cyan-400" />
-              <h4 className="text-sm font-semibold text-cyan-400">Arcade Stats</h4>
+          <div className="bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/20 rounded-lg p-3">
+            <div className="flex items-center gap-1.5 mb-2">
+              <Gamepad2 className="w-4 h-4 text-cyan-400" />
+              <h4 className="text-xs font-semibold text-cyan-400">Arcade Stats</h4>
             </div>
             
             {/* Bot Memory Match */}
-            <div className="mb-3">
-              <p className="text-xs text-cyan-400/70 mb-2">Bot Memory Match</p>
-              <div className="grid grid-cols-3 gap-3">
+            <div className="mb-2">
+              <p className="text-[10px] text-cyan-400/70 mb-1.5">Bot Memory Match</p>
+              <div className="grid grid-cols-3 gap-2">
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    {stats.stats?.perfectGame && <Zap className="w-4 h-4 text-yellow-400" />}
-                    <p className="text-lg font-bold text-white">{stats.stats?.arcadeHighScore || 0}</p>
+                  <div className="flex items-center justify-center gap-1 mb-0.5">
+                    {stats.stats?.perfectGame && <Zap className="w-3 h-3 text-yellow-400" />}
+                    <p className="text-base font-bold text-white">{stats.stats?.arcadeHighScore || 0}</p>
                   </div>
-                  <p className="text-xs text-gray-400">High Score</p>
+                  <p className="text-[10px] text-gray-400">High Score</p>
                 </div>
                 <div className="text-center">
                   {stats.stats?.leaderboardTop3 ? (
                     <>
-                      <p className="text-lg font-bold text-yellow-400">🏆 Top 3</p>
-                      <p className="text-xs text-yellow-400/70">Today</p>
+                      <p className="text-base font-bold text-yellow-400">🏆 Top</p>
+                      <p className="text-[10px] text-yellow-400/70">Rank</p>
                     </>
                   ) : (
                     <>
-                      <p className="text-lg font-bold text-white">-</p>
-                      <p className="text-xs text-gray-400">Rank</p>
+                      <p className="text-base font-bold text-white">-</p>
+                      <p className="text-[10px] text-gray-400">Rank</p>
                     </>
                   )}
                 </div>
                 <div className="text-center">
                   {stats.stats?.perfectGame ? (
                     <>
-                      <p className="text-lg font-bold text-green-400">💯 Yes</p>
-                      <p className="text-xs text-green-400/70">Perfect</p>
+                      <p className="text-base font-bold text-green-400">💯</p>
+                      <p className="text-[10px] text-green-400/70">Perfect</p>
                     </>
                   ) : (
                     <>
-                      <p className="text-lg font-bold text-white">-</p>
-                      <p className="text-xs text-gray-400">Perfect</p>
+                      <p className="text-base font-bold text-white">-</p>
+                      <p className="text-[10px] text-gray-400">Perfect</p>
                     </>
                   )}
                 </div>
@@ -193,39 +193,39 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
             </div>
 
             {/* Bot Battle Arena */}
-            <div className="pt-3 border-t border-cyan-500/10">
-              <p className="text-xs text-purple-400/70 mb-2">Bot Battle Arena</p>
-              <div className="grid grid-cols-3 gap-3">
+            <div className="pt-2 border-t border-cyan-500/10">
+              <p className="text-[10px] text-purple-400/70 mb-1.5">Bot Battle Arena</p>
+              <div className="grid grid-cols-3 gap-2">
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    {(stats.stats?.botBattleMaxStreak || 0) >= 10 && <Zap className="w-4 h-4 text-yellow-400" />}
-                    <p className="text-lg font-bold text-white">{stats.stats?.botBattleHighScore || 0}</p>
+                  <div className="flex items-center justify-center gap-1 mb-0.5">
+                    {(stats.stats?.botBattleMaxStreak || 0) >= 10 && <Zap className="w-3 h-3 text-yellow-400" />}
+                    <p className="text-base font-bold text-white">{stats.stats?.botBattleHighScore || 0}</p>
                   </div>
-                  <p className="text-xs text-gray-400">High Score</p>
+                  <p className="text-[10px] text-gray-400">High Score</p>
                 </div>
                 <div className="text-center">
                   {(stats.stats?.botBattleMaxStreak || 0) > 0 ? (
                     <>
-                      <p className="text-lg font-bold text-orange-400">🔥 {stats.stats?.botBattleMaxStreak}</p>
-                      <p className="text-xs text-orange-400/70">Max Streak</p>
+                      <p className="text-base font-bold text-orange-400">🔥 {stats.stats?.botBattleMaxStreak}</p>
+                      <p className="text-[10px] text-orange-400/70">Streak</p>
                     </>
                   ) : (
                     <>
-                      <p className="text-lg font-bold text-white">-</p>
-                      <p className="text-xs text-gray-400">Max Streak</p>
+                      <p className="text-base font-bold text-white">-</p>
+                      <p className="text-[10px] text-gray-400">Streak</p>
                     </>
                   )}
                 </div>
                 <div className="text-center">
                   {stats.stats?.botBattlePerfectGame ? (
                     <>
-                      <p className="text-lg font-bold text-green-400">💯 Yes</p>
-                      <p className="text-xs text-green-400/70">Flawless</p>
+                      <p className="text-base font-bold text-green-400">💯</p>
+                      <p className="text-[10px] text-green-400/70">Flawless</p>
                     </>
                   ) : (
                     <>
-                      <p className="text-lg font-bold text-white">-</p>
-                      <p className="text-xs text-gray-400">Flawless</p>
+                      <p className="text-base font-bold text-white">-</p>
+                      <p className="text-[10px] text-gray-400">Flawless</p>
                     </>
                   )}
                 </div>
@@ -234,39 +234,39 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
 
             {/* Bot Jackpot Slots */}
             {(stats.stats?.botSlotsHighScore || 0) > 0 && (
-              <div className="pt-3 border-t border-cyan-500/10">
-                <p className="text-xs text-yellow-400/70 mb-2">Bot Jackpot 🎰</p>
-                <div className="grid grid-cols-3 gap-3">
+              <div className="pt-2 border-t border-cyan-500/10">
+                <p className="text-[10px] text-yellow-400/70 mb-1.5">Bot Jackpot 🎰</p>
+                <div className="grid grid-cols-3 gap-2">
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 mb-1">
-                      {(stats.stats?.botSlotsJackpots || 0) > 0 && <Zap className="w-4 h-4 text-yellow-400" />}
-                      <p className="text-lg font-bold text-white">{stats.stats?.botSlotsHighScore || 0}</p>
+                    <div className="flex items-center justify-center gap-1 mb-0.5">
+                      {(stats.stats?.botSlotsJackpots || 0) > 0 && <Zap className="w-3 h-3 text-yellow-400" />}
+                      <p className="text-base font-bold text-white">{stats.stats?.botSlotsHighScore || 0}</p>
                     </div>
-                    <p className="text-xs text-gray-400">High Score</p>
+                    <p className="text-[10px] text-gray-400">High Score</p>
                   </div>
                   <div className="text-center">
                     {(stats.stats?.botSlotsJackpots || 0) > 0 ? (
                       <>
-                        <p className="text-lg font-bold text-yellow-400">🎰 {stats.stats?.botSlotsJackpots}</p>
-                        <p className="text-xs text-yellow-400/70">Jackpots</p>
+                        <p className="text-base font-bold text-yellow-400">🎰 {stats.stats?.botSlotsJackpots}</p>
+                        <p className="text-[10px] text-yellow-400/70">Jackpots</p>
                       </>
                     ) : (
                       <>
-                        <p className="text-lg font-bold text-white">-</p>
-                        <p className="text-xs text-gray-400">Jackpots</p>
+                        <p className="text-base font-bold text-white">-</p>
+                        <p className="text-[10px] text-gray-400">Jackpots</p>
                       </>
                     )}
                   </div>
                   <div className="text-center">
                     {(stats.stats?.botSlotsCreditsWon || 0) > 0 ? (
                       <>
-                        <p className="text-lg font-bold text-purple-400">💎 {stats.stats?.botSlotsCreditsWon}</p>
-                        <p className="text-xs text-purple-400/70">Credits Won</p>
+                        <p className="text-base font-bold text-purple-400">💎 {stats.stats?.botSlotsCreditsWon}</p>
+                        <p className="text-[10px] text-purple-400/70">Won</p>
                       </>
                     ) : (
                       <>
-                        <p className="text-lg font-bold text-white">-</p>
-                        <p className="text-xs text-gray-400">Credits Won</p>
+                        <p className="text-base font-bold text-white">-</p>
+                        <p className="text-[10px] text-gray-400">Won</p>
                       </>
                     )}
                   </div>
@@ -274,10 +274,10 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
               </div>
             )}
             {stats.stats?.perfectGame && (
-              <div className="mt-3 pt-3 border-t border-cyan-500/20">
-                <div className="flex items-center justify-center gap-2 text-yellow-400">
-                  <Zap className="w-4 h-4 animate-pulse" />
-                  <p className="text-xs font-semibold">Perfect Game Achieved!</p>
+              <div className="mt-2 pt-2 border-t border-cyan-500/20">
+                <div className="flex items-center justify-center gap-1.5 text-yellow-400">
+                  <Zap className="w-3 h-3 animate-pulse" />
+                  <p className="text-[10px] font-semibold">Perfect Game!</p>
                 </div>
               </div>
             )}
@@ -286,31 +286,31 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
 
         {/* Recent Achievements */}
         {recentAchievements.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-yellow-400 flex items-center gap-2">
-              <Star className="w-4 h-4" />
+          <div className="space-y-2">
+            <h4 className="text-xs font-semibold text-yellow-400 flex items-center gap-1.5">
+              <Star className="w-3 h-3" />
               Recent Achievements
             </h4>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {recentAchievements.map((ua: any) => (
                 <div 
                   key={ua.id}
-                  className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10 hover:border-yellow-500/30 transition-colors"
+                  className="bg-white/5 backdrop-blur-sm rounded-lg p-2 border border-white/10 hover:border-yellow-500/30 transition-colors"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="text-2xl">{ua.achievement.icon}</div>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2 flex-1">
+                      <div className="text-xl">{ua.achievement.icon}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">
+                        <p className="text-xs font-semibold text-white truncate">
                           {ua.achievement.name}
                         </p>
-                        <p className="text-xs text-gray-400 line-clamp-1">
+                        <p className="text-[10px] text-gray-400 line-clamp-1">
                           {ua.achievement.description}
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <Badge className={`${getTierBadge(ua.achievement.tier)} border text-xs px-2 py-0`}>
+                    <div className="flex flex-col items-end gap-0.5">
+                      <Badge className={`${getTierBadge(ua.achievement.tier)} border text-[10px] px-1.5 py-0`}>
                         {ua.achievement.points}
                       </Badge>
                     </div>
@@ -323,22 +323,22 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
 
         {/* No achievements yet */}
         {achievementCount === 0 && (
-          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 text-center">
-            <Trophy className="w-12 h-12 text-yellow-400/50 mx-auto mb-3" />
-            <p className="text-gray-300 font-semibold mb-1">No achievements yet!</p>
-            <p className="text-xs text-gray-400">
-              Start hiring bots, chatting, and engaging with the community to unlock achievements!
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10 text-center">
+            <Trophy className="w-8 h-8 text-yellow-400/50 mx-auto mb-2" />
+            <p className="text-sm text-gray-300 font-semibold mb-1">No achievements yet!</p>
+            <p className="text-[10px] text-gray-400">
+              Start hiring bots and chatting to unlock achievements!
             </p>
           </div>
         )}
 
         {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-[10px]">
             <span className="text-gray-400">Achievement Progress</span>
             <span className="text-yellow-400 font-semibold">{achievementCount}/{totalAchievements}</span>
           </div>
-          <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-full transition-all duration-500"
               style={{ width: `${totalAchievements > 0 ? (achievementCount / totalAchievements) * 100 : 0}%` }}
