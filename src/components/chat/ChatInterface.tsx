@@ -10,7 +10,6 @@ import { RemindersPanel } from '@/components/chat/RemindersPanel';
 import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
 import { LockedPowerUpCard } from '@/components/chat/LockedPowerUpCard';
-import { BotCapabilitiesCard } from '@/components/chat/BotCapabilitiesCard';
 import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
 import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench } from 'lucide-react';
 import Link from 'next/link';
@@ -652,14 +651,6 @@ export function ChatInterface({
                     ? 'CLICK TO ACTIVATE • 1 CREDIT' 
                     : 'UPGRADE TO UNLOCK POWER-UPS'}
                 </p>
-                
-                {/* Show Capabilities Card when no powerups */}
-                {!powerUps?.imageRecognition && !powerUps?.voiceResponse && !powerUps?.fileUpload && 
-                 !powerUps?.webSearch && !powerUps?.scheduling && !powerUps?.dataExport && (
-                  <div className="mt-6">
-                    <BotCapabilitiesCard />
-                  </div>
-                )}
               </>
             ) : (
               <>
