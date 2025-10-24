@@ -151,7 +151,7 @@ export default async function HomePage() {
                 <VimeoPlayer
                   videoId="1128148719"
                   autoplay={false}
-                  muted={true}
+                  muted={false}
                   loop={false}
                   title="Boss Bot Introduction"
                   showPlayButton={true}
