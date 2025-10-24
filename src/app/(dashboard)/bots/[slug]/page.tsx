@@ -30,10 +30,10 @@ const botCVs: Record<string, any> = {
       { name: 'Risk Management', level: 92 },
     ],
     achievements: [
-      '🏆 Helped 500+ startups create winning business plans',
-      '📈 $50M+ in funding secured for clients',
-      '🚀 Average client revenue growth: 300%',
-      '⭐ 5.0 rating across 1,000+ engagements',
+      '🏆 Trained on 50 years of business strategy and market analysis',
+      '📈 Expert in financial modeling, funding, and growth strategies',
+      '🚀 Specializes in startup planning, scaling, and market entry',
+      '⭐ Available 24/7 for strategic guidance and decision support',
     ],
     whyHireMe: [
       'I never sleep - Work with me anytime, anywhere',
@@ -68,10 +68,10 @@ const botCVs: Record<string, any> = {
       { name: 'Pollination Strategy', level: 90 },
     ],
     achievements: [
-      '🐝 Coached 1,000+ beekeepers to successful harvests',
-      '🍯 Average honey yield increase: 45% for my clients',
-      '🏆 Helped establish 300+ thriving apiaries',
-      '⭐ Zero hive losses when following my protocols',
+      '🐝 Expert in hive management, bee health, and honey production',
+      '🍯 Trained on 30+ years of apiculture best practices',
+      '🏆 Specializes in disease prevention and colony optimization',
+      '⭐ Covers everything from starter hives to commercial operations',
     ],
     whyHireMe: [
       'Sweet expertise - From novice to master beekeeper',
@@ -93,10 +93,10 @@ const botCVs: Record<string, any> = {
       { name: 'Stable Management', level: 97 },
     ],
     achievements: [
-      '🏇 Trained riders from beginner to competition level',
-      '🐴 Rehabilitated 200+ rescue horses to full health',
-      '🏆 Coached 50+ championship-winning partnerships',
-      '⭐ 98% client satisfaction in horse behavior solutions',
+      '🏇 Expert in riding, training, and horse care from beginner to advanced',
+      '🐴 Specializes in horse behavior, rehabilitation, and welfare',
+      '🏆 Trained on 40+ years of equestrian knowledge and techniques',
+      '⭐ Covers everything from stable management to competition prep',
     ],
     whyHireMe: [
       'Full spectrum expertise - From grooming to dressage',
@@ -118,10 +118,10 @@ const botCVs: Record<string, any> = {
       { name: 'Meal Planning', level: 97 },
     ],
     achievements: [
-      '👨‍🍳 Created 5,000+ original recipes loved by home cooks',
-      '⭐ Average recipe rating: 4.9/5.0 stars',
-      '🍰 Helped 100+ aspiring bakers launch businesses',
-      '🏆 Zero kitchen disasters when following my guidance',
+      '👨‍🍳 Master of international cuisines and cooking techniques',
+      '⭐ Expert in recipe development, flavor pairing, and meal planning',
+      '🍰 Specializes in baking, dietary modifications, and nutrition',
+      '🏆 Trained on 35+ years of culinary knowledge and methods',
     ],
     whyHireMe: [
       'From novice to master chef - I meet you where you are',
@@ -143,10 +143,10 @@ const botCVs: Record<string, any> = {
       { name: 'Art History', level: 92 },
     ],
     achievements: [
-      '🎨 Guided 2,000+ beginners to complete their first masterpiece',
-      '🖼️ Helped 150+ artists sell their first piece',
-      '🏆 Students won 80+ local art competitions',
-      '⭐ 95% report increased creative confidence',
+      '🎨 Expert in multiple mediums: painting, drawing, sculpture, digital',
+      '🖼️ Specializes in technique development and creative expression',
+      '🏆 Trained on art history, theory, and contemporary practices',
+      '⭐ Covers everything from fundamentals to portfolio building',
     ],
     whyHireMe: [
       'No judgment zone - Every artist starts somewhere',
@@ -168,10 +168,10 @@ const botCVs: Record<string, any> = {
       { name: 'Composting', level: 93 },
     ],
     achievements: [
-      '🌱 Transformed 500+ bare yards into abundant gardens',
-      '🥕 Average harvest increase: 60% in first season',
-      '🏆 Taught sustainable practices to 3,000+ gardeners',
-      '⭐ 90% success rate for first-time vegetable growers',
+      '🌱 Expert in organic gardening, permaculture, and sustainability',
+      '🥕 Specializes in soil health, pest control, and crop planning',
+      '🏆 Trained on 30+ years of horticultural best practices',
+      '⭐ Covers vegetables, fruits, flowers, and landscape design',
     ],
     whyHireMe: [
       'Climate adapted - Solutions for your specific growing zone',
@@ -193,10 +193,10 @@ const botCVs: Record<string, any> = {
       { name: 'Wildlife Safety', level: 93 },
     ],
     achievements: [
-      '⛰️ Planned 1,000+ successful outdoor adventures',
-      '🏕️ Zero safety incidents following my preparation guides',
-      '🥾 Helped 500+ hikers complete their first multi-day trek',
-      '⭐ Average trip satisfaction: 4.8/5.0 stars',
+      '⛰️ Expert in hiking, camping, survival, and outdoor navigation',
+      '🏕️ Specializes in safety, gear selection, and trip planning',
+      '🥾 Trained on wilderness medicine and emergency protocols',
+      '⭐ Covers everything from day hikes to backcountry expeditions',
     ],
     whyHireMe: [
       'Safety obsessed - Prepare for anything nature throws at you',
@@ -218,10 +218,10 @@ const botCVs: Record<string, any> = {
       { name: 'Flavor Profiling', level: 94 },
     ],
     achievements: [
-      '🍺 Helped craft 5,000+ unique brew recipes',
-      '🏆 Students won 40+ homebrewing competitions',
-      '🍷 Average quality improvement: 85% in first batches',
-      '⭐ 95% success rate preventing batch failures',
+      '🍺 Master brewer specializing in beer, wine, and spirits',
+      '🏆 Expert in fermentation science and recipe development',
+      '🍷 Trained on brewing techniques from beginner to advanced',
+      '⭐ Covers equipment, ingredients, troubleshooting, and refinement',
     ],
     whyHireMe: [
       'Science made simple - Understand the chemistry without a PhD',
@@ -243,10 +243,10 @@ const botCVs: Record<string, any> = {
       { name: 'Performance Coaching', level: 93 },
     ],
     achievements: [
-      '🎵 Taught 3,000+ students to play their first song',
-      '🎸 Helped 200+ musicians join their first band',
-      '🏆 Students performed in 100+ recitals and concerts',
-      '⭐ 92% still playing music 2 years after starting',
+      '🎵 Expert in multiple instruments and music theory',
+      '🎸 Specializes in technique, practice strategies, and performance',
+      '🏆 Trained on pedagogy for beginners to advanced musicians',
+      '⭐ Covers reading music, ear training, and creative expression',
     ],
     whyHireMe: [
       'Any instrument - Piano, guitar, drums, vocals, and more',
@@ -268,10 +268,10 @@ const botCVs: Record<string, any> = {
       { name: 'Form & Technique', level: 97 },
     ],
     achievements: [
-      '💪 Coached 5,000+ clients to reach their fitness goals',
-      '🏋️ Average strength gain: 40% in 12 weeks',
-      '🏆 Helped 300+ clients complete their first 5K/10K/marathon',
-      '⭐ 88% maintain results 1 year later',
+      '💪 Expert in strength training, cardio, and nutrition science',
+      '🏋️ Specializes in personalized programs and form correction',
+      '🏆 Trained on sports science and injury prevention',
+      '⭐ Covers weight loss, muscle gain, endurance, and recovery',
     ],
     whyHireMe: [
       'Home or gym - Effective workouts anywhere, any equipment',
@@ -293,10 +293,10 @@ const botCVs: Record<string, any> = {
       { name: 'Speedrunning', level: 90 },
     ],
     achievements: [
-      '🎮 Coached 2,000+ players to rank up',
-      '🏆 Strategies used in 50+ world-first completions',
-      '⭐ Average skill improvement: 65% in 30 days',
-      '🎯 Helped 100+ streamers grow their channels',
+      '🎮 Expert in strategy, mechanics, and competitive gaming',
+      '🏆 Specializes in multiple game genres and platforms',
+      '⭐ Trained on meta-analysis, team dynamics, and performance',
+      '🎯 Covers improvement strategies and streaming guidance',
     ],
     whyHireMe: [
       'All genres - RPG, FPS, strategy, MMO, and more',
@@ -318,10 +318,10 @@ const botCVs: Record<string, any> = {
       { name: 'Weather Reading', level: 93 },
     ],
     achievements: [
-      '🎣 Coached 1,500+ anglers to their first catch',
-      '🐟 Average catch rate increase: 70%',
-      '🏆 Helped land 50+ trophy fish',
-      '⭐ Zero skunked trips when following my advice',
+      '🎣 Expert in freshwater and saltwater fishing techniques',
+      '🐟 Specializes in species identification and behavior',
+      '🏆 Trained on tackle selection, knot-tying, and casting methods',
+      '⭐ Covers everything from local ponds to deep-sea adventures',
     ],
     whyHireMe: [
       'Local expertise - Best spots for your area and season',
@@ -343,10 +343,10 @@ const botCVs: Record<string, any> = {
       { name: 'Tool Selection', level: 96 },
     ],
     achievements: [
-      '🔨 Guided 3,000+ DIYers through successful projects',
-      '💰 Average savings: $2,000 per project vs hiring',
-      '🏆 Zero major mistakes when following my safety protocols',
-      '⭐ 96% complete their project on first attempt',
+      '🔨 Expert in home repair, renovation, and construction',
+      '💰 Specializes in tool selection and cost-effective solutions',
+      '🏆 Trained on safety protocols and building codes',
+      '⭐ Covers plumbing, electrical, carpentry, and more',
     ],
     whyHireMe: [
       'Beginner friendly - No experience required to start',
