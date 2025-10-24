@@ -70,18 +70,31 @@ export function ChefBotTools({ conversationId, onDataChange, initialData }: Chef
 
   const startTimer = (timerId: string) => {
     const input = timerInputs[timerId];
-    if (!input) return;
+    console.log('Starting timer:', timerId, 'input:', input);
+    
+    if (!input || input.trim() === '') {
+      alert('Please enter the number of minutes');
+      return;
+    }
     
     const minutes = parseInt(input);
-    if (isNaN(minutes) || minutes <= 0) return;
+    console.log('Parsed minutes:', minutes);
+    
+    if (isNaN(minutes) || minutes <= 0) {
+      alert('Please enter a valid number of minutes (1 or more)');
+      return;
+    }
     
     const seconds = minutes * 60;
+    console.log('Setting timer for', seconds, 'seconds');
+    
     setTimers(prev => {
       const updated = prev.map(t => 
         t.id === timerId 
           ? { ...t, duration: seconds, remaining: seconds, isRunning: true }
           : t
       );
+      console.log('Updated timers:', updated);
       onDataChange('timers', updated);
       return updated;
     });
@@ -146,18 +159,18 @@ export function ChefBotTools({ conversationId, onDataChange, initialData }: Chef
                   <Input
                     type="number"
                     placeholder="Minutes"
-                    value={timerInputs[timer.id]}
+                    value={timerInputs[timer.id] || ''}
                     onChange={(e) => setTimerInputs(prev => ({ ...prev, [timer.id]: e.target.value }))}
-                    className="flex-1 bg-gray-900 border-gray-600"
+                    className="flex-1 bg-gray-900 border-gray-600 text-white text-lg font-semibold"
                     min="1"
                   />
-                  <Button onClick={() => startTimer(timer.id)} size="sm" className="bg-cyan-600 hover:bg-cyan-700">
+                  <Button onClick={() => startTimer(timer.id)} size="sm" className="bg-cyan-600 hover:bg-cyan-700 font-bold">
                     Start
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <div className="text-3xl font-mono text-center text-white">
+                <div className="space-y-3">
+                  <div className="text-6xl font-black font-mono text-center text-white tracking-wider py-4 bg-gray-900/80 rounded-xl border-2 border-cyan-500/30">
                     {formatTime(timer.remaining)}
                   </div>
                   <div className="flex gap-2 justify-center">
@@ -194,7 +207,7 @@ export function ChefBotTools({ conversationId, onDataChange, initialData }: Chef
             value={newIngredient}
             onChange={(e) => setNewIngredient(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && addIngredient()}
-            className="flex-1 bg-gray-900 border-gray-600"
+            className="flex-1 bg-gray-900 border-gray-600 text-white"
           />
           <Button onClick={addIngredient} size="sm" className="bg-cyan-600 hover:bg-cyan-700">
             <Plus className="w-4 h-4" />
