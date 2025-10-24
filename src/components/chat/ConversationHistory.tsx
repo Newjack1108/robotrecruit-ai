@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Plus, Trash2 } from 'lucide-react';
+import { MessageSquare, Plus, Trash2, Wrench } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Conversation {
@@ -11,6 +11,8 @@ interface Conversation {
   createdAt: Date;
   updatedAt: Date;
   messageCount: number;
+  hasTools?: boolean;
+  toolCount?: number;
 }
 
 interface ConversationHistoryProps {
@@ -125,10 +127,18 @@ export function ConversationHistory({
                     }`}>
                       {conversation.title || 'Untitled Conversation'}
                     </h3>
-                    <p className="text-xs text-gray-400 mt-1.5 flex items-center">
-                      <MessageSquare className="w-3 h-3 mr-1" />
-                      {conversation.messageCount} message{conversation.messageCount !== 1 ? 's' : ''}
-                    </p>
+                    <div className="flex items-center gap-3 mt-1.5">
+                      <p className="text-xs text-gray-400 flex items-center">
+                        <MessageSquare className="w-3 h-3 mr-1" />
+                        {conversation.messageCount} message{conversation.messageCount !== 1 ? 's' : ''}
+                      </p>
+                      {conversation.hasTools && (
+                        <p className="text-xs text-cyan-400 flex items-center">
+                          <Wrench className="w-3 h-3 mr-1" />
+                          {conversation.toolCount} tool{conversation.toolCount !== 1 ? 's' : ''}
+                        </p>
+                      )}
+                    </div>
                     <p className="text-xs text-gray-500 mt-1">
                       {formatDistanceToNow(new Date(conversation.updatedAt), {
                         addSuffix: true,

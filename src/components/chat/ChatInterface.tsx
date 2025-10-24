@@ -11,6 +11,7 @@ import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
 import { LockedPowerUpCard } from '@/components/chat/LockedPowerUpCard';
 import { BotCapabilitiesCard } from '@/components/chat/BotCapabilitiesCard';
+import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
 import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -893,6 +894,9 @@ export function ChatInterface({
           )}
         </div>
       </div>
+
+        {/* Bot-Specific Tools Panel */}
+        <BotToolsPanel botSlug={botSlug} conversationId={conversationId} />
 
         {/* Input Area - Phone Style */}
         <div className="bg-gray-900/95 backdrop-blur-xl border-t border-gray-700/50 p-4">

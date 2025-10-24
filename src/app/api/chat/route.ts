@@ -211,6 +211,60 @@ export async function POST(req: Request) {
       }
     }
 
+    // Add bot-specific tool data context
+    if (conversation?.id) {
+      // @ts-expect-error - Prisma type needs refresh
+      const toolData = await prisma.botToolData.findMany({
+        where: { conversationId: conversation.id },
+        orderBy: { updatedAt: 'desc' },
+      });
+
+      if (toolData.length > 0) {
+        let toolContext = '\n\n[TOOLS DATA]: You have access to the following tools and their current data:\n\n';
+        
+        toolData.forEach((tool: any) => {
+          toolContext += `${tool.toolType.toUpperCase()}:\n`;
+          
+          // Format tool data based on type
+          if (tool.toolType === 'timers' && Array.isArray(tool.data)) {
+            const activeTimers = tool.data.filter((t: any) => t.isRunning);
+            if (activeTimers.length > 0) {
+              toolContext += `- ${activeTimers.length} active timer(s)\n`;
+              activeTimers.forEach((t: any) => {
+                toolContext += `  • ${t.label}: ${Math.floor(t.remaining / 60)}:${(t.remaining % 60).toString().padStart(2, '0')} remaining\n`;
+              });
+            }
+          } else if (tool.toolType === 'ingredients' && Array.isArray(tool.data)) {
+            toolContext += `- Ingredients: ${tool.data.join(', ')}\n`;
+          } else if (tool.toolType === 'recipe' && typeof tool.data === 'string') {
+            toolContext += `- Recipe Notes: ${tool.data.substring(0, 200)}${tool.data.length > 200 ? '...' : ''}\n`;
+          } else if (tool.toolType === 'venue' && typeof tool.data === 'string') {
+            toolContext += `- Fishing Venue: ${tool.data}\n`;
+          } else if (tool.toolType === 'weather' && typeof tool.data === 'object') {
+            const w = tool.data as any;
+            toolContext += `- Weather: ${w.temp}, ${w.condition}, Pressure: ${w.pressure}\n`;
+          } else if (tool.toolType === 'catches' && Array.isArray(tool.data)) {
+            toolContext += `- Catches logged: ${tool.data.length}\n`;
+            if (tool.data.length > 0) {
+              const latest = tool.data[tool.data.length - 1];
+              toolContext += `  • Latest: ${latest.species} (${latest.weight})\n`;
+            }
+          } else if (tool.toolType === 'inspections' && Array.isArray(tool.data)) {
+            toolContext += `- Inspections: ${tool.data.length} recorded\n`;
+            if (tool.data.length > 0) {
+              const latest = tool.data[0];
+              toolContext += `  • Latest: Strength ${latest.colonyStrength}/5, Queen ${latest.queenSpotted ? 'spotted' : 'not seen'}\n`;
+            }
+          }
+          
+          toolContext += '\n';
+        });
+
+        toolContext += '[INSTRUCTION]: Reference this tools data when relevant to provide context-aware responses. You can suggest using tools or updating data when appropriate.\n';
+        enhancedMessage = toolContext + enhancedMessage;
+      }
+    }
+
     const assistantResponse = await sendMessage(
       threadId,
       bot.openaiAssistantId,

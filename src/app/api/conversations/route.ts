@@ -31,21 +31,23 @@ export async function GET(req: Request) {
         botId: botId,
       },
       include: {
-        _count: {
-          select: { messages: true },
-        },
+        messages: true,
+        // @ts-expect-error - Prisma type needs refresh
+        toolData: true,
       },
       orderBy: {
         updatedAt: 'desc',
       },
     });
 
-    const formattedConversations = conversations.map((conv) => ({
+    const formattedConversations = conversations.map((conv: any) => ({
       id: conv.id,
       title: conv.title,
       createdAt: conv.createdAt,
       updatedAt: conv.updatedAt,
-      messageCount: conv._count.messages,
+      messageCount: conv.messages.length,
+      hasTools: conv.toolData.length > 0,
+      toolCount: conv.toolData.length,
     }));
 
     return NextResponse.json(formattedConversations);
