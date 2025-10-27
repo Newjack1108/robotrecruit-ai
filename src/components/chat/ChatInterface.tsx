@@ -561,7 +561,8 @@ export function ChatInterface({
           
           {/* Right: Power-Ups (System Bots) or Training Guide (Custom Bots) */}
           <div className="flex flex-col justify-center space-y-4 md:col-span-2">
-            {isSystemBot ? (
+            {isSystemBot && (powerUps?.imageRecognition || powerUps?.voiceResponse || powerUps?.fileUpload || 
+              powerUps?.webSearch || powerUps?.scheduling || powerUps?.dataExport) ? (
               <>
                 {/* Power-Ups Section for System Bots */}
                 <div className="flex items-center justify-between">
