@@ -235,7 +235,7 @@ async function main() {
       description: 'Professional email writer that crafts perfect emails and opens them directly in your email client.',
       imageUrl: '/bots/boss-bot.png', // Can be updated with custom email bot image
       avatarUrl: '/bots/boss-bot-avatar.png', // Can be updated
-      openaiAssistantId: 'asst_REPLACE_WITH_YOUR_EMAIL_BOT_ID',
+      openaiAssistantId: 'asst_Sw5f1t80j4vkmc6WPhK2FWq7',
       isSystemBot: true,
       knowledgeArea: 'Email Composition & Communication',
       tier: 1,
