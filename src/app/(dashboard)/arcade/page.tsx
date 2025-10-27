@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Leaderboard } from '@/components/arcade/Leaderboard';
-import { Gamepad2, Trophy, PlayCircle, Target, Zap, Coins } from 'lucide-react';
+import { Gamepad2, Trophy, PlayCircle, Target, Zap, Coins, Ghost } from 'lucide-react';
 
 export default async function ArcadePage() {
   const { userId } = await auth();
@@ -33,7 +33,7 @@ export default async function ArcadePage() {
         </div>
 
         {/* Game Cards Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-4 gap-6">
           {/* Bot Jackpot Slots Card */}
           <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-500/30 overflow-hidden">
             <div className="relative">
@@ -168,6 +168,51 @@ export default async function ArcadePage() {
               </div>
             </div>
           </Card>
+
+          {/* Bot Runner Card */}
+          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-green-500/30 overflow-hidden">
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-cyan-500/10 blur-xl" />
+              
+              <div className="relative p-6">
+                <div className="space-y-4">
+                  {/* Game Info */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-cyan-500 flex items-center justify-center">
+                        <Ghost className="w-6 h-6 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">Bot Runner</h2>
+                    </div>
+                    <p className="text-gray-300">
+                      Navigate mazes and dodge bugs! Collect tasks and grab power-ups to debug enemies!
+                    </p>
+                  </div>
+
+                  {/* Features */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-sm text-gray-300">
+                      <Zap className="w-4 h-4 text-green-400" />
+                      <span>Classic arcade • Power-ups</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-gray-300">
+                      <Trophy className="w-4 h-4 text-yellow-400" />
+                      <span>Fast-paced action</span>
+                    </div>
+                  </div>
+
+                  {/* Play Button */}
+                  <Link href="/arcade/bot-runner">
+                    <Button className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold py-4 rounded-lg transform transition-transform hover:scale-105 group">
+                      <PlayCircle className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                      Play Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
 
         {/* Today's Leaderboards Section */}
@@ -180,7 +225,7 @@ export default async function ArcadePage() {
             <p className="text-sm text-gray-400 mt-2">Resets daily at midnight UTC</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             <div>
               <Link href="/arcade/bot-slots" className="group">
                 <h3 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 hover:text-yellow-300 transition-colors cursor-pointer">
@@ -211,6 +256,16 @@ export default async function ArcadePage() {
               </Link>
               <Leaderboard gameType="bot_battle_arena" period="daily" limit={5} />
             </div>
+            <div>
+              <Link href="/arcade/bot-runner" className="group">
+                <h3 className="text-lg font-bold text-green-400 mb-3 flex items-center gap-2 hover:text-green-300 transition-colors cursor-pointer">
+                  <Ghost className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Runner
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
+              <Leaderboard gameType="bot_runner" period="daily" limit={5} />
+            </div>
           </div>
         </div>
 
@@ -224,7 +279,7 @@ export default async function ArcadePage() {
             <p className="text-sm text-gray-400 mt-2">All-time highest scores across all games</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             <div>
               <Link href="/arcade/bot-slots" className="group">
                 <h3 className="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 hover:text-yellow-300 transition-colors cursor-pointer">
@@ -254,6 +309,16 @@ export default async function ArcadePage() {
                 </h3>
               </Link>
               <Leaderboard gameType="bot_battle_arena" period="alltime" limit={5} />
+            </div>
+            <div>
+              <Link href="/arcade/bot-runner" className="group">
+                <h3 className="text-lg font-bold text-green-400 mb-3 flex items-center gap-2 hover:text-green-300 transition-colors cursor-pointer">
+                  <Ghost className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  Bot Runner
+                  <PlayCircle className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+              </Link>
+              <Leaderboard gameType="bot_runner" period="alltime" limit={5} />
             </div>
           </div>
         </div>

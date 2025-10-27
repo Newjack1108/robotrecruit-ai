@@ -1,0 +1,370 @@
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Play, Pause, RotateCcw, Heart, Trophy, Clock } from 'lucide-react';
+import {
+  GameState,
+  GameData,
+  initializeGame,
+  movePlayer,
+  handleTileCollision,
+  handleBugCollisions,
+  moveBugs,
+  updatePowerUp,
+  updateTimer,
+  checkWinCondition,
+  calculateFinalScore,
+  getPerformanceRating,
+} from '@/lib/bot-runner-engine';
+import {
+  MAZE_WIDTH,
+  MAZE_HEIGHT,
+  TILE_SIZE,
+  TileType,
+  Position,
+} from '@/lib/bot-runner-maze';
+
+interface BotRunnerGameProps {
+  onGameOver: (score: number, stats: any) => void;
+}
+
+export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
+  const [game, setGame] = useState<GameData>(initializeGame());
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gameLoopRef = useRef<number | undefined>(undefined);
+  const lastUpdateRef = useRef<number>(Date.now());
+  const bugMoveTimerRef = useRef<number>(0);
+  const [showInstructions, setShowInstructions] = useState(true);
+
+  // Handle keyboard input
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (game.state !== GameState.PLAYING) return;
+
+    let direction: Position | null = null;
+
+    switch (e.key) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        direction = { x: 0, y: -1 };
+        break;
+      case 'ArrowDown':
+      case 's':
+      case 'S':
+        direction = { x: 0, y: 1 };
+        break;
+      case 'ArrowLeft':
+      case 'a':
+      case 'A':
+        direction = { x: -1, y: 0 };
+        break;
+      case 'ArrowRight':
+      case 'd':
+      case 'D':
+        direction = { x: 1, y: 0 };
+        break;
+      case 'p':
+      case 'P':
+      case ' ':
+        togglePause();
+        return;
+    }
+
+    if (direction) {
+      e.preventDefault();
+      setGame(prev => movePlayer(prev, direction!));
+    }
+  }, [game.state]);
+
+  // Set up keyboard listeners
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Main game loop
+  useEffect(() => {
+    if (game.state !== GameState.PLAYING) {
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+      }
+      return;
+    }
+
+    const gameLoop = () => {
+      const now = Date.now();
+      const deltaTime = now - lastUpdateRef.current;
+      lastUpdateRef.current = now;
+
+      setGame(prev => {
+        let updated = { ...prev };
+
+        // Update timers
+        updated = updateTimer(updated, deltaTime);
+        updated = updatePowerUp(updated, deltaTime);
+
+        // Move bugs every 200ms
+        bugMoveTimerRef.current += deltaTime;
+        if (bugMoveTimerRef.current >= 200) {
+          updated = moveBugs(updated);
+          bugMoveTimerRef.current = 0;
+        }
+
+        // Check collisions
+        updated = handleTileCollision(updated);
+        updated = handleBugCollisions(updated);
+
+        // Check win condition
+        updated = checkWinCondition(updated);
+
+        // Check game over
+        if (updated.state === GameState.GAME_OVER) {
+          const finalScore = calculateFinalScore(updated);
+          const rating = getPerformanceRating(updated);
+          
+          setTimeout(() => {
+            onGameOver(finalScore, {
+              tasksCollected: updated.tasksCollected,
+              totalTasks: updated.totalTasks,
+              bugsDebugged: updated.bugsDebugged,
+              livesRemaining: updated.player.lives,
+              timeRemaining: Math.floor((updated.timeLimit - updated.timeElapsed) / 1000),
+              rating,
+            });
+          }, 500);
+        }
+
+        return updated;
+      });
+
+      gameLoopRef.current = requestAnimationFrame(gameLoop);
+    };
+
+    gameLoopRef.current = requestAnimationFrame(gameLoop);
+
+    return () => {
+      if (gameLoopRef.current) {
+        cancelAnimationFrame(gameLoopRef.current);
+      }
+    };
+  }, [game.state, onGameOver]);
+
+  // Rendering
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas
+    ctx.fillStyle = '#0a0a0f';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw maze
+    for (let y = 0; y < MAZE_HEIGHT; y++) {
+      for (let x = 0; x < MAZE_WIDTH; x++) {
+        const tile = game.maze[y][x];
+
+        if (tile === TileType.WALL) {
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+          ctx.strokeStyle = '#334155';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        } else if (tile === TileType.TASK) {
+          ctx.fillStyle = '#06b6d4';
+          ctx.beginPath();
+          ctx.arc(
+            x * TILE_SIZE + TILE_SIZE / 2,
+            y * TILE_SIZE + TILE_SIZE / 2,
+            3,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        } else if (tile === TileType.POWER_UP) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(
+            x * TILE_SIZE + TILE_SIZE / 2,
+            y * TILE_SIZE + TILE_SIZE / 2,
+            8,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+      }
+    }
+
+    // Draw bugs
+    game.bugs.forEach(bug => {
+      const color = game.powerUpActive ? '#60a5fa' : '#ef4444';
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(
+        bug.position.x * TILE_SIZE + TILE_SIZE / 2,
+        bug.position.y * TILE_SIZE + TILE_SIZE / 2,
+        12,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+
+      // Eyes
+      if (!game.powerUpActive) {
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(bug.position.x * TILE_SIZE + TILE_SIZE / 2 - 4, bug.position.y * TILE_SIZE + TILE_SIZE / 2 - 2, 3, 0, Math.PI * 2);
+        ctx.arc(bug.position.x * TILE_SIZE + TILE_SIZE / 2 + 4, bug.position.y * TILE_SIZE + TILE_SIZE / 2 - 2, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    // Draw player
+    if (!game.player.invincible || Math.floor(Date.now() / 200) % 2 === 0) {
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(
+        game.player.position.x * TILE_SIZE + TILE_SIZE / 2,
+        game.player.position.y * TILE_SIZE + TILE_SIZE / 2,
+        14,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+  }, [game]);
+
+  const startGame = () => {
+    setShowInstructions(false);
+    setGame(prev => ({ ...prev, state: GameState.PLAYING }));
+    lastUpdateRef.current = Date.now();
+  };
+
+  const togglePause = () => {
+    setGame(prev => ({
+      ...prev,
+      state: prev.state === GameState.PLAYING ? GameState.PAUSED : GameState.PLAYING,
+    }));
+  };
+
+  const resetGame = () => {
+    setGame(initializeGame());
+    setShowInstructions(true);
+    bugMoveTimerRef.current = 0;
+  };
+
+  const timeRemaining = Math.max(0, Math.floor((game.timeLimit - game.timeElapsed) / 1000));
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      {/* Stats Bar */}
+      <div className="w-full max-w-[640px] bg-gray-900/80 rounded-lg p-4 border border-gray-700">
+        <div className="grid grid-cols-4 gap-4 text-center">
+          <div>
+            <div className="text-2xl font-bold text-yellow-400">{game.score}</div>
+            <div className="text-xs text-gray-400">Score</div>
+          </div>
+          <div>
+            <div className="flex items-center justify-center gap-1">
+              {[...Array(3)].map((_, i) => (
+                <Heart
+                  key={i}
+                  className={`w-5 h-5 ${i < game.player.lives ? 'text-red-500 fill-red-500' : 'text-gray-700'}`}
+                />
+              ))}
+            </div>
+            <div className="text-xs text-gray-400">Lives</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-cyan-400">
+              {game.tasksCollected}/{game.totalTasks}
+            </div>
+            <div className="text-xs text-gray-400">Tasks</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-white">{timeRemaining}s</div>
+            <div className="text-xs text-gray-400">Time</div>
+          </div>
+        </div>
+
+        {/* Power-up indicator */}
+        {game.powerUpActive && (
+          <div className="mt-3 text-center">
+            <div className="inline-block bg-yellow-500/20 border border-yellow-500/50 rounded-full px-4 py-1">
+              <span className="text-yellow-400 font-bold text-sm">
+                ⚡ POWER-UP ACTIVE! {Math.ceil(game.powerUpTimeRemaining / 1000)}s
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Canvas */}
+      <div className="relative">
+        <canvas
+          ref={canvasRef}
+          width={MAZE_WIDTH * TILE_SIZE}
+          height={MAZE_HEIGHT * TILE_SIZE}
+          className="border-4 border-cyan-500/30 rounded-lg bg-gray-950"
+        />
+
+        {/* Overlays */}
+        {showInstructions && (
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center">
+            <div className="text-center space-y-4 p-6 max-w-md">
+              <h3 className="text-2xl font-bold text-cyan-400">Bot Runner</h3>
+              <div className="text-left space-y-2 text-sm text-gray-300">
+                <p>🎯 <strong>Collect all task tokens</strong> (cyan dots)</p>
+                <p>⭐ <strong>Grab power-ups</strong> (yellow stars) to debug bugs!</p>
+                <p>🐛 <strong>Avoid bug bots</strong> or lose a life</p>
+                <p>⌨️ <strong>Controls:</strong> Arrow keys or WASD</p>
+                <p>⏸️ <strong>Pause:</strong> P or Space</p>
+              </div>
+              <Button
+                onClick={startGame}
+                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                size="lg"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Start Game
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {game.state === GameState.PAUSED && (
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <h3 className="text-3xl font-bold text-white">PAUSED</h3>
+              <Button onClick={togglePause} size="lg">
+                <Play className="w-5 h-5 mr-2" />
+                Resume
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Controls */}
+      <div className="flex gap-2">
+        {game.state === GameState.PLAYING && (
+          <Button onClick={togglePause} variant="outline">
+            <Pause className="w-4 h-4 mr-2" />
+            Pause
+          </Button>
+        )}
+        <Button onClick={resetGame} variant="outline">
+          <RotateCcw className="w-4 h-4 mr-2" />
+          Restart
+        </Button>
+      </div>
+
+      {/* Mobile Controls (TODO: Add touch controls) */}
+    </div>
+  );
+}
+
