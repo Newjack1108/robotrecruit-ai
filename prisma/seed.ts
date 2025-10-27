@@ -225,6 +225,23 @@ async function main() {
     },
   })
 
+  // Create Email Bot
+  await prisma.bot.upsert({
+    where: { slug: 'email-bot' },
+    update: {},
+    create: {
+      name: 'Email Bot',
+      slug: 'email-bot',
+      description: 'Professional email writer that crafts perfect emails and opens them directly in your email client.',
+      imageUrl: '/bots/boss-bot.png', // Can be updated with custom email bot image
+      avatarUrl: '/bots/boss-bot-avatar.png', // Can be updated
+      openaiAssistantId: 'asst_REPLACE_WITH_YOUR_EMAIL_BOT_ID',
+      isSystemBot: true,
+      knowledgeArea: 'Email Composition & Communication',
+      tier: 1,
+    },
+  })
+
   console.log('Database seeded with all bots!')
 }
 

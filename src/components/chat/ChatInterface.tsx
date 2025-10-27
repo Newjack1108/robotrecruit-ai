@@ -11,6 +11,8 @@ import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
 import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
 import { detectIngredients } from '@/lib/ingredient-parser';
+import { parseEmailFromMessage } from '@/lib/email-parser';
+import { EmailActions, EmailPreview } from './EmailActions';
 import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -815,6 +817,25 @@ export function ChatInterface({
                           </div>
                         )}
                       </div>
+                      
+                      {/* Email Actions (Email Bot Only) */}
+                      {botSlug === 'email-bot' && (() => {
+                        const parsedEmail = parseEmailFromMessage(message.content);
+                        if (parsedEmail.isEmail && (parsedEmail.subject || parsedEmail.body)) {
+                          return (
+                            <div className="mt-3">
+                              <EmailPreview emailData={parsedEmail} />
+                              <EmailActions 
+                                emailData={parsedEmail}
+                                onCopySuccess={() => {
+                                  // Could show a toast notification here
+                                }}
+                              />
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                       
                       {/* Detected Ingredients - Add to Shopping List (Chef Bot Only) */}
                       {botSlug === 'chef-bot' && detectedIngredients[message.id] && (
