@@ -110,20 +110,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
     // Task collected
     if (curr.tasksCollected > prev.tasksCollected) {
       soundManager.playTaskCollect();
-      const playerPos = {
-        x: curr.player.visualPosition.x * TILE_SIZE + TILE_SIZE / 2,
-        y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
-      };
-      setScorePopups(popups => [
-        ...popups,
-        {
-          id: `task-${Date.now()}`,
-          x: playerPos.x,
-          y: playerPos.y,
-          points: 10,
-          type: 'task',
-        },
-      ]);
+      // No popup for tasks - too distracting
     }
 
     // Power-up collected
@@ -135,16 +122,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
         y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
       };
       setParticles(p => [...p, ...createSparkles(playerPos.x, playerPos.y, 15)]);
-      setScorePopups(popups => [
-        ...popups,
-        {
-          id: `powerup-${Date.now()}`,
-          x: playerPos.x,
-          y: playerPos.y,
-          points: 50,
-          type: 'powerup',
-        },
-      ]);
+      // No popup - sparkles and flash are enough feedback
     }
 
     // Bug eaten
@@ -155,16 +133,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
         y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
       };
       setParticles(p => [...p, ...createExplosion(playerPos.x, playerPos.y, '#a855f7', 15)]);
-      setScorePopups(popups => [
-        ...popups,
-        {
-          id: `bug-${Date.now()}`,
-          x: playerPos.x,
-          y: playerPos.y,
-          points: 200,
-          type: 'bug',
-        },
-      ]);
+      // No popup - explosion particles are enough feedback
     }
 
     // Life lost

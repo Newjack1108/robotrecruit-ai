@@ -104,7 +104,7 @@ function AnimatedScore({ popup, onEnd }: { popup: ScorePopupData; onEnd: () => v
         top: `${y}px`,
         transform: `translate(-50%, -50%) scale(${scale})`,
         opacity,
-        fontSize: popup.type === 'combo' ? '24px' : '18px',
+        fontSize: popup.type === 'combo' ? '20px' : popup.type === 'task' ? '14px' : '16px',
         textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
         fontFamily: 'monospace',
       }}

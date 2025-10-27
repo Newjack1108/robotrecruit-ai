@@ -74,11 +74,15 @@ class SoundManager {
   }
 
   /**
-   * Play task collection sound - short blip
+   * Play task collection sound - upbeat blip
    */
   playTaskCollect() {
     this.ensureAudioContext();
-    this.createTone(800, 0.08, 'square', 0.3);
+    // Two-tone upbeat sound
+    this.createTone(600, 0.06, 'sine', 0.4);
+    setTimeout(() => {
+      this.createTone(900, 0.08, 'sine', 0.4);
+    }, 30);
   }
 
   /**
