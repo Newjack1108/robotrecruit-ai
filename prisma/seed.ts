@@ -231,11 +231,12 @@ async function main() {
     update: {
       imageUrl: '/bots/email-bot.png',
       avatarUrl: '/bots/email-bot-avatar.png',
+      description: '📧 Your professional email writing assistant that crafts perfect business correspondence in seconds! Expert in formal business emails, client proposals, follow-ups, meeting requests, apologies, thank-you notes, and networking outreach. Features one-click integration with Gmail and all major email clients, smart subject line generation, professional tone adjustment, CC/BCC management, and instant copy-to-clipboard functionality. Perfect for busy professionals, entrepreneurs, job seekers, and anyone who wants to communicate with clarity and confidence. Never struggle with email etiquette again!',
     },
     create: {
       name: 'Email Bot',
       slug: 'email-bot',
-      description: 'Professional email writer that crafts perfect emails and opens them directly in your email client.',
+      description: '📧 Your professional email writing assistant that crafts perfect business correspondence in seconds! Expert in formal business emails, client proposals, follow-ups, meeting requests, apologies, thank-you notes, and networking outreach. Features one-click integration with Gmail and all major email clients, smart subject line generation, professional tone adjustment, CC/BCC management, and instant copy-to-clipboard functionality. Perfect for busy professionals, entrepreneurs, job seekers, and anyone who wants to communicate with clarity and confidence. Never struggle with email etiquette again!',
       imageUrl: '/bots/email-bot.png',
       avatarUrl: '/bots/email-bot-avatar.png',
       openaiAssistantId: 'asst_Sw5f1t80j4vkmc6WPhK2FWq7',
@@ -251,11 +252,12 @@ async function main() {
     update: {
       imageUrl: '/bots/social-media-bot.png',
       avatarUrl: '/bots/social-media-bot-avatar.png',
+      description: '🌐 Your social media marketing expert that creates viral-worthy content for Twitter/X, LinkedIn, Facebook, Instagram, and Threads! Master of platform-specific optimization with automatic character count validation, trending hashtag suggestions, engagement-boosting emoji placement, and best-time-to-post recommendations. Specializes in product launches, brand storytelling, thought leadership, promotional campaigns, and audience engagement strategies. Features beautiful preview cards, one-click copy-to-clipboard, direct platform composer links, and multi-platform quick access. Perfect for entrepreneurs, marketers, influencers, small business owners, and content creators who want maximum reach and engagement. Transform your social media presence today!',
     },
     create: {
       name: 'Social Media Bot',
       slug: 'social-media-bot',
-      description: 'Professional social media post writer for Twitter, LinkedIn, Facebook, and Instagram with hashtag optimization.',
+      description: '🌐 Your social media marketing expert that creates viral-worthy content for Twitter/X, LinkedIn, Facebook, Instagram, and Threads! Master of platform-specific optimization with automatic character count validation, trending hashtag suggestions, engagement-boosting emoji placement, and best-time-to-post recommendations. Specializes in product launches, brand storytelling, thought leadership, promotional campaigns, and audience engagement strategies. Features beautiful preview cards, one-click copy-to-clipboard, direct platform composer links, and multi-platform quick access. Perfect for entrepreneurs, marketers, influencers, small business owners, and content creators who want maximum reach and engagement. Transform your social media presence today!',
       imageUrl: '/bots/social-media-bot.png',
       avatarUrl: '/bots/social-media-bot-avatar.png',
       openaiAssistantId: 'asst_NUUtQ0OqkbeWeuePpIFHUy4V',
