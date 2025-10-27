@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HireButton } from '@/components/bots/HireButton';
-import { BotUpgradeShop } from '@/components/bots/BotUpgradeShop';
 import ShowcaseGallery from '@/components/showcases/ShowcaseGallery';
 import { auth } from '@clerk/nextjs/server';
 
@@ -714,22 +713,6 @@ export default async function BotCVPage({ params }: BotProfilePageProps) {
             )}
           </CardContent>
         </Card>
-      )}
-
-      {/* Upgrade Shop - Only for hired bots */}
-      {isHired && (
-        <BotUpgradeShop
-          botId={bot.id}
-          botName={bot.name}
-          availableUpgrades={{
-            imageRecognition: bot.imageRecognition,
-            voiceResponse: bot.voiceResponse,
-            fileUpload: bot.fileUpload,
-            webSearch: bot.webSearch,
-            scheduling: bot.scheduling,
-            dataExport: bot.dataExport,
-          }}
-        />
       )}
 
       {/* Final CTA */}
