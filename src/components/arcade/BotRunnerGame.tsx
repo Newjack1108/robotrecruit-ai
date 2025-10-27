@@ -25,6 +25,10 @@ import {
   TileType,
   Position,
 } from '@/lib/bot-runner-maze';
+import { soundManager } from '@/lib/bot-runner-sounds';
+import { ParticleSystem, Particle, createExplosion, createSparkles, createTrailParticle, updateParticles } from './ParticleSystem';
+import { ScorePopup, ScorePopupData } from './ScorePopup';
+import { ScreenEffects } from './ScreenEffects';
 
 interface BotRunnerGameProps {
   onGameOver: (score: number, stats: any) => void;
@@ -36,6 +40,12 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
   const gameLoopRef = useRef<number | undefined>(undefined);
   const lastUpdateRef = useRef<number>(Date.now());
   const [showInstructions, setShowInstructions] = useState(true);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [scorePopups, setScorePopups] = useState<ScorePopupData[]>([]);
+  const [screenShake, setScreenShake] = useState(false);
+  const [screenFlash, setScreenFlash] = useState<{ color: string; duration: number } | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const previousGameRef = useRef<GameData>(game);
 
   // Handle keyboard input
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -82,6 +92,112 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  // Update particles
+  useEffect(() => {
+    const particleInterval = setInterval(() => {
+      setParticles(prev => updateParticles(prev));
+    }, 16);
+
+    return () => clearInterval(particleInterval);
+  }, []);
+
+  // Detect game events and trigger effects
+  useEffect(() => {
+    const prev = previousGameRef.current;
+    const curr = game;
+
+    // Task collected
+    if (curr.tasksCollected > prev.tasksCollected) {
+      soundManager.playTaskCollect();
+      const playerPos = {
+        x: curr.player.visualPosition.x * TILE_SIZE + TILE_SIZE / 2,
+        y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
+      };
+      setScorePopups(popups => [
+        ...popups,
+        {
+          id: `task-${Date.now()}`,
+          x: playerPos.x,
+          y: playerPos.y,
+          points: 10,
+          type: 'task',
+        },
+      ]);
+    }
+
+    // Power-up collected
+    if (curr.powerUpActive && !prev.powerUpActive) {
+      soundManager.playPowerUpPickup();
+      setScreenFlash({ color: '#fbbf24', duration: 200 });
+      const playerPos = {
+        x: curr.player.visualPosition.x * TILE_SIZE + TILE_SIZE / 2,
+        y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
+      };
+      setParticles(p => [...p, ...createSparkles(playerPos.x, playerPos.y, 15)]);
+      setScorePopups(popups => [
+        ...popups,
+        {
+          id: `powerup-${Date.now()}`,
+          x: playerPos.x,
+          y: playerPos.y,
+          points: 50,
+          type: 'powerup',
+        },
+      ]);
+    }
+
+    // Bug eaten
+    if (curr.bugsDebugged > prev.bugsDebugged) {
+      soundManager.playBugEaten();
+      const playerPos = {
+        x: curr.player.visualPosition.x * TILE_SIZE + TILE_SIZE / 2,
+        y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
+      };
+      setParticles(p => [...p, ...createExplosion(playerPos.x, playerPos.y, '#a855f7', 15)]);
+      setScorePopups(popups => [
+        ...popups,
+        {
+          id: `bug-${Date.now()}`,
+          x: playerPos.x,
+          y: playerPos.y,
+          points: 200,
+          type: 'bug',
+        },
+      ]);
+    }
+
+    // Life lost
+    if (curr.player.lives < prev.player.lives && curr.player.lives > 0) {
+      soundManager.playDeath();
+      setScreenShake(true);
+      setTimeout(() => setScreenShake(false), 200);
+    }
+
+    // Power-up warning (2 seconds remaining)
+    if (curr.powerUpActive && curr.powerUpTimeRemaining <= 2000 && prev.powerUpTimeRemaining > 2000) {
+      soundManager.playPowerUpWarning();
+    }
+
+    // Game over
+    if (curr.state === GameState.GAME_OVER && prev.state !== GameState.GAME_OVER) {
+      const isWin = curr.tasksCollected === curr.totalTasks;
+      soundManager.playGameOver(isWin);
+    }
+
+    // Create power-up trail
+    if (curr.powerUpActive && curr.state === GameState.PLAYING) {
+      const playerPos = {
+        x: curr.player.visualPosition.x * TILE_SIZE + TILE_SIZE / 2,
+        y: curr.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2,
+      };
+      if (Math.random() < 0.3) {
+        setParticles(p => [...p, createTrailParticle(playerPos.x, playerPos.y, '#fbbf24')]);
+      }
+    }
+
+    previousGameRef.current = curr;
+  }, [game]);
 
   // Main game loop
   useEffect(() => {
@@ -278,8 +394,18 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
 
   const startGame = () => {
     setShowInstructions(false);
-    setGame(prev => ({ ...prev, state: GameState.PLAYING }));
-    lastUpdateRef.current = Date.now();
+    soundManager.playGameStart();
+    
+    // Countdown: 3, 2, 1, GO!
+    setCountdown(3);
+    setTimeout(() => setCountdown(2), 1000);
+    setTimeout(() => setCountdown(1), 2000);
+    setTimeout(() => setCountdown(0), 3000);
+    setTimeout(() => {
+      setCountdown(null);
+      setGame(prev => ({ ...prev, state: GameState.PLAYING }));
+      lastUpdateRef.current = Date.now();
+    }, 3500);
   };
 
   const togglePause = () => {
@@ -292,13 +418,30 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
   const resetGame = () => {
     setGame(initializeGame());
     setShowInstructions(true);
+    setParticles([]);
+    setScorePopups([]);
+    setScreenShake(false);
+    setScreenFlash(null);
+    setCountdown(null);
     lastUpdateRef.current = Date.now();
+    previousGameRef.current = initializeGame();
+  };
+
+  const removeParticle = (id: string) => {
+    setParticles(prev => prev.filter(p => p.id !== id));
+  };
+
+  const removePopup = (id: string) => {
+    setScorePopups(prev => prev.filter(p => p.id !== id));
   };
 
   const timeRemaining = Math.max(0, Math.floor((game.timeLimit - game.timeElapsed) / 1000));
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 game-container">
+      {/* Screen Effects */}
+      <ScreenEffects shake={screenShake} flash={screenFlash} countdown={countdown} />
+
       {/* Stats Bar */}
       <div className="w-full max-w-[640px] bg-gray-900/80 rounded-lg p-4 border border-gray-700">
         <div className="grid grid-cols-4 gap-4 text-center">
@@ -349,6 +492,12 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
           height={MAZE_HEIGHT * TILE_SIZE}
           className="border-4 border-cyan-500/30 rounded-lg bg-gray-950"
         />
+
+        {/* Particle System */}
+        <ParticleSystem particles={particles} onParticleEnd={removeParticle} />
+
+        {/* Score Popups */}
+        <ScorePopup popups={scorePopups} onPopupEnd={removePopup} />
 
         {/* Overlays */}
         {showInstructions && (

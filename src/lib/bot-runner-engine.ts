@@ -45,6 +45,7 @@ export interface BugState {
   personality: BugPersonality;
   mode: BugMode;
   direction: Position;
+  previousDirection: Position; // Track last direction to prevent backtracking
   moveTimer: number; // Time until next move
   speed: number; // Movement speed
 }
@@ -99,6 +100,7 @@ export function initializeGame(): GameData {
       personality: spawn.personality as BugPersonality,
       mode: 'scatter' as BugMode,
       direction: { x: 0, y: -1 },
+      previousDirection: { x: 0, y: -1 },
       moveTimer: 0,
       speed: BUG_BASE_SPEED,
     })),
@@ -279,9 +281,13 @@ export function handleBugCollisions(game: GameData): GameData {
   for (let i = 0; i < game.bugs.length; i++) {
     const bug = game.bugs[i];
     
-    // Check if player and bug are on same tile
-    if (bug.position.x === game.player.position.x && 
-        bug.position.y === game.player.position.y) {
+    // Use proximity-based collision detection for smooth movement
+    const dx = Math.abs(bug.visualPosition.x - game.player.visualPosition.x);
+    const dy = Math.abs(bug.visualPosition.y - game.player.visualPosition.y);
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Check if player and bug are within collision distance (0.5 tiles)
+    if (distance < 0.5) {
       
       if (game.powerUpActive) {
         // Debug the bug!
@@ -290,12 +296,14 @@ export function handleBugCollisions(game: GameData): GameData {
         
         // Respawn bug at starting position
         const spawnIndex = i;
+        const spawnPos = SPAWN_POSITIONS.bugs[spawnIndex];
         updatedGame.bugs[i] = {
           ...bug,
-          position: { 
-            x: SPAWN_POSITIONS.bugs[spawnIndex].x, 
-            y: SPAWN_POSITIONS.bugs[spawnIndex].y 
-          },
+          position: { x: spawnPos.x, y: spawnPos.y },
+          targetPosition: { x: spawnPos.x, y: spawnPos.y },
+          visualPosition: { x: spawnPos.x, y: spawnPos.y },
+          direction: { x: 0, y: -1 },
+          previousDirection: { x: 0, y: -1 },
           mode: 'scatter',
         };
       } else {
@@ -346,14 +354,18 @@ export function updateBugsMovement(game: GameData, deltaTime: number): GameData 
         game.player.position,
         game.player.direction,
         bug.personality,
-        mode
+        mode,
+        bug.previousDirection
       );
       
-      updatedBug.targetPosition = nextPos;
-      updatedBug.direction = {
+      const newDirection = {
         x: nextPos.x - bug.position.x,
         y: nextPos.y - bug.position.y,
       };
+      
+      updatedBug.targetPosition = nextPos;
+      updatedBug.previousDirection = bug.direction; // Store current as previous
+      updatedBug.direction = newDirection;
     }
     
     // Smooth interpolation towards target

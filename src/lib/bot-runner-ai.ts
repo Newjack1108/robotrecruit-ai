@@ -38,12 +38,27 @@ export function getBugNextMove(
   playerPos: Position,
   playerDirection: Position,
   personality: BugPersonality,
-  mode: BugMode
+  mode: BugMode,
+  previousDirection?: Position
 ): Position {
-  const neighbors = getValidNeighbors(bugPos);
+  let neighbors = getValidNeighbors(bugPos);
   
   if (neighbors.length === 0) {
     return bugPos;
+  }
+  
+  // Prevent 180° turns (going backwards) unless it's the only option
+  if (previousDirection && (previousDirection.x !== 0 || previousDirection.y !== 0)) {
+    const reverseDir = { x: -previousDirection.x, y: -previousDirection.y };
+    const filteredNeighbors = neighbors.filter(n => {
+      const dir = { x: n.x - bugPos.x, y: n.y - bugPos.y };
+      return !(dir.x === reverseDir.x && dir.y === reverseDir.y);
+    });
+    
+    // Only use filtered list if we have other options
+    if (filteredNeighbors.length > 0) {
+      neighbors = filteredNeighbors;
+    }
   }
   
   let target: Position;
@@ -105,7 +120,19 @@ export function getBugNextMove(
     return dist < bestDist ? neighbor : best;
   }, neighbors[0]);
   
-  return wrapPosition(bestNeighbor);
+  const wrappedPosition = wrapPosition(bestNeighbor);
+  
+  // Validate that the wrapped position is actually valid
+  // This prevents bugs from targeting walls after wrapping
+  const validNeighbors = getValidNeighbors(bugPos);
+  const isValidMove = validNeighbors.some(n => n.x === wrappedPosition.x && n.y === wrappedPosition.y);
+  
+  if (!isValidMove) {
+    // If wrapped position is invalid, use the original best neighbor
+    return bestNeighbor;
+  }
+  
+  return wrappedPosition;
 }
 
 /**
