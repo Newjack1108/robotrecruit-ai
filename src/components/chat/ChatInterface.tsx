@@ -13,6 +13,9 @@ import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
 import { detectIngredients } from '@/lib/ingredient-parser';
 import { parseEmailFromMessage } from '@/lib/email-parser';
 import { EmailActions, EmailPreview } from './EmailActions';
+import { parseSocialPostFromMessage } from '@/lib/social-media-parser';
+import { SocialMediaActions } from './SocialMediaActions';
+import { SocialMediaPreview } from './SocialMediaPreview';
 import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -827,6 +830,32 @@ export function ChatInterface({
                               <EmailPreview emailData={parsedEmail} />
                               <EmailActions 
                                 emailData={parsedEmail}
+                                onCopySuccess={() => {
+                                  // Could show a toast notification here
+                                }}
+                              />
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
+                      
+                      {/* Social Media Actions (Social Media Bot Only) */}
+                      {botSlug === 'social-media-bot' && (() => {
+                        const parsedPost = parseSocialPostFromMessage(message.content);
+                        if (parsedPost.isSocialPost && parsedPost.content) {
+                          return (
+                            <div className="mt-3">
+                              <SocialMediaPreview 
+                                content={parsedPost.content}
+                                platform={parsedPost.platform}
+                                hashtags={parsedPost.hashtags}
+                                suggestedTime={parsedPost.suggestedTime}
+                              />
+                              <SocialMediaActions 
+                                content={parsedPost.content}
+                                platform={parsedPost.platform}
+                                hashtags={parsedPost.hashtags}
                                 onCopySuccess={() => {
                                   // Could show a toast notification here
                                 }}

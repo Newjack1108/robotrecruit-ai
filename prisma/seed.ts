@@ -245,6 +245,26 @@ async function main() {
     },
   })
 
+  // Create Social Media Bot
+  await prisma.bot.upsert({
+    where: { slug: 'social-media-bot' },
+    update: {
+      imageUrl: '/bots/social-media-bot.png',
+      avatarUrl: '/bots/social-media-bot-avatar.png',
+    },
+    create: {
+      name: 'Social Media Bot',
+      slug: 'social-media-bot',
+      description: 'Professional social media post writer for Twitter, LinkedIn, Facebook, and Instagram with hashtag optimization.',
+      imageUrl: '/bots/social-media-bot.png',
+      avatarUrl: '/bots/social-media-bot-avatar.png',
+      openaiAssistantId: 'asst_NUUtQ0OqkbeWeuePpIFHUy4V',
+      isSystemBot: true,
+      knowledgeArea: 'Social Media & Content Marketing',
+      tier: 1,
+    },
+  })
+
   console.log('Database seeded with all bots!')
 }
 
