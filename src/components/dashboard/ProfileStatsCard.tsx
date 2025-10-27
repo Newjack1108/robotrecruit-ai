@@ -153,8 +153,7 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
             </div>
 
             {/* Lifetime High Score - Prominent Display */}
-            {/* @ts-expect-error - Prisma type refresh needed */}
-            {stats.user?.lifetimeHighScore > 0 && (
+            {(stats.user as any)?.lifetimeHighScore > 0 && (
               <div className="mb-3 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg p-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
@@ -163,9 +162,8 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
                   </div>
                   <div className="flex items-center gap-1">
                     <Zap className="w-3 h-3 text-yellow-400" />
-                    {/* @ts-expect-error - Prisma type refresh needed */}
                     <span className="text-xl font-black text-yellow-400 font-mono">
-                      {stats.user.lifetimeHighScore.toLocaleString()}
+                      {((stats.user as any).lifetimeHighScore).toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -287,6 +285,48 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
                       <>
                         <p className="text-base font-bold text-white">-</p>
                         <p className="text-[10px] text-gray-400">Won</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Bot Runner */}
+            {(stats.stats?.botRunnerHighScore || 0) > 0 && (
+              <div className="pt-2 border-t border-cyan-500/10">
+                <p className="text-[10px] text-green-400/70 mb-1.5">Bot Runner 👻</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-0.5">
+                      {stats.stats?.botRunnerPerfectGame && <Zap className="w-3 h-3 text-yellow-400" />}
+                      <p className="text-base font-bold text-white">{stats.stats?.botRunnerHighScore || 0}</p>
+                    </div>
+                    <p className="text-[10px] text-gray-400">High Score</p>
+                  </div>
+                  <div className="text-center">
+                    {(stats.stats?.botRunnerGamesPlayed || 0) > 0 ? (
+                      <>
+                        <p className="text-base font-bold text-green-400">🎮 {stats.stats?.botRunnerGamesPlayed}</p>
+                        <p className="text-[10px] text-green-400/70">Games</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-base font-bold text-white">-</p>
+                        <p className="text-[10px] text-gray-400">Games</p>
+                      </>
+                    )}
+                  </div>
+                  <div className="text-center">
+                    {(stats.stats?.botRunnerTotalTasks || 0) > 0 ? (
+                      <>
+                        <p className="text-base font-bold text-blue-400">📋 {stats.stats?.botRunnerTotalTasks}</p>
+                        <p className="text-[10px] text-blue-400/70">Tasks</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-base font-bold text-white">-</p>
+                        <p className="text-[10px] text-gray-400">Tasks</p>
                       </>
                     )}
                   </div>

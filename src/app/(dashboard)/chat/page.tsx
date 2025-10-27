@@ -103,7 +103,7 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
                           src={bot.avatarUrl || bot.imageUrl}
                           alt={bot.name}
                           fill
-                          className="object-cover"
+                          className="object-cover object-[center_20%]"
                         />
                       </div>
                     </div>

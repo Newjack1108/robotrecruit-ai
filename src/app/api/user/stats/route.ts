@@ -52,6 +52,7 @@ export async function GET() {
         email: user.email,
         tier: user.tier,
         createdAt: user.createdAt,
+        lifetimeHighScore: (user as any).lifetimeHighScore || 0,
       },
     });
   } catch (error: any) {

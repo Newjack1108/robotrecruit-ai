@@ -24,6 +24,10 @@ export interface UserStats {
   botSlotsHighScore: number;
   botSlotsJackpots: number;
   botSlotsCreditsWon: number;
+  botRunnerHighScore: number;
+  botRunnerGamesPlayed: number;
+  botRunnerPerfectGame: boolean;
+  botRunnerTotalTasks: number;
   totalPoints: number;
 }
 
@@ -93,6 +97,13 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
   const totalKudosReceived = userShowcases.reduce((sum: number, showcase: any) => sum + showcase.kudosCount, 0);
   const featuredShowcase = userShowcases.some((showcase: any) => showcase.featured);
 
+  // Get arcade stats - all games
+  const allArcadeScores = await (prisma as any).gameScore.findMany({
+    where: { userId },
+  });
+  
+  const arcadeGamesPlayed = allArcadeScores.length;
+
   // Get arcade stats - Bot Memory Match only
   const arcadeScores = await (prisma as any).gameScore.findMany({
     where: { 
@@ -101,8 +112,6 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     },
     orderBy: { score: 'desc' },
   });
-
-  const arcadeGamesPlayed = arcadeScores.length;
   const perfectGame = arcadeScores.some((score: any) => score.moves === 6); // 6 pairs = perfect game for Memory Match
   const arcadeHighScore = arcadeScores.length > 0 ? arcadeScores[0].score : 0;
 
@@ -174,6 +183,30 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
   // Sum credits won
   const botSlotsCreditsWon = slotHistory.reduce((sum: number, spin: any) => sum + (spin.creditsWon || 0), 0);
 
+  // Get Bot Runner specific stats
+  const runnerScores = await (prisma as any).gameScore.findMany({
+    where: { 
+      userId,
+      gameType: 'bot_runner'
+    },
+    orderBy: { score: 'desc' },
+  });
+
+  const botRunnerHighScore = runnerScores.length > 0 ? runnerScores[0].score : 0;
+  const botRunnerGamesPlayed = runnerScores.length;
+  
+  // Check for perfect game (collected all tasks with 3 lives remaining)
+  const botRunnerPerfectGame = runnerScores.some((score: any) => {
+    const metadata = score.metadata as any;
+    return metadata?.tasksCollected === metadata?.totalTasks && metadata?.livesRemaining === 3;
+  });
+  
+  // Get total tasks collected across all games
+  const botRunnerTotalTasks = runnerScores.reduce((sum: number, score: any) => {
+    const metadata = score.metadata as any;
+    return sum + (metadata?.tasksCollected || 0);
+  }, 0);
+
   const totalPoints = userAchievements.reduce((sum: number, ua: any) => sum + ua.achievement.points, 0);
 
   return {
@@ -198,6 +231,10 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     botSlotsHighScore,
     botSlotsJackpots,
     botSlotsCreditsWon,
+    botRunnerHighScore,
+    botRunnerGamesPlayed,
+    botRunnerPerfectGame,
+    botRunnerTotalTasks,
     totalPoints,
   };
 }

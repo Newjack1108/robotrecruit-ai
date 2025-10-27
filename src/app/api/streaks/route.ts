@@ -24,7 +24,7 @@ export async function GET() {
 
     // Check if streak is still valid (checked in yesterday or today)
     const now = new Date();
-    const today = new Date(now.setHours(0, 0, 0, 0));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
@@ -33,13 +33,26 @@ export async function GET() {
 
     if (user.lastCheckIn) {
       const lastCheckIn = new Date(user.lastCheckIn);
-      const lastCheckInDay = new Date(lastCheckIn.setHours(0, 0, 0, 0));
+      const lastCheckInDay = new Date(
+        lastCheckIn.getFullYear(),
+        lastCheckIn.getMonth(),
+        lastCheckIn.getDate()
+      );
 
       // Streak is active if last check-in was today or yesterday
       isStreakActive = lastCheckInDay >= yesterday;
 
       // Can check in if haven't checked in today
       canCheckInToday = lastCheckInDay < today;
+
+      // If streak is broken (last check-in was before yesterday), reset it
+      if (!isStreakActive && user.currentStreak > 0) {
+        await prisma.user.update({
+          where: { clerkId: userId },
+          data: { currentStreak: 0 },
+        });
+        user.currentStreak = 0;
+      }
     } else {
       canCheckInToday = true;
     }
@@ -83,12 +96,16 @@ export async function POST() {
     }
 
     const now = new Date();
-    const today = new Date(now.setHours(0, 0, 0, 0));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     // Check if already checked in today
     if (user.lastCheckIn) {
       const lastCheckIn = new Date(user.lastCheckIn);
-      const lastCheckInDay = new Date(lastCheckIn.setHours(0, 0, 0, 0));
+      const lastCheckInDay = new Date(
+        lastCheckIn.getFullYear(),
+        lastCheckIn.getMonth(),
+        lastCheckIn.getDate()
+      );
 
       if (lastCheckInDay.getTime() === today.getTime()) {
         return NextResponse.json({
@@ -106,12 +123,21 @@ export async function POST() {
 
     if (user.lastCheckIn) {
       const lastCheckIn = new Date(user.lastCheckIn);
-      const lastCheckInDay = new Date(lastCheckIn.setHours(0, 0, 0, 0));
+      const lastCheckInDay = new Date(
+        lastCheckIn.getFullYear(),
+        lastCheckIn.getMonth(),
+        lastCheckIn.getDate()
+      );
 
       // Continue streak if last check-in was yesterday
       if (lastCheckInDay.getTime() === yesterday.getTime()) {
         newStreak = user.currentStreak + 1;
       }
+      // If checking in same day (shouldn't happen but just in case)
+      else if (lastCheckInDay.getTime() === today.getTime()) {
+        newStreak = user.currentStreak;
+      }
+      // Otherwise, streak is broken - reset to 1
     }
 
     // Calculate streak milestone rewards
