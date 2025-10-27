@@ -29,17 +29,24 @@ export enum GameState {
 
 export interface PlayerState {
   position: Position;
+  targetPosition: Position;
+  visualPosition: { x: number; y: number }; // For smooth rendering
   direction: Position;
   nextDirection: Position | null;
   lives: number;
   invincible: boolean; // Brief invincibility after losing life
+  speed: number; // Movement speed (tiles per second)
 }
 
 export interface BugState {
   position: Position;
+  targetPosition: Position;
+  visualPosition: { x: number; y: number }; // For smooth rendering
   personality: BugPersonality;
   mode: BugMode;
   direction: Position;
+  moveTimer: number; // Time until next move
+  speed: number; // Movement speed
 }
 
 export interface GameData {
@@ -60,7 +67,8 @@ export interface GameData {
 const POWER_UP_DURATION = 7000; // 7 seconds
 const TIME_LIMIT = 120000; // 2 minutes
 const INVINCIBILITY_DURATION = 2000; // 2 seconds after losing life
-const BUG_MOVE_INTERVAL = 200; // Bugs move every 200ms
+const PLAYER_SPEED = 6; // Tiles per second
+const BUG_BASE_SPEED = 4; // Tiles per second
 
 /**
  * Initialize new game
@@ -69,21 +77,30 @@ export function initializeGame(): GameData {
   const maze = generateMaze();
   const totalTasks = countTotalTasks();
   
+  const playerStart = { ...SPAWN_POSITIONS.player };
+  
   return {
     state: GameState.READY,
     maze,
     player: {
-      position: { ...SPAWN_POSITIONS.player },
+      position: { ...playerStart },
+      targetPosition: { ...playerStart },
+      visualPosition: { x: playerStart.x, y: playerStart.y },
       direction: { x: 0, y: 0 },
       nextDirection: null,
       lives: 3,
       invincible: false,
+      speed: PLAYER_SPEED,
     },
     bugs: SPAWN_POSITIONS.bugs.map(spawn => ({
       position: { x: spawn.x, y: spawn.y },
+      targetPosition: { x: spawn.x, y: spawn.y },
+      visualPosition: { x: spawn.x, y: spawn.y },
       personality: spawn.personality as BugPersonality,
       mode: 'scatter' as BugMode,
       direction: { x: 0, y: -1 },
+      moveTimer: 0,
+      speed: BUG_BASE_SPEED,
     })),
     score: 0,
     tasksCollected: 0,
@@ -97,32 +114,130 @@ export function initializeGame(): GameData {
 }
 
 /**
- * Move player in direction
+ * Queue player direction (for input buffering)
  */
-export function movePlayer(game: GameData, direction: Position): GameData {
-  const newPos = {
-    x: game.player.position.x + direction.x,
-    y: game.player.position.y + direction.y,
-  };
-  
-  // Check if move is valid
-  if (!isValidPosition(newPos.x, newPos.y)) {
-    return game;
+export function queuePlayerDirection(game: GameData, direction: Position): GameData {
+  // If player is at tile center, try to move immediately
+  if (game.player.position.x === game.player.targetPosition.x &&
+      game.player.position.y === game.player.targetPosition.y) {
+    const newPos = {
+      x: game.player.position.x + direction.x,
+      y: game.player.position.y + direction.y,
+    };
+    
+    if (isValidPosition(newPos.x, newPos.y)) {
+      const wrappedPos = wrapPosition(newPos);
+      return {
+        ...game,
+        player: {
+          ...game.player,
+          targetPosition: wrappedPos,
+          direction,
+          nextDirection: null,
+        },
+      };
+    }
   }
   
-  // Handle wrapping
-  const wrappedPos = wrapPosition(newPos);
-  
-  // Update player
-  const updatedPlayer = {
-    ...game.player,
-    position: wrappedPos,
-    direction,
+  // Otherwise, queue the direction
+  return {
+    ...game,
+    player: {
+      ...game.player,
+      nextDirection: direction,
+    },
   };
+}
+
+/**
+ * Update player smooth movement
+ */
+export function updatePlayerMovement(game: GameData, deltaTime: number): GameData {
+  const player = game.player;
+  const moveSpeed = player.speed * (deltaTime / 1000); // tiles per frame
+  
+  // Check if we've reached target
+  if (player.position.x === player.targetPosition.x &&
+      player.position.y === player.targetPosition.y) {
+    
+    // Try to use queued direction
+    if (player.nextDirection) {
+      const newPos = {
+        x: player.position.x + player.nextDirection.x,
+        y: player.position.y + player.nextDirection.y,
+      };
+      
+      if (isValidPosition(newPos.x, newPos.y)) {
+        const wrappedPos = wrapPosition(newPos);
+        return {
+          ...game,
+          player: {
+            ...game.player,
+            targetPosition: wrappedPos,
+            direction: player.nextDirection,
+            nextDirection: null,
+          },
+        };
+      }
+    }
+    
+    // Continue in current direction if no queue
+    if (player.direction.x !== 0 || player.direction.y !== 0) {
+      const newPos = {
+        x: player.position.x + player.direction.x,
+        y: player.position.y + player.direction.y,
+      };
+      
+      if (isValidPosition(newPos.x, newPos.y)) {
+        const wrappedPos = wrapPosition(newPos);
+        return {
+          ...game,
+          player: {
+            ...game.player,
+            targetPosition: wrappedPos,
+          },
+        };
+      }
+    }
+  }
+  
+  // Interpolate towards target
+  let newVisualX = player.visualPosition.x;
+  let newVisualY = player.visualPosition.y;
+  
+  const dx = player.targetPosition.x - player.visualPosition.x;
+  const dy = player.targetPosition.y - player.visualPosition.y;
+  
+  if (Math.abs(dx) > 0.01) {
+    newVisualX += Math.sign(dx) * Math.min(moveSpeed, Math.abs(dx));
+  }
+  
+  if (Math.abs(dy) > 0.01) {
+    newVisualY += Math.sign(dy) * Math.min(moveSpeed, Math.abs(dy));
+  }
+  
+  // Snap to grid when close enough
+  if (Math.abs(player.targetPosition.x - newVisualX) < 0.05) {
+    newVisualX = player.targetPosition.x;
+  }
+  if (Math.abs(player.targetPosition.y - newVisualY) < 0.05) {
+    newVisualY = player.targetPosition.y;
+  }
+  
+  // Update logical position when visual reaches target
+  let newPosition = player.position;
+  if (Math.abs(newVisualX - player.targetPosition.x) < 0.01 &&
+      Math.abs(newVisualY - player.targetPosition.y) < 0.01) {
+    newPosition = { ...player.targetPosition };
+  }
   
   return {
     ...game,
-    player: updatedPlayer,
+    player: {
+      ...game.player,
+      position: newPosition,
+      visualPosition: { x: newVisualX, y: newVisualY },
+    },
   };
 }
 
@@ -209,30 +324,56 @@ export function handleBugCollisions(game: GameData): GameData {
 }
 
 /**
- * Move all bugs
+ * Update bugs with smooth movement and direction persistence
  */
-export function moveBugs(game: GameData): GameData {
+export function updateBugsMovement(game: GameData, deltaTime: number): GameData {
   const speedMultiplier = getBugSpeedMultiplier(game.tasksCollected);
   const mode = getBugMode(game.timeElapsed, game.powerUpActive);
   
   const updatedBugs = game.bugs.map(bug => {
-    const nextPos = getBugNextMove(
-      bug.position,
-      game.player.position,
-      game.player.direction,
-      bug.personality,
-      mode
-    );
+    const adjustedSpeed = bug.speed * speedMultiplier * (deltaTime / 1000);
+    let updatedBug = { ...bug, mode };
     
-    return {
-      ...bug,
-      position: nextPos,
-      mode,
-      direction: {
+    // Only recalculate path when bug reaches its target tile
+    if (Math.abs(bug.visualPosition.x - bug.targetPosition.x) < 0.01 &&
+        Math.abs(bug.visualPosition.y - bug.targetPosition.y) < 0.01) {
+      
+      updatedBug.position = { ...bug.targetPosition };
+      
+      // Calculate next move (only at intersections)
+      const nextPos = getBugNextMove(
+        bug.position,
+        game.player.position,
+        game.player.direction,
+        bug.personality,
+        mode
+      );
+      
+      updatedBug.targetPosition = nextPos;
+      updatedBug.direction = {
         x: nextPos.x - bug.position.x,
         y: nextPos.y - bug.position.y,
-      },
-    };
+      };
+    }
+    
+    // Smooth interpolation towards target
+    let newVisualX = bug.visualPosition.x;
+    let newVisualY = bug.visualPosition.y;
+    
+    const dx = updatedBug.targetPosition.x - bug.visualPosition.x;
+    const dy = updatedBug.targetPosition.y - bug.visualPosition.y;
+    
+    if (Math.abs(dx) > 0.01) {
+      newVisualX += Math.sign(dx) * Math.min(adjustedSpeed, Math.abs(dx));
+    }
+    
+    if (Math.abs(dy) > 0.01) {
+      newVisualY += Math.sign(dy) * Math.min(adjustedSpeed, Math.abs(dy));
+    }
+    
+    updatedBug.visualPosition = { x: newVisualX, y: newVisualY };
+    
+    return updatedBug;
   });
   
   return {

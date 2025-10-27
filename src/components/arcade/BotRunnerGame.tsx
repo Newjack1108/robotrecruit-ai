@@ -7,10 +7,11 @@ import {
   GameState,
   GameData,
   initializeGame,
-  movePlayer,
+  queuePlayerDirection,
+  updatePlayerMovement,
   handleTileCollision,
   handleBugCollisions,
-  moveBugs,
+  updateBugsMovement,
   updatePowerUp,
   updateTimer,
   checkWinCondition,
@@ -34,7 +35,6 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameLoopRef = useRef<number | undefined>(undefined);
   const lastUpdateRef = useRef<number>(Date.now());
-  const bugMoveTimerRef = useRef<number>(0);
   const [showInstructions, setShowInstructions] = useState(true);
 
   // Handle keyboard input
@@ -73,7 +73,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
 
     if (direction) {
       e.preventDefault();
-      setGame(prev => movePlayer(prev, direction!));
+      setGame(prev => queuePlayerDirection(prev, direction!));
     }
   }, [game.state]);
 
@@ -104,14 +104,13 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
         updated = updateTimer(updated, deltaTime);
         updated = updatePowerUp(updated, deltaTime);
 
-        // Move bugs every 200ms
-        bugMoveTimerRef.current += deltaTime;
-        if (bugMoveTimerRef.current >= 200) {
-          updated = moveBugs(updated);
-          bugMoveTimerRef.current = 0;
-        }
+        // Update smooth player movement
+        updated = updatePlayerMovement(updated, deltaTime);
+        
+        // Update smooth bug movement
+        updated = updateBugsMovement(updated, deltaTime);
 
-        // Check collisions
+        // Check collisions (use logical positions)
         updated = handleTileCollision(updated);
         updated = handleBugCollisions(updated);
 
@@ -199,41 +198,80 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
       }
     }
 
-    // Draw bugs
+    // Draw bugs with smooth movement
     game.bugs.forEach(bug => {
+      const x = bug.visualPosition.x * TILE_SIZE + TILE_SIZE / 2;
+      const y = bug.visualPosition.y * TILE_SIZE + TILE_SIZE / 2;
+      
       const color = game.powerUpActive ? '#60a5fa' : '#ef4444';
+      
+      // Glow effect
+      if (!game.powerUpActive) {
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = color;
+      }
+      
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.arc(
-        bug.position.x * TILE_SIZE + TILE_SIZE / 2,
-        bug.position.y * TILE_SIZE + TILE_SIZE / 2,
-        12,
-        0,
-        Math.PI * 2
-      );
+      ctx.arc(x, y, 12, 0, Math.PI * 2);
       ctx.fill();
+      
+      ctx.shadowBlur = 0;
 
       // Eyes
       if (!game.powerUpActive) {
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(bug.position.x * TILE_SIZE + TILE_SIZE / 2 - 4, bug.position.y * TILE_SIZE + TILE_SIZE / 2 - 2, 3, 0, Math.PI * 2);
-        ctx.arc(bug.position.x * TILE_SIZE + TILE_SIZE / 2 + 4, bug.position.y * TILE_SIZE + TILE_SIZE / 2 - 2, 3, 0, Math.PI * 2);
+        ctx.arc(x - 4, y - 2, 3, 0, Math.PI * 2);
+        ctx.arc(x + 4, y - 2, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Pupils (follow player direction)
+        ctx.fillStyle = '#000000';
+        const lookX = bug.direction.x * 1.5;
+        const lookY = bug.direction.y * 1.5;
+        ctx.beginPath();
+        ctx.arc(x - 4 + lookX, y - 2 + lookY, 1.5, 0, Math.PI * 2);
+        ctx.arc(x + 4 + lookX, y - 2 + lookY, 1.5, 0, Math.PI * 2);
         ctx.fill();
       }
     });
 
-    // Draw player
+    // Draw player with smooth movement and glow
     if (!game.player.invincible || Math.floor(Date.now() / 200) % 2 === 0) {
-      ctx.fillStyle = '#10b981';
+      const x = game.player.visualPosition.x * TILE_SIZE + TILE_SIZE / 2;
+      const y = game.player.visualPosition.y * TILE_SIZE + TILE_SIZE / 2;
+      
+      // Power-up glow
+      if (game.powerUpActive) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#fbbf24';
+      } else {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#10b981';
+      }
+      
+      ctx.fillStyle = game.powerUpActive ? '#fbbf24' : '#10b981';
       ctx.beginPath();
-      ctx.arc(
-        game.player.position.x * TILE_SIZE + TILE_SIZE / 2,
-        game.player.position.y * TILE_SIZE + TILE_SIZE / 2,
-        14,
-        0,
-        Math.PI * 2
-      );
+      ctx.arc(x, y, 14, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.shadowBlur = 0;
+      
+      // Direction indicator (mouth)
+      const mouthAngle = Math.PI / 6;
+      const dir = game.player.direction;
+      let angle = 0;
+      if (dir.x === 1) angle = 0;
+      else if (dir.x === -1) angle = Math.PI;
+      else if (dir.y === -1) angle = -Math.PI / 2;
+      else if (dir.y === 1) angle = Math.PI / 2;
+      
+      ctx.fillStyle = '#0a0a0f';
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.arc(x, y, 14, angle - mouthAngle, angle + mouthAngle);
+      ctx.lineTo(x, y);
       ctx.fill();
     }
   }, [game]);
@@ -254,7 +292,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
   const resetGame = () => {
     setGame(initializeGame());
     setShowInstructions(true);
-    bugMoveTimerRef.current = 0;
+    lastUpdateRef.current = Date.now();
   };
 
   const timeRemaining = Math.max(0, Math.floor((game.timeLimit - game.timeElapsed) / 1000));
