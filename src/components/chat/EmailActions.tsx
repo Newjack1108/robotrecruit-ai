@@ -99,7 +99,7 @@ export function EmailActions({ emailData, onCopySuccess }: EmailActionsProps) {
         onClick={openGmail}
         size="lg"
         variant="outline"
-        className="border-2 border-blue-500/50 hover:border-blue-500 hover:bg-blue-500/20 text-white font-medium transition-all duration-200 hover:scale-105"
+        className="border-2 border-blue-500/70 bg-blue-500/10 hover:border-blue-500 hover:bg-blue-500/20 !text-white font-medium transition-all duration-200 hover:scale-105"
       >
         <ExternalLink className="w-5 h-5 mr-2" />
         Open in Gmail
@@ -112,8 +112,8 @@ export function EmailActions({ emailData, onCopySuccess }: EmailActionsProps) {
         variant="outline"
         className={`border-2 font-medium transition-all duration-200 hover:scale-105 ${
           copied 
-            ? 'border-green-500/70 bg-green-500/20 text-green-300 hover:border-green-500'
-            : 'border-gray-500/50 hover:border-gray-400 hover:bg-gray-500/20 text-white'
+            ? 'border-green-500/70 bg-green-500/20 !text-green-300 hover:border-green-500'
+            : 'border-gray-500/70 bg-gray-500/10 hover:border-gray-400 hover:bg-gray-500/20 !text-white'
         }`}
       >
         {copied ? (
