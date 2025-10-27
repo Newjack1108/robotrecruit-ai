@@ -105,6 +105,27 @@ export function parseEmailFromMessage(content: string): ParsedEmail {
       .trim();
   }
 
+  // Decode URL-encoded content (+ signs and %20 to spaces, etc.)
+  function decodeURLContent(text: string): string {
+    if (!text) return text;
+    try {
+      // Replace + with spaces first (common in mailto: links)
+      const withSpaces = text.replace(/\+/g, ' ');
+      // Then decode any %XX sequences
+      return decodeURIComponent(withSpaces);
+    } catch {
+      // If decoding fails, just replace + with spaces
+      return text.replace(/\+/g, ' ');
+    }
+  }
+
+  // Apply URL decoding to all fields
+  if (result.to) result.to = decodeURLContent(result.to);
+  if (result.cc) result.cc = decodeURLContent(result.cc);
+  if (result.bcc) result.bcc = decodeURLContent(result.bcc);
+  if (result.subject) result.subject = decodeURLContent(result.subject);
+  if (result.body) result.body = decodeURLContent(result.body);
+
   return result;
 }
 
