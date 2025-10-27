@@ -2,7 +2,7 @@
  * Bot Runner AI - Bug pathfinding and behaviors
  */
 
-import { Position, getValidNeighbors, wrapPosition } from './bot-runner-maze';
+import { Position, getValidNeighbors, wrapPosition, isValidPosition, MAZE_WIDTH, MAZE_HEIGHT } from './bot-runner-maze';
 
 export type BugPersonality = 'chaser' | 'ambusher' | 'random' | 'patroller';
 export type BugMode = 'chase' | 'scatter' | 'frightened';
@@ -12,6 +12,35 @@ export type BugMode = 'chase' | 'scatter' | 'frightened';
  */
 function manhattanDistance(a: Position, b: Position): number {
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+/**
+ * Clamp position to valid maze bounds and ensure it's not a wall
+ */
+function getValidTargetPosition(pos: Position): Position {
+  // Clamp to maze bounds
+  let x = Math.max(0, Math.min(MAZE_WIDTH - 1, pos.x));
+  let y = Math.max(0, Math.min(MAZE_HEIGHT - 1, pos.y));
+  
+  // If position is a wall, find nearest valid position
+  if (!isValidPosition(x, y)) {
+    // Search in expanding radius for valid position
+    for (let radius = 1; radius < 5; radius++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+          const testX = x + dx;
+          const testY = y + dy;
+          if (isValidPosition(testX, testY)) {
+            return { x: testX, y: testY };
+          }
+        }
+      }
+    }
+    // Fallback to center of maze
+    return { x: 10, y: 7 };
+  }
+  
+  return { x, y };
 }
 
 /**
@@ -64,36 +93,33 @@ export function getBugNextMove(
   let target: Position;
   
   if (mode === 'frightened') {
-    // Run away from player - pick furthest neighbor
-    target = neighbors.reduce((furthest, neighbor) => {
-      const dist = manhattanDistance(neighbor, playerPos);
-      const furthestDist = manhattanDistance(furthest, playerPos);
-      return dist > furthestDist ? neighbor : furthest;
-    }, neighbors[0]);
+    // Run away from player - just pick a random valid neighbor
+    return neighbors[Math.floor(Math.random() * neighbors.length)];
   } else if (mode === 'scatter') {
     // Go to scatter corner
-    target = getScatterTarget(personality);
+    target = getValidTargetPosition(getScatterTarget(personality));
   } else {
     // Chase mode - target depends on personality
     switch (personality) {
       case 'chaser':
         // Direct chaser - target player position
-        target = playerPos;
+        target = getValidTargetPosition(playerPos);
         break;
         
       case 'ambusher':
         // Anticipate player movement - target 4 tiles ahead
-        target = {
+        const anticipatedPos = {
           x: playerPos.x + (playerDirection.x * 4),
           y: playerPos.y + (playerDirection.y * 4),
         };
+        target = getValidTargetPosition(anticipatedPos);
         break;
         
       case 'random':
         // Random when far, chase when close
         const distance = manhattanDistance(bugPos, playerPos);
         if (distance < 8) {
-          target = playerPos;
+          target = getValidTargetPosition(playerPos);
         } else {
           // Random movement
           return neighbors[Math.floor(Math.random() * neighbors.length)];
@@ -104,12 +130,14 @@ export function getBugNextMove(
         // Patrol zone - if player nearby, chase
         const patrolDistance = manhattanDistance(bugPos, playerPos);
         if (patrolDistance < 5) {
-          target = playerPos;
+          target = getValidTargetPosition(playerPos);
         } else {
           // Stay in patrol zone (center-right area)
-          target = { x: 15, y: 7 };
+          target = getValidTargetPosition({ x: 15, y: 7 });
         }
         break;
+      default:
+        target = getValidTargetPosition(playerPos);
     }
   }
   
@@ -120,19 +148,8 @@ export function getBugNextMove(
     return dist < bestDist ? neighbor : best;
   }, neighbors[0]);
   
-  const wrappedPosition = wrapPosition(bestNeighbor);
-  
-  // Validate that the wrapped position is actually valid
-  // This prevents bugs from targeting walls after wrapping
-  const validNeighbors = getValidNeighbors(bugPos);
-  const isValidMove = validNeighbors.some(n => n.x === wrappedPosition.x && n.y === wrappedPosition.y);
-  
-  if (!isValidMove) {
-    // If wrapped position is invalid, use the original best neighbor
-    return bestNeighbor;
-  }
-  
-  return wrappedPosition;
+  // Return the best neighbor directly - it's already validated by getValidNeighbors
+  return bestNeighbor;
 }
 
 /**
