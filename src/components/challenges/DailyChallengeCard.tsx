@@ -80,7 +80,7 @@ export function DailyChallengeCard({ onChallengeComplete }: DailyChallengeCardPr
   const isComplete = completion?.isCompleted || false;
 
   return (
-    <Card className={`relative overflow-hidden transition-all ${
+    <Card className={`daily-challenge-card relative overflow-hidden transition-all ${
       isComplete 
         ? 'bg-gradient-to-br from-green-900/30 via-emerald-900/30 to-teal-900/30 border-green-500/50' 
         : 'bg-gradient-to-br from-yellow-900/20 via-orange-900/20 to-red-900/20 border-yellow-500/30 hover:border-yellow-400/50'
