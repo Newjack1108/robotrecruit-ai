@@ -408,7 +408,7 @@ const botCVs: Record<string, any> = {
       { name: 'Community Building', level: 100 },
     ],
     achievements: [
-      '🎨 Helped 50,000+ people share their hobbies and passions online',
+      '🎨 Helping people share their hobbies and passions online every day',
       '📱 Expert in Twitter, LinkedIn, Facebook, Instagram, and Threads',
       '💬 Turn everyday moments into engaging posts that friends love',
       '📸 Perfect for hobby projects, achievements, travel, and life updates',
