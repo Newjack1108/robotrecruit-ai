@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { sendMessage, createThread } from '@/lib/openai';
@@ -202,8 +202,25 @@ export async function POST(req: Request) {
 
     console.log('[CHAT_DEBUG] About to send message with threadId:', threadId);
 
+    // Add user context for Email Bot
+    let userContext = '';
+    if (bot.slug === 'email-bot') {
+      // Get user's name from Clerk
+      try {
+        const client = await clerkClient();
+        const clerkUser = await client.users.getUser(userId);
+        const userName = clerkUser.firstName || clerkUser.fullName || user.email.split('@')[0] || 'User';
+        userContext = `[USER CONTEXT]: The person writing this email is named "${userName}". When creating email signatures or sign-offs, use this name.\n\n`;
+      } catch (error) {
+        console.error('[EMAIL_BOT] Failed to fetch user name from Clerk:', error);
+        // Fallback to email username
+        const fallbackName = user.email.split('@')[0];
+        userContext = `[USER CONTEXT]: The person writing this email is named "${fallbackName}". When creating email signatures or sign-offs, use this name.\n\n`;
+      }
+    }
+
     // Perform web search if Web Search power-up is active
-    let enhancedMessage = message;
+    let enhancedMessage = userContext + message;
     const hasWebSearch = activePowerUps?.includes('webSearch');
     
     if (hasWebSearch) {
@@ -211,11 +228,11 @@ export async function POST(req: Request) {
       if (shouldPerformWebSearch(message)) {
         console.log('[WEB_SEARCH] Performing web search for:', message);
         const searchResults = await performWebSearch(message);
-        enhancedMessage = `[SYSTEM]: You have web search capabilities enabled. Here are current web search results:\n\n${searchResults}\n\n[USER QUESTION]: ${message}\n\n[INSTRUCTION]: Use the web search results above to provide an accurate, up-to-date answer. If the search results are relevant, cite them in your response.`;
+        enhancedMessage = userContext + `[SYSTEM]: You have web search capabilities enabled. Here are current web search results:\n\n${searchResults}\n\n[USER QUESTION]: ${message}\n\n[INSTRUCTION]: Use the web search results above to provide an accurate, up-to-date answer. If the search results are relevant, cite them in your response.`;
         console.log('[WEB_SEARCH] Added search context to message');
       } else {
         // Even if we don't search, let the bot know it has the capability
-        enhancedMessage = `[SYSTEM]: You have web search capabilities. If the user asks for current information, let them know you can search the web.\n\n[USER]: ${message}`;
+        enhancedMessage = userContext + `[SYSTEM]: You have web search capabilities. If the user asks for current information, let them know you can search the web.\n\n[USER]: ${message}`;
       }
     }
 
