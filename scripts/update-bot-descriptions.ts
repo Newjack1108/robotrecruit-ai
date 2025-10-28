@@ -23,7 +23,7 @@ async function main() {
   await prisma.bot.update({
     where: { slug: 'social-media-bot' },
     data: {
-      description: '🌐 Your social media marketing expert that creates viral-worthy content for Twitter/X, LinkedIn, Facebook, Instagram, and Threads! Master of platform-specific optimization with automatic character count validation, trending hashtag suggestions, engagement-boosting emoji placement, and best-time-to-post recommendations. Specializes in product launches, brand storytelling, thought leadership, promotional campaigns, and audience engagement strategies. Features beautiful preview cards, one-click copy-to-clipboard, direct platform composer links, and multi-platform quick access. Perfect for entrepreneurs, marketers, influencers, small business owners, and content creators who want maximum reach and engagement. Transform your social media presence today!',
+      description: '🌐 Your personal social media assistant that helps you share your hobbies, passions, and life moments online! Creates engaging posts for Twitter/X, LinkedIn, Facebook, Instagram, and Threads with smart hashtag suggestions and emoji placement. Whether you\'re sharing your latest hobby project, celebrating achievements, posting vacation photos, or just want to connect with friends and followers - I\'ll help you craft the perfect post every time! Features beautiful preview cards, automatic character counting for each platform, one-click copy-to-clipboard, and direct links to post on your favorite platforms. Perfect for anyone who wants to share their story, grow their following, and engage with their community without spending hours crafting the perfect caption!',
     },
   });
   console.log('✅ Social Media Bot description updated');
