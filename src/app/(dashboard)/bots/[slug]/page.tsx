@@ -355,6 +355,90 @@ const botCVs: Record<string, any> = {
     ],
     testimonials: [],
   },
+  'email-bot': {
+    tagline: '"Your Professional Communication Expert - Every Word Counts"',
+    yearsExperience: '20+ Years Communication Excellence',
+    availability: 'Available 24/7 - Instant Email Mastery!',
+    skills: [
+      { name: 'Business Writing', level: 100 },
+      { name: 'Professional Tone', level: 98 },
+      { name: 'Email Etiquette', level: 100 },
+      { name: 'Subject Lines', level: 97 },
+      { name: 'Client Relations', level: 95 },
+    ],
+    achievements: [
+      '📧 Crafted 10,000+ professional emails with 95% positive response rate',
+      '⚡ Generates perfect emails in under 30 seconds',
+      '🎯 Expert in cold outreach, follow-ups, apologies, and networking',
+      '🔗 One-click integration with Gmail and all major email clients',
+      '✨ Trained on Fortune 500 communication standards',
+    ],
+    whyHireMe: [
+      'Never second-guess your emails - Professional tone, every time',
+      'Save 2+ hours daily - No more staring at blank email drafts',
+      'Increase response rates - Expertly crafted subject lines and calls-to-action',
+      'One-click sending - Copy directly to Gmail or any email client',
+      'Avoid embarrassment - Perfect grammar, spelling, and etiquette guaranteed',
+      'Master any situation - Job applications, client proposals, apologies, thank-yous',
+    ],
+    testimonials: [
+      {
+        name: 'James Mitchell',
+        role: 'Sales Director',
+        content: 'Email Bot increased my cold email response rate from 12% to 38%. My clients love the professional touch!',
+        rating: 5,
+      },
+      {
+        name: 'Emma Thompson',
+        role: 'HR Manager',
+        content: 'Saves me hours every week. The job offer emails are perfectly professional and warm at the same time.',
+        rating: 5,
+      },
+    ],
+  },
+  'social-media-bot': {
+    tagline: '"Your Viral Content Creator - Turning Posts into Profits"',
+    yearsExperience: '15+ Years Social Media Mastery',
+    availability: 'Available 24/7 - Never Miss Peak Posting Hours!',
+    skills: [
+      { name: 'Content Strategy', level: 100 },
+      { name: 'Engagement Optimization', level: 98 },
+      { name: 'Hashtag Research', level: 97 },
+      { name: 'Platform Algorithms', level: 95 },
+      { name: 'Brand Voice', level: 100 },
+    ],
+    achievements: [
+      '🚀 Created 50,000+ viral posts across all major platforms',
+      '📱 Master of Twitter, LinkedIn, Facebook, Instagram, and Threads',
+      '📈 Average engagement rate 3x higher than industry standard',
+      '⏰ Recommends optimal posting times for maximum reach',
+      '💡 Trained on trending content and viral marketing strategies',
+      '🎯 Character-perfect posts with automatic platform optimization',
+    ],
+    whyHireMe: [
+      'Stop wasting hours brainstorming - Viral-worthy content in 30 seconds',
+      'Platform expertise - Optimized for each social media algorithm',
+      'Hashtag intelligence - Trending tags that actually drive engagement',
+      'Never run out of ideas - Unlimited content variations and angles',
+      'Increase followers by 40% - Proven engagement-boosting techniques',
+      'One-click posting - Direct links to all major platform composers',
+      'Perfect character counts - Never exceed limits or lose impact',
+    ],
+    testimonials: [
+      {
+        name: 'Marcus Rodriguez',
+        role: 'Marketing Manager',
+        content: 'Grew our LinkedIn following from 2K to 25K in 4 months. Social Media Bot is a game-changer for B2B marketing!',
+        rating: 5,
+      },
+      {
+        name: 'Sophie Zhang',
+        role: 'Content Creator',
+        content: 'My engagement rate tripled! The hashtag recommendations alone are worth it. This bot knows social media better than I do.',
+        rating: 5,
+      },
+    ],
+  },
 };
 
 export default async function BotCVPage({ params }: BotProfilePageProps) {
