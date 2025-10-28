@@ -35,6 +35,7 @@ export interface PlayerState {
   nextDirection: Position | null;
   lives: number;
   invincible: boolean; // Brief invincibility after losing life
+  invincibilityEndTime: number; // Timestamp when invincibility expires
   speed: number; // Movement speed (tiles per second)
 }
 
@@ -91,6 +92,7 @@ export function initializeGame(): GameData {
       nextDirection: null,
       lives: 3,
       invincible: false,
+      invincibilityEndTime: 0,
       speed: PLAYER_SPEED,
     },
     bugs: SPAWN_POSITIONS.bugs.map(spawn => ({
@@ -313,10 +315,12 @@ export function handleBugCollisions(game: GameData): GameData {
       } else if (!game.player.invincible && !collisionHandled) {
         // Lose a life (only handle one collision per frame)
         collisionHandled = true;
+        const now = Date.now();
         updatedGame.player = {
           ...updatedGame.player,
           lives: updatedGame.player.lives - 1,
           invincible: true,
+          invincibilityEndTime: now + INVINCIBILITY_DURATION,
           position: { ...SPAWN_POSITIONS.player },
           targetPosition: { ...SPAWN_POSITIONS.player },
           visualPosition: { x: SPAWN_POSITIONS.player.x, y: SPAWN_POSITIONS.player.y },
@@ -328,11 +332,6 @@ export function handleBugCollisions(game: GameData): GameData {
         if (updatedGame.player.lives === 0) {
           updatedGame.state = GameState.GAME_OVER;
         }
-        
-        // Set timer to remove invincibility
-        setTimeout(() => {
-          updatedGame.player.invincible = false;
-        }, INVINCIBILITY_DURATION);
       }
     }
   }
@@ -408,6 +407,21 @@ export function updateBugsMovement(game: GameData, deltaTime: number): GameData 
     
     updatedBug.visualPosition = { x: newVisualX, y: newVisualY };
     
+    // Extra safety check: ensure visual position is within bounds and not in walls
+    // This prevents bugs from appearing to go through walls
+    const roundedX = Math.round(newVisualX);
+    const roundedY = Math.round(newVisualY);
+    if (roundedX >= 0 && roundedX < 21 && roundedY >= 0 && roundedY < 15) {
+      // If the rounded position would be a wall, snap back to target
+      if (!isValidPosition(roundedX, roundedY)) {
+        updatedBug.visualPosition = { 
+          x: updatedBug.targetPosition.x, 
+          y: updatedBug.targetPosition.y 
+        };
+        updatedBug.position = { ...updatedBug.targetPosition };
+      }
+    }
+    
     return updatedBug;
   });
   
@@ -415,6 +429,28 @@ export function updateBugsMovement(game: GameData, deltaTime: number): GameData 
     ...game,
     bugs: updatedBugs,
   };
+}
+
+/**
+ * Update invincibility timer
+ */
+export function updateInvincibility(game: GameData): GameData {
+  if (!game.player.invincible) {
+    return game;
+  }
+  
+  const now = Date.now();
+  if (now >= game.player.invincibilityEndTime) {
+    return {
+      ...game,
+      player: {
+        ...game.player,
+        invincible: false,
+      },
+    };
+  }
+  
+  return game;
 }
 
 /**

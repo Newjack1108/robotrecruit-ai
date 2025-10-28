@@ -12,6 +12,7 @@ import {
   handleTileCollision,
   handleBugCollisions,
   updateBugsMovement,
+  updateInvincibility,
   updatePowerUp,
   updateTimer,
   checkWinCondition,
@@ -188,6 +189,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
         // Update timers
         updated = updateTimer(updated, deltaTime);
         updated = updatePowerUp(updated, deltaTime);
+        updated = updateInvincibility(updated);
 
         // Update smooth player movement
         updated = updatePlayerMovement(updated, deltaTime);
