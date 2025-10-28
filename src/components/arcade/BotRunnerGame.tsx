@@ -477,8 +477,8 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
                 <p>🎯 <strong>Collect all task tokens</strong> (cyan dots)</p>
                 <p>⭐ <strong>Grab power-ups</strong> (yellow stars) to debug bugs!</p>
                 <p>🐛 <strong>Avoid bug bots</strong> or lose a life</p>
-                <p>⌨️ <strong>Controls:</strong> Arrow keys or WASD</p>
-                <p>⏸️ <strong>Pause:</strong> P or Space</p>
+                <p>⌨️ <strong>Controls:</strong> Arrow keys, WASD, or on-screen D-pad (mobile)</p>
+                <p>⏸️ <strong>Pause:</strong> P, Space, or tap center button</p>
               </div>
               <Button
                 onClick={startGame}
@@ -519,7 +519,68 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
         </Button>
       </div>
 
-      {/* Mobile Controls (TODO: Add touch controls) */}
+      {/* Mobile Touch Controls - Virtual D-Pad */}
+      {game.state === GameState.PLAYING && (
+        <div className="md:hidden fixed bottom-20 left-0 right-0 flex justify-center gap-8 px-4 z-50">
+          {/* D-Pad Controls */}
+          <div className="relative w-40 h-40">
+            {/* Up */}
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setGame(prev => queuePlayerDirection(prev, { x: 0, y: -1 }));
+              }}
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+            >
+              ▲
+            </button>
+            
+            {/* Left */}
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setGame(prev => queuePlayerDirection(prev, { x: -1, y: 0 }));
+              }}
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+            >
+              ◄
+            </button>
+            
+            {/* Center (Pause) */}
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                togglePause();
+              }}
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-gray-800/90 active:bg-gray-700 rounded-full flex items-center justify-center text-white shadow-lg active:scale-95 transition-all touch-none border-2 border-cyan-500/50"
+            >
+              <Pause className="w-7 h-7" />
+            </button>
+            
+            {/* Right */}
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setGame(prev => queuePlayerDirection(prev, { x: 1, y: 0 }));
+              }}
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+            >
+              ►
+            </button>
+            
+            {/* Down */}
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setGame(prev => queuePlayerDirection(prev, { x: 0, y: 1 }));
+              }}
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+            >
+              ▼
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
