@@ -40,11 +40,15 @@ export default async function HomePage() {
     },
     "featureList": [
       "24/7 AI Bot Availability",
+      "Email Bot - Professional Email Writing",
+      "Social Media Bot - Content Creation",
       "Custom Bot Training",
       "Multiple Specialized Bots",
-      "Image Recognition",
-      "Voice Response",
-      "File Upload",
+      "Arcade Games & Achievements",
+      "Daily Streaks & Rewards",
+      "Image Recognition Power-Up",
+      "Voice Response Power-Up",
+      "File Upload Power-Up",
       "Web Search Integration",
       "Scheduling Assistant",
       "Data Export"
@@ -347,6 +351,140 @@ export default async function HomePage() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* New Features Showcase */}
+        <section className="py-20 bg-gradient-to-b from-purple-950/30 to-transparent">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 px-6 py-3 rounded-full border border-cyan-500/50 mb-6">
+                  <Sparkles className="w-6 h-6 text-cyan-400" />
+                  <span className="text-cyan-300 font-orbitron font-bold text-lg">NEW FEATURES</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-orbitron font-bold text-white mb-6">
+                  Powerful New Tools & <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Entertainment</span>
+                </h2>
+                <p className="text-xl text-gray-300 leading-relaxed">
+                  We're constantly adding new bots, games, and features to make your experience better!
+                </p>
+              </div>
+
+              {/* Featured Image */}
+              <div className="relative mb-16">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-cyan-500/20 blur-3xl"></div>
+                <img 
+                  src="/garden-bots.png" 
+                  alt="RobotRecruit.AI Bots Collection" 
+                  className="relative w-full max-w-4xl mx-auto rounded-2xl shadow-2xl"
+                />
+              </div>
+
+              {/* New Features Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {/* Email Bot */}
+                <Card className="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 backdrop-blur-xl border-blue-500/50 hover:border-blue-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">📧</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Email Bot</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      Write professional emails in seconds! One-click Gmail integration and instant copy-to-clipboard.
+                    </p>
+                    <div className="flex items-center gap-2 text-cyan-400 text-xs">
+                      <Star className="w-4 h-4 fill-cyan-400" />
+                      <span className="font-semibold">NEW</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Social Media Bot */}
+                <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border-purple-500/50 hover:border-purple-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">🌐</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Social Media Bot</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      Share your hobbies & life moments! Creates perfect posts for Twitter, Instagram, Facebook & more.
+                    </p>
+                    <div className="flex items-center gap-2 text-purple-400 text-xs">
+                      <Star className="w-4 h-4 fill-purple-400" />
+                      <span className="font-semibold">NEW</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Arcade Games */}
+                <Card className="bg-gradient-to-br from-yellow-900/30 to-orange-900/30 backdrop-blur-xl border-yellow-500/50 hover:border-yellow-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">🎮</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Arcade Games</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      Bot Runner, Memory Match, Battle Arena & Slots! Earn achievements and climb leaderboards.
+                    </p>
+                    <div className="flex items-center gap-2 text-yellow-400 text-xs">
+                      <Zap className="w-4 h-4" />
+                      <span className="font-semibold">FUN & REWARDING</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Power-Ups */}
+                <Card className="bg-gradient-to-br from-green-900/30 to-emerald-900/30 backdrop-blur-xl border-green-500/50 hover:border-green-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">⚡</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Power-Ups</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      File uploads, image recognition, voice chat, web search, scheduling & data export capabilities!
+                    </p>
+                    <div className="flex items-center gap-2 text-green-400 text-xs">
+                      <Zap className="w-4 h-4" />
+                      <span className="font-semibold">SUPERCHARGE YOUR BOTS</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Daily Streaks */}
+                <Card className="bg-gradient-to-br from-orange-900/30 to-red-900/30 backdrop-blur-xl border-orange-500/50 hover:border-orange-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">🔥</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Daily Streaks</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      Check in daily to build your streak! Earn bonus credits and unlock exclusive achievements.
+                    </p>
+                    <div className="flex items-center gap-2 text-orange-400 text-xs">
+                      <Gift className="w-4 h-4" />
+                      <span className="font-semibold">DAILY REWARDS</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Achievements */}
+                <Card className="bg-gradient-to-br from-pink-900/30 to-rose-900/30 backdrop-blur-xl border-pink-500/50 hover:border-pink-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">🏆</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Achievements</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      Unlock badges, showcase your progress, and compete with friends! Track stats across all games.
+                    </p>
+                    <div className="flex items-center gap-2 text-pink-400 text-xs">
+                      <Star className="w-4 h-4 fill-pink-400" />
+                      <span className="font-semibold">COLLECT & SHOWCASE</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* CTA */}
+              <div className="text-center">
+                <Link href="/sign-up">
+                  <Button className="px-10 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white text-xl font-bold font-orbitron rounded-xl shadow-2xl transition-all hover:scale-110">
+                    <Rocket className="w-6 h-6 mr-2" />
+                    Try All Features Free
+                  </Button>
+                </Link>
+                <p className="text-gray-400 mt-4">✨ 7-day free trial • No credit card required</p>
+              </div>
             </div>
           </div>
         </section>
