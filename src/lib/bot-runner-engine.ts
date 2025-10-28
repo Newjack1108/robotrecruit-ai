@@ -272,11 +272,12 @@ export function handleTileCollision(game: GameData): GameData {
  * Check bug collisions
  */
 export function handleBugCollisions(game: GameData): GameData {
-  if (game.player.invincible) {
+  if (game.player.invincible && !game.powerUpActive) {
     return game;
   }
   
   let updatedGame = { ...game };
+  let collisionHandled = false;
   
   for (let i = 0; i < game.bugs.length; i++) {
     const bug = game.bugs[i];
@@ -286,34 +287,42 @@ export function handleBugCollisions(game: GameData): GameData {
     const dy = Math.abs(bug.visualPosition.y - game.player.visualPosition.y);
     const distance = Math.sqrt(dx * dx + dy * dy);
     
-    // Check if player and bug are within collision distance (0.5 tiles)
-    if (distance < 0.5) {
+    // Check if player and bug are within collision distance (0.6 tiles - slightly more lenient)
+    if (distance < 0.6) {
       
       if (game.powerUpActive) {
-        // Debug the bug!
+        // Debug the bug! (can eat bugs even when invincible)
         updatedGame.bugsDebugged += 1;
         updatedGame.score += 200;
         
-        // Respawn bug at starting position
-        const spawnIndex = i;
+        // Respawn bug at starting position (ensure it's a clean respawn)
+        const spawnIndex = i % SPAWN_POSITIONS.bugs.length;
         const spawnPos = SPAWN_POSITIONS.bugs[spawnIndex];
+        updatedGame.bugs = [...updatedGame.bugs];
         updatedGame.bugs[i] = {
-          ...bug,
           position: { x: spawnPos.x, y: spawnPos.y },
           targetPosition: { x: spawnPos.x, y: spawnPos.y },
           visualPosition: { x: spawnPos.x, y: spawnPos.y },
+          personality: bug.personality,
+          mode: 'scatter',
           direction: { x: 0, y: -1 },
           previousDirection: { x: 0, y: -1 },
-          mode: 'scatter',
+          moveTimer: 0,
+          speed: BUG_BASE_SPEED,
         };
-      } else {
-        // Lose a life
-        updatedGame.player.lives -= 1;
-        updatedGame.player.invincible = true;
-        
-        // Respawn player
-        updatedGame.player.position = { ...SPAWN_POSITIONS.player };
-        updatedGame.player.direction = { x: 0, y: 0 };
+      } else if (!game.player.invincible && !collisionHandled) {
+        // Lose a life (only handle one collision per frame)
+        collisionHandled = true;
+        updatedGame.player = {
+          ...updatedGame.player,
+          lives: updatedGame.player.lives - 1,
+          invincible: true,
+          position: { ...SPAWN_POSITIONS.player },
+          targetPosition: { ...SPAWN_POSITIONS.player },
+          visualPosition: { x: SPAWN_POSITIONS.player.x, y: SPAWN_POSITIONS.player.y },
+          direction: { x: 0, y: 0 },
+          nextDirection: null,
+        };
         
         // Check game over
         if (updatedGame.player.lives === 0) {
@@ -368,7 +377,7 @@ export function updateBugsMovement(game: GameData, deltaTime: number): GameData 
       updatedBug.direction = newDirection;
     }
     
-    // Smooth interpolation towards target
+    // Smooth interpolation towards target (clamped to not overshoot)
     let newVisualX = bug.visualPosition.x;
     let newVisualY = bug.visualPosition.y;
     
@@ -376,11 +385,25 @@ export function updateBugsMovement(game: GameData, deltaTime: number): GameData 
     const dy = updatedBug.targetPosition.y - bug.visualPosition.y;
     
     if (Math.abs(dx) > 0.01) {
-      newVisualX += Math.sign(dx) * Math.min(adjustedSpeed, Math.abs(dx));
+      const moveX = Math.sign(dx) * Math.min(adjustedSpeed, Math.abs(dx));
+      newVisualX += moveX;
+      // Clamp to not overshoot target
+      if (Math.sign(dx) > 0) {
+        newVisualX = Math.min(newVisualX, updatedBug.targetPosition.x);
+      } else {
+        newVisualX = Math.max(newVisualX, updatedBug.targetPosition.x);
+      }
     }
     
     if (Math.abs(dy) > 0.01) {
-      newVisualY += Math.sign(dy) * Math.min(adjustedSpeed, Math.abs(dy));
+      const moveY = Math.sign(dy) * Math.min(adjustedSpeed, Math.abs(dy));
+      newVisualY += moveY;
+      // Clamp to not overshoot target
+      if (Math.sign(dy) > 0) {
+        newVisualY = Math.min(newVisualY, updatedBug.targetPosition.y);
+      } else {
+        newVisualY = Math.max(newVisualY, updatedBug.targetPosition.y);
+      }
     }
     
     updatedBug.visualPosition = { x: newVisualX, y: newVisualY };
