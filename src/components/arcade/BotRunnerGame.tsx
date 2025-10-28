@@ -454,12 +454,17 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
       </div>
 
       {/* Canvas */}
-      <div className="relative">
+      <div className="relative flex justify-center">
         <canvas
           ref={canvasRef}
           width={MAZE_WIDTH * TILE_SIZE}
           height={MAZE_HEIGHT * TILE_SIZE}
-          className="border-4 border-cyan-500/30 rounded-lg bg-gray-950"
+          className="border-4 border-cyan-500/30 rounded-lg bg-gray-950 max-w-full h-auto"
+          style={{
+            maxHeight: 'calc(100vh - 300px)',
+            width: 'auto',
+            imageRendering: 'pixelated',
+          }}
         />
 
         {/* Particle System */}
@@ -521,16 +526,16 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
 
       {/* Mobile Touch Controls - Virtual D-Pad */}
       {game.state === GameState.PLAYING && (
-        <div className="md:hidden fixed bottom-20 left-0 right-0 flex justify-center gap-8 px-4 z-50">
+        <div className="md:hidden fixed bottom-4 right-4 z-50">
           {/* D-Pad Controls */}
-          <div className="relative w-40 h-40">
+          <div className="relative w-32 h-32">
             {/* Up */}
             <button
               onTouchStart={(e) => {
                 e.preventDefault();
                 setGame(prev => queuePlayerDirection(prev, { x: 0, y: -1 }));
               }}
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg active:scale-95 transition-all touch-none"
             >
               ▲
             </button>
@@ -541,7 +546,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
                 e.preventDefault();
                 setGame(prev => queuePlayerDirection(prev, { x: -1, y: 0 }));
               }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg active:scale-95 transition-all touch-none"
             >
               ◄
             </button>
@@ -552,9 +557,9 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
                 e.preventDefault();
                 togglePause();
               }}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-gray-800/90 active:bg-gray-700 rounded-full flex items-center justify-center text-white shadow-lg active:scale-95 transition-all touch-none border-2 border-cyan-500/50"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-gray-800/90 active:bg-gray-700 rounded-full flex items-center justify-center text-white shadow-lg active:scale-95 transition-all touch-none border-2 border-cyan-500/50"
             >
-              <Pause className="w-7 h-7" />
+              <Pause className="w-5 h-5" />
             </button>
             
             {/* Right */}
@@ -563,7 +568,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
                 e.preventDefault();
                 setGame(prev => queuePlayerDirection(prev, { x: 1, y: 0 }));
               }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg active:scale-95 transition-all touch-none"
             >
               ►
             </button>
@@ -574,7 +579,7 @@ export function BotRunnerGame({ onGameOver }: BotRunnerGameProps) {
                 e.preventDefault();
                 setGame(prev => queuePlayerDirection(prev, { x: 0, y: 1 }));
               }}
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-all touch-none"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-cyan-500/90 active:bg-cyan-400 rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg active:scale-95 transition-all touch-none"
             >
               ▼
             </button>
