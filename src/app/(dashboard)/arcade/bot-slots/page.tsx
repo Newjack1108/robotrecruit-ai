@@ -13,6 +13,8 @@ export default function BotSlotsPage() {
   const [totalCredits, setTotalCredits] = useState(0);
   const [timeToReset, setTimeToReset] = useState('');
   const [loading, setLoading] = useState(true);
+  const [sessionStarted, setSessionStarted] = useState(false);
+  const [sessionSpins, setSessionSpins] = useState<Array<{winType: string, points: number, credits: number}>>([]);
 
   useEffect(() => {
     fetchSpinStatus();
@@ -25,6 +27,14 @@ export default function BotSlotsPage() {
       setSpinsLeft(data.spinsLeft);
       setTimeToReset(data.timeToReset);
       setLoading(false);
+      
+      // Reset session if spins are full (new day)
+      if (data.spinsLeft === 10) {
+        setTotalPoints(0);
+        setTotalCredits(0);
+        setSessionStarted(false);
+        setSessionSpins([]);
+      }
     } catch (error) {
       console.error('Failed to fetch spin status:', error);
       setLoading(false);
@@ -32,22 +42,42 @@ export default function BotSlotsPage() {
   };
 
   const handleSpin = async (result: string[]) => {
+    if (!sessionStarted) {
+      setSessionStarted(true);
+    }
+    
     try {
       const res = await fetch('/api/arcade/slots/spin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ result })
+        body: JSON.stringify({ result, sessionTotal: totalPoints })
       });
       
       const data = await res.json();
       setSpinsLeft(data.spinsLeft);
-      setTotalPoints(prev => prev + data.pointsWon);
-      setTotalCredits(prev => prev + data.creditsWon);
       
-      return data; // Return reward info for visual feedback
+      const newTotalPoints = totalPoints + data.pointsWon;
+      const newTotalCredits = totalCredits + data.creditsWon;
+      
+      setTotalPoints(newTotalPoints);
+      setTotalCredits(newTotalCredits);
+      
+      // Track spin results for final summary
+      setSessionSpins(prev => [...prev, {
+        winType: data.winType,
+        points: data.pointsWon,
+        credits: data.creditsWon
+      }]);
+      
+      return {
+        ...data,
+        sessionTotal: newTotalPoints,
+        sessionCredits: newTotalCredits,
+        sessionSpins: sessionSpins.length + 1
+      };
     } catch (error) {
       console.error('Failed to submit spin:', error);
-      return { pointsWon: 0, creditsWon: 0, winType: 'small' };
+      return { pointsWon: 0, creditsWon: 0, winType: 'small', isLastSpin: false };
     }
   };
 
@@ -108,6 +138,9 @@ export default function BotSlotsPage() {
           spinsLeft={spinsLeft}
           onSpin={handleSpin}
           disabled={spinsLeft === 0}
+          sessionSpins={sessionSpins}
+          totalPoints={totalPoints}
+          totalCredits={totalCredits}
         />
 
         {/* Rewards Table */}
@@ -119,14 +152,14 @@ export default function BotSlotsPage() {
                 <Trophy className="w-5 h-5 text-yellow-400" />
                 Three of a Kind
               </span>
-              <span className="text-yellow-400 font-bold text-lg">1,000 pts + 1 Credit!</span>
+              <span className="text-yellow-400 font-bold text-lg">1,000 pts + 3 Credits!</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg border border-cyan-500/50 hover:border-cyan-400 transition-colors">
               <span className="text-white flex items-center gap-2">
                 <Zap className="w-5 h-5 text-cyan-400" />
                 Two Matching
               </span>
-              <span className="text-cyan-400 font-bold">100 points</span>
+              <span className="text-cyan-400 font-bold">100 pts + 1 Credit</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-gray-800/30 rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
               <span className="text-gray-300">❌ No Match</span>
@@ -136,8 +169,8 @@ export default function BotSlotsPage() {
           
           <div className="mt-6 p-4 bg-gradient-to-r from-purple-900/40 to-pink-900/40 rounded-lg border border-purple-500/50 backdrop-blur-sm">
             <p className="text-sm text-purple-200 text-center leading-relaxed">
-              💎 <strong className="text-yellow-300">Credits are rare!</strong> Only jackpots award credits. 
-              Points boost your leaderboard ranking!
+              💎 <strong className="text-yellow-300">Win Credits!</strong> Jackpots award 3 credits, matches award 1 credit. 
+              Your total session points boost your leaderboard ranking!
             </p>
           </div>
         </Card>

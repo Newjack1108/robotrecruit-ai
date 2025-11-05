@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const { result } = await req.json();
+    const { result, sessionTotal } = await req.json();
 
     if (!result || !Array.isArray(result) || result.length !== 3) {
       return NextResponse.json({ error: 'Invalid spin result' }, { status: 400 });
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     // Check for three of a kind (jackpot!)
     if (result[0] === result[1] && result[1] === result[2]) {
       pointsWon = 1000;
-      creditsWon = 1; // Only 1 credit for jackpot
+      creditsWon = 3; // 3 credits for jackpot
       winType = 'jackpot';
     } 
     // Check for two matching
@@ -59,6 +59,7 @@ export async function POST(req: Request) {
       result[0] === result[2]
     ) {
       pointsWon = 100;
+      creditsWon = 1; // 1 credit for matching 2
       winType = 'match';
     }
 
@@ -97,30 +98,34 @@ export async function POST(req: Request) {
       });
     }
 
-    // Submit to arcade scores for leaderboard
-    await prisma.gameScore.create({
-      data: {
-        userId: user.id,
-        gameType: 'bot_slots',
-        score: pointsWon,
-        moves: 1, // One spin
-        timeSeconds: 0, // Not time-based
-        difficulty: 'normal',
-        metadata: {
-          result,
-          creditsWon,
-          winType,
-        },
-      },
-    });
-
     const spinsLeft = dailySpins.spinsTotal - (dailySpins.spinsUsed + 1);
+    const isLastSpin = spinsLeft === 0;
+
+    // Submit to arcade scores for leaderboard ONLY on the last spin with cumulative total
+    if (isLastSpin && sessionTotal !== undefined) {
+      await prisma.gameScore.create({
+        data: {
+          userId: user.id,
+          gameType: 'bot_slots',
+          score: sessionTotal + pointsWon, // Cumulative total for the session
+          moves: dailySpins.spinsTotal, // Total spins (10)
+          timeSeconds: 0, // Not time-based
+          difficulty: 'normal',
+          metadata: {
+            finalResult: result,
+            finalCreditsWon: creditsWon,
+            finalWinType: winType,
+          },
+        },
+      });
+    }
 
     return NextResponse.json({
       pointsWon,
       creditsWon,
       winType,
       spinsLeft,
+      isLastSpin,
     });
   } catch (error) {
     console.error('[SLOTS_SPIN_ERROR]', error);

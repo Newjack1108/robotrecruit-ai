@@ -15,11 +15,14 @@ const BOTS = [
 
 interface BotSlotMachineProps {
   spinsLeft: number;
-  onSpin: (result: string[]) => Promise<{ pointsWon: number; creditsWon: number; winType: string }>;
+  onSpin: (result: string[]) => Promise<{ pointsWon: number; creditsWon: number; winType: string; isLastSpin: boolean; sessionTotal: number; sessionCredits: number }>;
   disabled: boolean;
+  sessionSpins: Array<{winType: string, points: number, credits: number}>;
+  totalPoints: number;
+  totalCredits: number;
 }
 
-export function BotSlotMachine({ spinsLeft, onSpin, disabled }: BotSlotMachineProps) {
+export function BotSlotMachine({ spinsLeft, onSpin, disabled, sessionSpins, totalPoints, totalCredits }: BotSlotMachineProps) {
   const [reels, setReels] = useState<string[][]>([
     getRandomBots(3),
     getRandomBots(3),
@@ -31,7 +34,8 @@ export function BotSlotMachine({ spinsLeft, onSpin, disabled }: BotSlotMachinePr
   const [winType, setWinType] = useState<'jackpot' | 'match' | 'small' | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [reward, setReward] = useState<{ pointsWon: number; creditsWon: number } | null>(null);
-  const [showResultModal, setShowResultModal] = useState(false);
+  const [showInlineNotification, setShowInlineNotification] = useState(false);
+  const [showFinalSummary, setShowFinalSummary] = useState(false);
   const { width, height } = useWindowSize();
 
   // Web Audio API for sounds (no external files needed)
@@ -105,7 +109,7 @@ export function BotSlotMachine({ spinsLeft, onSpin, disabled }: BotSlotMachinePr
     setWinType(null);
     setShowConfetti(false);
     setReward(null);
-    setShowResultModal(false);
+    setShowInlineNotification(false);
 
     // Play spin sound
     playSpinSound();
@@ -155,18 +159,24 @@ export function BotSlotMachine({ spinsLeft, onSpin, disabled }: BotSlotMachinePr
       setWinType('jackpot');
       setShowConfetti(true);
       playJackpotSound();
-      
-      // Show modal after 1 second, stop confetti after 5 seconds
-      setTimeout(() => setShowResultModal(true), 1000);
-      setTimeout(() => setShowConfetti(false), 5000);
+      setTimeout(() => setShowConfetti(false), 3000);
     } else if (rewardData.winType === 'match') {
       setWinType('match');
       playWinSound();
-      setTimeout(() => setShowResultModal(true), 800);
     } else {
       setWinType('small');
       playSmallWinSound();
-      setTimeout(() => setShowResultModal(true), 800);
+    }
+
+    // Show inline notification briefly
+    setShowInlineNotification(true);
+    setTimeout(() => setShowInlineNotification(false), 2500);
+
+    // If this was the last spin, show final summary after a brief delay
+    if (rewardData.isLastSpin) {
+      setTimeout(() => {
+        setShowFinalSummary(true);
+      }, 3000);
     }
 
     setSpinning(false);
@@ -186,110 +196,124 @@ export function BotSlotMachine({ spinsLeft, onSpin, disabled }: BotSlotMachinePr
         />
       )}
 
-      {/* Result Modal Popup */}
-      {showResultModal && reward && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className={`relative max-w-md w-full rounded-2xl p-8 shadow-2xl transform animate-in zoom-in duration-500 ${
+      {/* Inline Notification - Quick Feedback */}
+      {showInlineNotification && reward && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
+          <div className={`px-6 py-3 rounded-xl shadow-2xl backdrop-blur-xl border-2 ${
             winType === 'jackpot'
-              ? 'bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500'
+              ? 'bg-gradient-to-r from-yellow-500/90 to-orange-500/90 border-yellow-300'
               : winType === 'match'
-              ? 'bg-gradient-to-br from-cyan-600 to-blue-600'
-              : 'bg-gradient-to-br from-gray-700 to-gray-800'
+              ? 'bg-gradient-to-r from-cyan-500/90 to-blue-500/90 border-cyan-300'
+              : 'bg-gray-800/90 border-gray-600'
           }`}>
+            <div className="flex items-center gap-3">
+              {winType === 'jackpot' && <Trophy className="w-6 h-6 text-white animate-bounce" />}
+              {winType === 'match' && <Sparkles className="w-6 h-6 text-white" />}
+              {winType === 'small' && <Zap className="w-5 h-5 text-gray-300" />}
+              <div className="text-white font-bold">
+                {winType === 'jackpot' && '🎰 JACKPOT! '}
+                {winType === 'match' && '✨ Match! '}
+                +{reward.pointsWon} pts
+                {reward.creditsWon > 0 && ` + ${reward.creditsWon} 💎`}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Final Session Summary Modal */}
+      {showFinalSummary && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative max-w-lg w-full bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500 rounded-2xl p-8 shadow-2xl transform animate-in zoom-in duration-500">
             {/* Holographic glow */}
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-purple-400/20 to-pink-400/20 blur-2xl animate-pulse rounded-2xl"></div>
             
             <div className="relative z-10">
               {/* Close button */}
               <button
-                onClick={() => setShowResultModal(false)}
+                onClick={() => setShowFinalSummary(false)}
                 className="absolute top-2 right-2 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
 
-              {/* Icon & Title */}
+              {/* Header */}
               <div className="text-center mb-6">
-                {winType === 'jackpot' && (
-                  <>
-                    <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
-                      <Trophy className="w-12 h-12 text-white" />
-                    </div>
-                    <h3 className="text-3xl font-orbitron font-bold text-white mb-2">
-                      🎰 JACKPOT! 🎰
-                    </h3>
-                    <p className="text-white/90 text-lg">
-                      Three of a kind! Incredible!
-                    </p>
-                  </>
-                )}
-                {winType === 'match' && (
-                  <>
-                    <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
-                      <Sparkles className="w-12 h-12 text-white" />
-                    </div>
-                    <h3 className="text-3xl font-orbitron font-bold text-white mb-2">
-                      ✨ Nice Match!
-                    </h3>
-                    <p className="text-white/90 text-lg">
-                      Two bots matched!
-                    </p>
-                  </>
-                )}
-                {winType === 'small' && (
-                  <>
-                    <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center">
-                      <Zap className="w-12 h-12 text-gray-300" />
-                    </div>
-                    <h3 className="text-2xl font-orbitron font-bold text-white mb-2">
-                      Keep Trying!
-                    </h3>
-                    <p className="text-white/80">
-                      Better luck next spin!
-                    </p>
-                  </>
-                )}
+                <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+                  <Trophy className="w-12 h-12 text-white" />
+                </div>
+                <h3 className="text-3xl font-orbitron font-bold text-white mb-2">
+                  🎰 Session Complete! 🎰
+                </h3>
+                <p className="text-white/90 text-lg">
+                  All 10 spins used!
+                </p>
               </div>
 
-              {/* Rewards */}
-              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-6 mb-6 border border-white/20">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-white/80">Points Earned:</span>
-                  <span className="text-2xl font-bold text-white">+{reward.pointsWon}</span>
+              {/* Session Stats */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-6 mb-6 border border-white/20 space-y-4">
+                <div className="text-center pb-4 border-b border-white/20">
+                  <div className="text-5xl font-bold text-white mb-1">{totalPoints}</div>
+                  <div className="text-white/80">Total Points Earned</div>
+                  <div className="text-sm text-cyan-200 mt-2">✨ Added to leaderboard!</div>
                 </div>
-                {reward.creditsWon > 0 && (
-                  <div className="flex items-center justify-between pt-3 border-t border-white/20">
-                    <span className="text-white/80">Powerup Credits:</span>
-                    <span className="text-2xl font-bold text-yellow-300 flex items-center gap-2">
-                      💎 +{reward.creditsWon}
-                    </span>
+                
+                {totalCredits > 0 && (
+                  <div className="text-center pb-4 border-b border-white/20">
+                    <div className="text-4xl font-bold text-yellow-300 flex items-center justify-center gap-2">
+                      💎 {totalCredits}
+                    </div>
+                    <div className="text-white/80">Powerup Credits Earned</div>
                   </div>
                 )}
-              </div>
 
-              {/* Spins remaining */}
-              <div className="text-center text-white/70 text-sm mb-4">
-                {spinsLeft - 1} spins remaining today
+                {/* Breakdown */}
+                <div className="space-y-2">
+                  <div className="text-white/80 text-sm font-semibold mb-2">Spin Breakdown:</div>
+                  {(() => {
+                    const jackpots = sessionSpins.filter(s => s.winType === 'jackpot').length;
+                    const matches = sessionSpins.filter(s => s.winType === 'match').length;
+                    const small = sessionSpins.filter(s => s.winType === 'small').length;
+                    return (
+                      <>
+                        {jackpots > 0 && (
+                          <div className="flex justify-between text-yellow-300">
+                            <span>🎰 Jackpots:</span>
+                            <span className="font-bold">{jackpots}</span>
+                          </div>
+                        )}
+                        {matches > 0 && (
+                          <div className="flex justify-between text-cyan-300">
+                            <span>✨ Matches:</span>
+                            <span className="font-bold">{matches}</span>
+                          </div>
+                        )}
+                        {small > 0 && (
+                          <div className="flex justify-between text-gray-300">
+                            <span>⚡ Small Wins:</span>
+                            <span className="font-bold">{small}</span>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
               </div>
 
               {/* Action button */}
               <Button
-                onClick={() => setShowResultModal(false)}
+                onClick={() => setShowFinalSummary(false)}
                 className="w-full bg-white/20 hover:bg-white/30 text-white font-bold py-3 rounded-xl backdrop-blur-sm border border-white/30 transition-all"
               >
-                {spinsLeft - 1 > 0 ? 'Spin Again!' : 'Close'}
+                View Leaderboard
               </Button>
             </div>
 
             {/* Animated particles */}
-            {winType === 'jackpot' && (
-              <>
-                <div className="absolute top-10 left-10 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
-                <div className="absolute top-20 right-16 w-3 h-3 bg-cyan-400 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-                <div className="absolute bottom-20 left-16 w-2 h-2 bg-pink-400 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute bottom-10 right-10 w-3 h-3 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '1.5s' }}></div>
-              </>
-            )}
+            <div className="absolute top-10 left-10 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+            <div className="absolute top-20 right-16 w-3 h-3 bg-cyan-400 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute bottom-20 left-16 w-2 h-2 bg-pink-400 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute bottom-10 right-10 w-3 h-3 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '1.5s' }}></div>
           </div>
         </div>
       )}
@@ -317,12 +341,14 @@ export function BotSlotMachine({ spinsLeft, onSpin, disabled }: BotSlotMachinePr
         </div>
 
         {/* Top Banner - NEW COLORS */}
-        <div className="relative z-10 -top-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 px-8 py-3 rounded-full shadow-lg border-2 border-cyan-400/50 mb-4">
-          <h2 className="text-2xl font-orbitron font-bold text-white tracking-wider flex items-center gap-2">
-            <Sparkles className="w-6 h-6 animate-pulse" />
-            BOT JACKPOT
-            <Sparkles className="w-6 h-6 animate-pulse" />
-          </h2>
+        <div className="relative z-10 flex justify-center mb-6">
+          <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 px-8 py-3 rounded-full shadow-lg border-2 border-cyan-400/50">
+            <h2 className="text-2xl font-orbitron font-bold text-white tracking-wider flex items-center gap-2">
+              <Sparkles className="w-6 h-6 animate-pulse" />
+              BOT JACKPOT
+              <Sparkles className="w-6 h-6 animate-pulse" />
+            </h2>
+          </div>
         </div>
 
         {/* Reels Container - Enhanced */}
