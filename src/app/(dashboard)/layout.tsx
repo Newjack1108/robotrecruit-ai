@@ -11,6 +11,8 @@ import { StreakCounter } from '@/components/streaks/StreakCounter';
 import { TrialStatusBanner } from '@/components/user/TrialStatusBanner';
 import { getTierPowerUpCredits } from '@/lib/powerup-credits';
 import { MobileNav } from '@/components/navigation/MobileNav';
+import { InviteButton } from '@/components/referrals/InviteButton';
+import { ReferralProcessor } from '@/components/referrals/ReferralProcessor';
 
 export const dynamic = 'force-dynamic';
 
@@ -176,6 +178,8 @@ export default async function DashboardLayout({
                   <span className="font-orbitron font-medium">Arcade</span>
                 </Link>
 
+                <InviteButton />
+
                 <Link 
                   href="/community"
                   className="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-colors group"
@@ -259,6 +263,9 @@ export default async function DashboardLayout({
 
       {/* Achievement Unlock Listener */}
       <AchievementListener />
+
+      {/* Referral Processor */}
+      <ReferralProcessor />
     </div>
   );
 }

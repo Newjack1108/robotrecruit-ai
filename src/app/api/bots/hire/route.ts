@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { checkAchievements } from '@/lib/achievement-checker';
+import { processReferralBotHire } from '@/lib/referral-processor';
 
 // Hiring limits per tier
 const TIER_LIMITS = {
@@ -86,6 +87,11 @@ export async function POST(request: Request) {
     // Check for achievement unlocks (don't wait for it)
     checkAchievements(user.id).catch(err => 
       console.error('[ACHIEVEMENT_CHECK_ERROR]', err)
+    );
+
+    // Process referral bot hire reward (fire and forget)
+    processReferralBotHire(user.id).catch(err =>
+      console.error('[REFERRAL_BOT_HIRE_ERROR]', err)
     );
 
     // Track "hire_bot" challenge (fire and forget)

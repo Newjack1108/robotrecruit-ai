@@ -28,6 +28,7 @@ export interface UserStats {
   botRunnerGamesPlayed: number;
   botRunnerPerfectGame: boolean;
   botRunnerTotalTasks: number;
+  referralsSent: number;
   totalPoints: number;
 }
 
@@ -209,6 +210,16 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
 
   const totalPoints = userAchievements.reduce((sum: number, ua: any) => sum + ua.achievement.points, 0);
 
+  // Get referral count (successfully signed up referrals)
+  const referralsSent = await prisma.referral.count({
+    where: {
+      referrerId: user.id,
+      status: {
+        in: ['signed_up', 'bot_hired', 'completed']
+      }
+    }
+  });
+
   return {
     hiredBots: user.hiredBots.length,
     conversations: user.conversations.length,
@@ -235,6 +246,7 @@ export async function calculateUserStats(userId: string): Promise<UserStats> {
     botRunnerGamesPlayed,
     botRunnerPerfectGame,
     botRunnerTotalTasks,
+    referralsSent,
     totalPoints,
   };
 }

@@ -255,6 +255,38 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     points: 50,
     requirement: { botBattleMaxStreak: 10 },
   },
+
+  // Referral Achievements (Bronze → Gold)
+  {
+    key: 'first_referral',
+    name: 'Social Butterfly',
+    description: 'Invite your first friend to join',
+    icon: '🦋',
+    category: 'social',
+    tier: 1,
+    points: 10,
+    requirement: { referralsSent: 1 },
+  },
+  {
+    key: 'referral_master',
+    name: 'Influencer',
+    description: 'Successfully refer 5 friends',
+    icon: '🌟',
+    category: 'social',
+    tier: 2,
+    points: 50,
+    requirement: { referralsSent: 5 },
+  },
+  {
+    key: 'referral_legend',
+    name: 'Ambassador',
+    description: 'Successfully refer 10 friends',
+    icon: '👑',
+    category: 'social',
+    tier: 3,
+    points: 100,
+    requirement: { referralsSent: 10 },
+  },
 ];
 
 // Tier colors and names for UI

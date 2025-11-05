@@ -68,6 +68,12 @@ model User {
   // Bot Slots Game
   dailySlotSpins      DailySlotSpins[]  @relation("DailySlotSpins")
   slotSpinHistory     SlotSpinHistory[] @relation("SlotSpinHistory")
+  
+  // Referral System
+  referralsSent       Referral[]       @relation("Referrals")
+  referredBy          Referral?        @relation("ReferredBy")
+  referralCode        String?          @unique // User's personal referral code
+  welcomeBonusGiven   Boolean          @default(false) // Track if referred user got welcome bonus
 }
 
 model PromoCode {
@@ -512,4 +518,29 @@ model BotToolData {
   @@index([conversationId])
   @@index([toolType])
   @@index([isActive])
+}
+
+model Referral {
+  id              String   @id @default(cuid())
+  referrerId      String   // User who sent the invite
+  referrerUser    User     @relation("Referrals", fields: [referrerId], references: [id], onDelete: Cascade)
+  referralCode    String   @unique // Unique code like "ABC123"
+  invitedEmail    String?  // Optional: track invited email
+  invitedUserId   String?  @unique // Filled when friend signs up
+  invitedUser     User?    @relation("ReferredBy", fields: [invitedUserId], references: [id], onDelete: SetNull)
+  
+  // Tracking status
+  status          String   @default("pending") // pending, signed_up, bot_hired, completed
+  signupRewardGiven Boolean @default(false)
+  hireRewardGiven Boolean  @default(false)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  signedUpAt      DateTime?
+  firstBotHiredAt DateTime?
+  
+  @@index([referrerId])
+  @@index([referralCode])
+  @@index([invitedUserId])
+  @@index([status])
 }
