@@ -215,7 +215,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats & Community Section - Condensed Layout */}
+      {/* Stats & Community Section - Aligned Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Profile & Achievements - 2 columns */}
         <div className="lg:col-span-2">
@@ -225,14 +225,12 @@ export default async function DashboardPage() {
           />
         </div>
 
-        {/* Daily Streak - 1 column */}
-        <div>
+        {/* Right Column: Streak + Community Builder stacked */}
+        <div className="flex flex-col gap-4">
           <StreakCounter variant="dashboard" />
+          <DailyChallengeCard />
         </div>
       </div>
-
-      {/* Daily Challenge - Full Width Below */}
-      <DailyChallengeCard />
 
       {/* Hired Bots */}
       {hiredBots.length > 0 && (

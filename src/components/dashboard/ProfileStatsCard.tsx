@@ -107,277 +107,118 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
           </div>
           <Link href="/profile">
             <Button 
-              variant="ghost" 
               size="sm"
-              className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 text-xs h-8 px-2"
+              className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-bold shadow-lg shadow-yellow-500/20"
             >
+              <Trophy className="w-4 h-4 mr-1.5" />
               Full Profile
-              <ChevronRight className="w-3 h-3 ml-1" />
+              <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pt-0">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-yellow-500/30 transition-colors">
-            <Trophy className="w-4 h-4 text-yellow-400 mx-auto mb-1" />
-            <p className="text-xl font-bold text-white">{achievementCount}</p>
-            <p className="text-[10px] text-gray-400">Achievements</p>
+      <CardContent className="space-y-3 pt-0">
+        {/* Stats Grid - Compact */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
+          <div className="bg-white/5 backdrop-blur-sm rounded p-2 border border-white/10 text-center hover:border-yellow-500/30 transition-colors">
+            <Trophy className="w-3 h-3 text-yellow-400 mx-auto mb-0.5" />
+            <p className="text-lg font-bold text-white">{achievementCount}</p>
+            <p className="text-[9px] text-gray-400">Achievements</p>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-orange-500/30 transition-colors">
-            <Star className="w-4 h-4 text-orange-400 mx-auto mb-1" />
-            <p className="text-xl font-bold text-white">{totalPoints}</p>
-            <p className="text-[10px] text-gray-400">Total Points</p>
+          <div className="bg-white/5 backdrop-blur-sm rounded p-2 border border-white/10 text-center hover:border-orange-500/30 transition-colors">
+            <Star className="w-3 h-3 text-orange-400 mx-auto mb-0.5" />
+            <p className="text-lg font-bold text-white">{totalPoints}</p>
+            <p className="text-[9px] text-gray-400">Total Points</p>
           </div>
 
           <Link href="/arcade" className="block">
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-cyan-500/50 transition-colors cursor-pointer group">
-              <Gamepad2 className="w-4 h-4 text-cyan-400 mx-auto mb-1 group-hover:scale-110 transition-transform" />
-              <p className="text-xl font-bold text-white">{Math.max(stats.stats?.arcadeHighScore || 0, stats.stats?.botBattleHighScore || 0)}</p>
-              <p className="text-[10px] text-gray-400">Arcade Score</p>
+            <div className="bg-white/5 backdrop-blur-sm rounded p-2 border border-white/10 text-center hover:border-cyan-500/50 transition-colors cursor-pointer group">
+              <Gamepad2 className="w-3 h-3 text-cyan-400 mx-auto mb-0.5 group-hover:scale-110 transition-transform" />
+              <p className="text-lg font-bold text-white">{Math.max(stats.stats?.arcadeHighScore || 0, stats.stats?.botBattleHighScore || 0)}</p>
+              <p className="text-[9px] text-gray-400">Arcade Score</p>
             </div>
           </Link>
 
-          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-2.5 border border-white/10 text-center hover:border-purple-500/30 transition-colors">
-            <Award className="w-4 h-4 text-purple-400 mx-auto mb-1" />
-            <p className="text-xl font-bold text-white">{Math.round((achievementCount / totalAchievements) * 100)}%</p>
-            <p className="text-[10px] text-gray-400">Completion</p>
+          <div className="bg-white/5 backdrop-blur-sm rounded p-2 border border-white/10 text-center hover:border-purple-500/30 transition-colors">
+            <Award className="w-3 h-3 text-purple-400 mx-auto mb-0.5" />
+            <p className="text-lg font-bold text-white">{Math.round((achievementCount / totalAchievements) * 100)}%</p>
+            <p className="text-[9px] text-gray-400">Completion</p>
           </div>
         </div>
 
-        {/* Arcade Stats Row */}
+        {/* Arcade Stats Row - Ultra Compact */}
         {stats.stats?.arcadeGamesPlayed > 0 && (
-          <div className="bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/20 rounded-lg p-3">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Gamepad2 className="w-4 h-4 text-cyan-400" />
-              <h4 className="text-xs font-semibold text-cyan-400">Arcade Stats</h4>
+          <div className="bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/20 rounded-lg p-2">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Gamepad2 className="w-3 h-3 text-cyan-400" />
+              <h4 className="text-[10px] font-semibold text-cyan-400">Arcade Stats</h4>
             </div>
 
-            {/* Lifetime High Score - Prominent Display */}
+            {/* Lifetime High Score - Compact */}
             {(stats.user as any)?.lifetimeHighScore > 0 && (
-              <div className="mb-3 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg p-2.5">
+              <div className="mb-1.5 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded p-1.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Trophy className="w-4 h-4 text-yellow-400 animate-pulse" />
-                    <span className="text-[10px] font-semibold text-yellow-400/90">LIFETIME RECORD</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Zap className="w-3 h-3 text-yellow-400" />
-                    <span className="text-xl font-black text-yellow-400 font-mono">
-                      {((stats.user as any).lifetimeHighScore).toLocaleString()}
-                    </span>
-                  </div>
+                  <span className="text-[9px] font-semibold text-yellow-400/90">LIFETIME</span>
+                  <span className="text-sm font-black text-yellow-400 font-mono">
+                    {((stats.user as any).lifetimeHighScore).toLocaleString()}
+                  </span>
                 </div>
               </div>
             )}
             
-            {/* Bot Memory Match */}
-            <div className="mb-2">
-              <p className="text-[10px] text-cyan-400/70 mb-1.5">Bot Memory Match</p>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-0.5">
-                    {stats.stats?.perfectGame && <Zap className="w-3 h-3 text-yellow-400" />}
-                    <p className="text-base font-bold text-white">{stats.stats?.arcadeHighScore || 0}</p>
-                  </div>
-                  <p className="text-[10px] text-gray-400">High Score</p>
-                </div>
-                <div className="text-center">
-                  {stats.stats?.leaderboardTop3 ? (
-                    <>
-                      <p className="text-base font-bold text-yellow-400">🏆 Top</p>
-                      <p className="text-[10px] text-yellow-400/70">Rank</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-base font-bold text-white">-</p>
-                      <p className="text-[10px] text-gray-400">Rank</p>
-                    </>
-                  )}
-                </div>
-                <div className="text-center">
-                  {stats.stats?.perfectGame ? (
-                    <>
-                      <p className="text-base font-bold text-green-400">💯</p>
-                      <p className="text-[10px] text-green-400/70">Perfect</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-base font-bold text-white">-</p>
-                      <p className="text-[10px] text-gray-400">Perfect</p>
-                    </>
-                  )}
-                </div>
+            {/* Compact Game Stats */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[9px]">
+                <span className="text-cyan-400/70">Memory Match</span>
+                <span className="text-white font-bold">{stats.stats?.arcadeHighScore || 0}</span>
               </div>
+              <div className="flex items-center justify-between text-[9px]">
+                <span className="text-purple-400/70">Bot Battle</span>
+                <span className="text-white font-bold">{stats.stats?.botBattleHighScore || 0}</span>
+              </div>
+              {(stats.stats?.botSlotsHighScore || 0) > 0 && (
+                <div className="flex items-center justify-between text-[9px]">
+                  <span className="text-yellow-400/70">Jackpot 🎰</span>
+                  <span className="text-white font-bold">{stats.stats?.botSlotsHighScore || 0}</span>
+                </div>
+              )}
+              {(stats.stats?.botRunnerHighScore || 0) > 0 && (
+                <div className="flex items-center justify-between text-[9px]">
+                  <span className="text-green-400/70">Runner 👻</span>
+                  <span className="text-white font-bold">{stats.stats?.botRunnerHighScore || 0}</span>
+                </div>
+              )}
             </div>
-
-            {/* Bot Battle Arena */}
-            <div className="pt-2 border-t border-cyan-500/10">
-              <p className="text-[10px] text-purple-400/70 mb-1.5">Bot Battle Arena</p>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-0.5">
-                    {(stats.stats?.botBattleMaxStreak || 0) >= 10 && <Zap className="w-3 h-3 text-yellow-400" />}
-                    <p className="text-base font-bold text-white">{stats.stats?.botBattleHighScore || 0}</p>
-                  </div>
-                  <p className="text-[10px] text-gray-400">High Score</p>
-                </div>
-                <div className="text-center">
-                  {(stats.stats?.botBattleMaxStreak || 0) > 0 ? (
-                    <>
-                      <p className="text-base font-bold text-orange-400">🔥 {stats.stats?.botBattleMaxStreak}</p>
-                      <p className="text-[10px] text-orange-400/70">Streak</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-base font-bold text-white">-</p>
-                      <p className="text-[10px] text-gray-400">Streak</p>
-                    </>
-                  )}
-                </div>
-                <div className="text-center">
-                  {stats.stats?.botBattlePerfectGame ? (
-                    <>
-                      <p className="text-base font-bold text-green-400">💯</p>
-                      <p className="text-[10px] text-green-400/70">Flawless</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-base font-bold text-white">-</p>
-                      <p className="text-[10px] text-gray-400">Flawless</p>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Bot Jackpot Slots */}
-            {(stats.stats?.botSlotsHighScore || 0) > 0 && (
-              <div className="pt-2 border-t border-cyan-500/10">
-                <p className="text-[10px] text-yellow-400/70 mb-1.5">Bot Jackpot 🎰</p>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 mb-0.5">
-                      {(stats.stats?.botSlotsJackpots || 0) > 0 && <Zap className="w-3 h-3 text-yellow-400" />}
-                      <p className="text-base font-bold text-white">{stats.stats?.botSlotsHighScore || 0}</p>
-                    </div>
-                    <p className="text-[10px] text-gray-400">High Score</p>
-                  </div>
-                  <div className="text-center">
-                    {(stats.stats?.botSlotsJackpots || 0) > 0 ? (
-                      <>
-                        <p className="text-base font-bold text-yellow-400">🎰 {stats.stats?.botSlotsJackpots}</p>
-                        <p className="text-[10px] text-yellow-400/70">Jackpots</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-base font-bold text-white">-</p>
-                        <p className="text-[10px] text-gray-400">Jackpots</p>
-                      </>
-                    )}
-                  </div>
-                  <div className="text-center">
-                    {(stats.stats?.botSlotsCreditsWon || 0) > 0 ? (
-                      <>
-                        <p className="text-base font-bold text-purple-400">💎 {stats.stats?.botSlotsCreditsWon}</p>
-                        <p className="text-[10px] text-purple-400/70">Won</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-base font-bold text-white">-</p>
-                        <p className="text-[10px] text-gray-400">Won</p>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Bot Runner */}
-            {(stats.stats?.botRunnerHighScore || 0) > 0 && (
-              <div className="pt-2 border-t border-cyan-500/10">
-                <p className="text-[10px] text-green-400/70 mb-1.5">Bot Runner 👻</p>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 mb-0.5">
-                      {stats.stats?.botRunnerPerfectGame && <Zap className="w-3 h-3 text-yellow-400" />}
-                      <p className="text-base font-bold text-white">{stats.stats?.botRunnerHighScore || 0}</p>
-                    </div>
-                    <p className="text-[10px] text-gray-400">High Score</p>
-                  </div>
-                  <div className="text-center">
-                    {(stats.stats?.botRunnerGamesPlayed || 0) > 0 ? (
-                      <>
-                        <p className="text-base font-bold text-green-400">🎮 {stats.stats?.botRunnerGamesPlayed}</p>
-                        <p className="text-[10px] text-green-400/70">Games</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-base font-bold text-white">-</p>
-                        <p className="text-[10px] text-gray-400">Games</p>
-                      </>
-                    )}
-                  </div>
-                  <div className="text-center">
-                    {(stats.stats?.botRunnerTotalTasks || 0) > 0 ? (
-                      <>
-                        <p className="text-base font-bold text-blue-400">📋 {stats.stats?.botRunnerTotalTasks}</p>
-                        <p className="text-[10px] text-blue-400/70">Tasks</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-base font-bold text-white">-</p>
-                        <p className="text-[10px] text-gray-400">Tasks</p>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-            {stats.stats?.perfectGame && (
-              <div className="mt-2 pt-2 border-t border-cyan-500/20">
-                <div className="flex items-center justify-center gap-1.5 text-yellow-400">
-                  <Zap className="w-3 h-3 animate-pulse" />
-                  <p className="text-[10px] font-semibold">Perfect Game!</p>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
-        {/* Recent Achievements */}
+        {/* Recent Achievements - Compact */}
         {recentAchievements.length > 0 && (
-          <div className="space-y-2">
-            <h4 className="text-xs font-semibold text-yellow-400 flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <h4 className="text-[10px] font-semibold text-yellow-400 flex items-center gap-1">
               <Star className="w-3 h-3" />
               Recent Achievements
             </h4>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {recentAchievements.map((ua: any) => (
                 <div 
                   key={ua.id}
-                  className="bg-white/5 backdrop-blur-sm rounded-lg p-2 border border-white/10 hover:border-yellow-500/30 transition-colors"
+                  className="bg-white/5 backdrop-blur-sm rounded p-1.5 border border-white/10 hover:border-yellow-500/30 transition-colors"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start gap-2 flex-1">
-                      <div className="text-xl">{ua.achievement.icon}</div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <div className="text-base">{ua.achievement.icon}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-white truncate">
+                        <p className="text-[10px] font-semibold text-white truncate">
                           {ua.achievement.name}
-                        </p>
-                        <p className="text-[10px] text-gray-400 line-clamp-1">
-                          {ua.achievement.description}
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-0.5">
-                      <Badge className={`${getTierBadge(ua.achievement.tier)} border text-[10px] px-1.5 py-0`}>
-                        {ua.achievement.points}
-                      </Badge>
-                    </div>
+                    <Badge className={`${getTierBadge(ua.achievement.tier)} border text-[9px] px-1.5 py-0`}>
+                      {ua.achievement.points}
+                    </Badge>
                   </div>
                 </div>
               ))}
@@ -387,22 +228,22 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
 
         {/* No achievements yet */}
         {achievementCount === 0 && (
-          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10 text-center">
-            <Trophy className="w-8 h-8 text-yellow-400/50 mx-auto mb-2" />
-            <p className="text-sm text-gray-300 font-semibold mb-1">No achievements yet!</p>
-            <p className="text-[10px] text-gray-400">
-              Start hiring bots and chatting to unlock achievements!
+          <div className="bg-white/5 backdrop-blur-sm rounded p-3 border border-white/10 text-center">
+            <Trophy className="w-6 h-6 text-yellow-400/50 mx-auto mb-1" />
+            <p className="text-[10px] text-gray-300 font-semibold mb-0.5">No achievements yet!</p>
+            <p className="text-[9px] text-gray-400">
+              Start hiring bots and chatting to unlock!
             </p>
           </div>
         )}
 
-        {/* Progress Bar */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-[10px]">
+        {/* Progress Bar - Compact */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-[9px]">
             <span className="text-gray-400">Achievement Progress</span>
             <span className="text-yellow-400 font-semibold">{achievementCount}/{totalAchievements}</span>
           </div>
-          <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+          <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-full transition-all duration-500"
               style={{ width: `${totalAchievements > 0 ? (achievementCount / totalAchievements) * 100 : 0}%` }}
