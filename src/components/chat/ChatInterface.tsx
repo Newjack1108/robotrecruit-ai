@@ -10,6 +10,7 @@ import { RemindersPanel } from '@/components/chat/RemindersPanel';
 import { IntroduceButton } from '@/components/chat/IntroduceButton';
 import { ConversationHistory } from '@/components/chat/ConversationHistory';
 import { BotToolsPanel } from '@/components/chat/BotToolsPanel';
+import { StarterPrompts } from '@/components/chat/StarterPrompts';
 import { detectIngredients } from '@/lib/ingredient-parser';
 import { parseEmailFromMessage } from '@/lib/email-parser';
 import { EmailActions, EmailPreview } from './EmailActions';
@@ -67,6 +68,7 @@ export function ChatInterface({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showStarterPrompts, setShowStarterPrompts] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [conversationId, setConversationId] = useState<string | undefined>(initialConversationId);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -291,8 +293,18 @@ export function ChatInterface({
     return { safe: true };
   };
 
+  const handleStarterPromptClick = (prompt: string) => {
+    setInput(prompt);
+    setShowStarterPrompts(false);
+  };
+
   const sendMessage = async () => {
     if ((!input.trim() && !selectedImage && !selectedFile) || isLoading) return;
+
+    // Hide starter prompts when user sends first message
+    if (showStarterPrompts) {
+      setShowStarterPrompts(false);
+    }
 
     // Basic content safety check
     if (input.trim()) {
@@ -1001,6 +1013,16 @@ export function ChatInterface({
               >
                 <X className="w-4 h-4" />
               </Button>
+            </div>
+          )}
+
+          {/* Starter Prompts - Show when no messages */}
+          {messages.length === 0 && showStarterPrompts && (
+            <div className="mb-4">
+              <StarterPrompts 
+                botSlug={botSlug} 
+                onPromptClick={handleStarterPromptClick} 
+              />
             </div>
           )}
 

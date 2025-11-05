@@ -44,6 +44,9 @@ export default async function HomePage() {
       "Email Bot - Professional Email Writing",
       "Social Media Bot - Content Creation",
       "Manual Bot - Instruction Manual Assistant",
+      "ApplyBot - CV & Cover Letter Writing",
+      "Professional Resume Creation",
+      "ATS-Friendly CV Formatting",
       "Custom Bot Training",
       "Multiple Specialized Bots",
       "Arcade Games & Achievements",
@@ -505,6 +508,66 @@ export default async function HomePage() {
                   Works with <strong className="text-white">any product manual</strong> - appliances, furniture, electronics, tools, gadgets, and more!
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ApplyBot Section - Compact Career Focus */}
+        <section className="py-12 bg-gradient-to-b from-blue-950/20 via-indigo-950/10 to-transparent">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/40 shadow-xl">
+                <CardContent className="p-8">
+                  <div className="grid md:grid-cols-3 gap-8 items-center">
+                    {/* Left: Bot Avatar */}
+                    <div className="text-center">
+                      <div className="relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-xl overflow-hidden">
+                        <Image 
+                          src="/bots/apply-bot-avatar.png" 
+                          alt="ApplyBot Avatar"
+                          width={96}
+                          height={96}
+                          className="object-cover"
+                        />
+                      </div>
+                      <h3 className="text-2xl font-orbitron font-bold text-white">
+                        Apply<span className="text-blue-400">Bot</span>
+                      </h3>
+                      <p className="text-sm text-gray-400 mt-1">CV & Cover Letter Expert</p>
+                    </div>
+
+                    {/* Right: Value Props */}
+                    <div className="md:col-span-2 space-y-4">
+                      <p className="text-gray-300 text-lg">
+                        <span className="text-blue-400 font-bold">Stand out</span> from the competition with professional CVs and compelling cover letters.
+                      </p>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-300">ATS-Friendly Formats</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-300">Tailored Cover Letters</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-300">Export as PDF</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-300">Pro Tier Access</span>
+                        </div>
+                      </div>
+                      <Link href="/sign-up">
+                        <Button className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold">
+                          Start Your CV <Rocket className="w-4 h-4 ml-1 inline" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>

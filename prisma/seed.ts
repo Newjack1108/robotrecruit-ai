@@ -290,6 +290,29 @@ async function main() {
     },
   })
 
+  // Create Apply Bot
+  await prisma.bot.upsert({
+    where: { slug: 'apply-bot' },
+    update: {
+      imageUrl: '/bots/apply-bot.png',
+      avatarUrl: '/bots/apply-bot-avatar.png',
+      description: '🎯 Land your dream job with professional CVs and cover letters! I\'m your personal career assistant who helps you stand out from the crowd. Expert in ATS-friendly CV writing, persuasive cover letters, and tailoring applications for specific roles. I\'ll help you highlight your achievements, use powerful action verbs, and format everything professionally. Perfect for job seekers, career changers, graduates, and professionals looking to advance. Upload existing CVs for review, or start from scratch - I\'ll guide you every step of the way. Export your polished CV as PDF when ready!',
+      dataExport: true,
+    },
+    create: {
+      name: 'Apply Bot',
+      slug: 'apply-bot',
+      description: '🎯 Land your dream job with professional CVs and cover letters! I\'m your personal career assistant who helps you stand out from the crowd. Expert in ATS-friendly CV writing, persuasive cover letters, and tailoring applications for specific roles. I\'ll help you highlight your achievements, use powerful action verbs, and format everything professionally. Perfect for job seekers, career changers, graduates, and professionals looking to advance. Upload existing CVs for review, or start from scratch - I\'ll guide you every step of the way. Export your polished CV as PDF when ready!',
+      imageUrl: '/bots/apply-bot.png',
+      avatarUrl: '/bots/apply-bot-avatar.png',
+      openaiAssistantId: 'asst_raCoX8L5hPhwYAdLra5VkDfM',
+      isSystemBot: true,
+      knowledgeArea: 'CV Writing & Career Applications',
+      tier: 2, // Pro only
+      dataExport: true, // Enable PDF export
+    },
+  })
+
   console.log('Database seeded with all bots!')
 }
 
