@@ -17,18 +17,18 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
+    fetchStats(true); // Initial load with loading state
     
     // Refresh stats when achievements are unlocked
     const handleAchievementUnlock = () => {
       console.log('[ProfileStatsCard] Achievement unlocked, refreshing stats...');
-      fetchStats();
+      fetchStats(false); // Refresh without loading state
     };
     
     window.addEventListener('achievementUnlocked', handleAchievementUnlock);
     
     // Also poll every 15 seconds to catch any updates
-    const interval = setInterval(fetchStats, 15000);
+    const interval = setInterval(() => fetchStats(false), 15000);
     
     return () => {
       window.removeEventListener('achievementUnlocked', handleAchievementUnlock);
@@ -36,9 +36,11 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
     };
   }, []);
 
-  async function fetchStats() {
+  async function fetchStats(showLoading = false) {
     try {
-      setIsLoading(true);
+      if (showLoading) {
+        setIsLoading(true);
+      }
       const response = await fetch('/api/user/stats');
       if (response.ok) {
         const json = await response.json();
@@ -47,7 +49,9 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     } finally {
-      setIsLoading(false);
+      if (showLoading) {
+        setIsLoading(false);
+      }
     }
   }
 

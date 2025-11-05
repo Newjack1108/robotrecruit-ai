@@ -27,14 +27,14 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
   const [isCheckingIn, setIsCheckingIn] = useState(false);
 
   useEffect(() => {
-    fetchStreakData();
+    fetchStreakData(true); // Initial load with loading state
 
     // Refresh every minute
-    const interval = setInterval(fetchStreakData, 60000);
+    const interval = setInterval(() => fetchStreakData(false), 60000);
     return () => clearInterval(interval);
   }, []);
 
-  async function fetchStreakData() {
+  async function fetchStreakData(showLoading = false) {
     try {
       const response = await fetch('/api/streaks');
       if (response.ok) {
@@ -44,7 +44,9 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
     } catch (error) {
       console.error('Failed to fetch streak data:', error);
     } finally {
-      setIsLoading(false);
+      if (showLoading) {
+        setIsLoading(false);
+      }
     }
   }
 

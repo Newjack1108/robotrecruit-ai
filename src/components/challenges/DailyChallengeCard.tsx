@@ -33,14 +33,14 @@ export function DailyChallengeCard({ onChallengeComplete }: DailyChallengeCardPr
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchTodaysChallenge();
+    fetchTodaysChallenge(true); // Initial load with loading state
 
     // Refresh every 30 seconds to check for progress updates
-    const interval = setInterval(fetchTodaysChallenge, 30000);
+    const interval = setInterval(() => fetchTodaysChallenge(false), 30000);
     return () => clearInterval(interval);
   }, []);
 
-  async function fetchTodaysChallenge() {
+  async function fetchTodaysChallenge(showLoading = false) {
     try {
       const response = await fetch('/api/challenges/today');
       if (response.ok) {
@@ -56,7 +56,9 @@ export function DailyChallengeCard({ onChallengeComplete }: DailyChallengeCardPr
     } catch (error) {
       console.error('Failed to fetch challenge:', error);
     } finally {
-      setIsLoading(false);
+      if (showLoading) {
+        setIsLoading(false);
+      }
     }
   }
 

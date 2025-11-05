@@ -215,17 +215,24 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Profile & Achievements Card */}
-      <ProfileStatsCard 
-        userName={user.clerkId}
-        userTier={effectiveTier}
-      />
+      {/* Stats & Community Section - Condensed Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Profile & Achievements - 2 columns */}
+        <div className="lg:col-span-2">
+          <ProfileStatsCard 
+            userName={user.clerkId}
+            userTier={effectiveTier}
+          />
+        </div>
 
-      {/* Daily Challenge & Streak Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DailyChallengeCard />
-        <StreakCounter variant="dashboard" />
+        {/* Daily Streak - 1 column */}
+        <div>
+          <StreakCounter variant="dashboard" />
+        </div>
       </div>
+
+      {/* Daily Challenge - Full Width Below */}
+      <DailyChallengeCard />
 
       {/* Hired Bots */}
       {hiredBots.length > 0 && (
