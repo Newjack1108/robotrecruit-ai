@@ -86,8 +86,8 @@ export function SubscriptionPlans({
     {
       id: 2,
       name: 'Pro',
-      price: '£9.99',
-      priceValue: 9.99,
+      price: '£7.99',
+      priceValue: 7.99,
       description: 'Perfect for professionals',
       features: STRIPE_PLANS.pro.features,
       buttonText: 'Upgrade to Pro',
@@ -98,8 +98,8 @@ export function SubscriptionPlans({
     {
       id: 3,
       name: 'Premium',
-      price: '£19.99',
-      priceValue: 19.99,
+      price: '£16.99',
+      priceValue: 16.99,
       description: 'Ultimate power and flexibility',
       features: STRIPE_PLANS.premium.features,
       buttonText: 'Upgrade to Premium',

@@ -8,7 +8,7 @@ export const STRIPE_PLANS = {
     name: 'Pro',
     tier: 2,
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!, // Monthly price ID from Stripe
-    price: 9.99, // £9.99/month
+    price: 7.99, // £7.99/month
     currency: 'GBP',
     features: [
       'Unlimited bot conversations',
@@ -24,7 +24,7 @@ export const STRIPE_PLANS = {
     name: 'Premium',
     tier: 3,
     priceId: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID!, // Monthly price ID from Stripe
-    price: 19.99, // £19.99/month
+    price: 16.99, // £16.99/month
     currency: 'GBP',
     features: [
       'Everything in Pro',

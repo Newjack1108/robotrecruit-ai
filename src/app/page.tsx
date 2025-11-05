@@ -701,12 +701,12 @@ export default async function HomePage() {
                 </div>
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-2xl"></div>
-                  <Card className="relative bg-gray-900/80 backdrop-blur-xl border-cyan-500/50">
+                    <Card className="relative bg-gray-900/80 backdrop-blur-xl border-cyan-500/50">
                     <CardContent className="p-8 text-center">
                       <div className="text-6xl mb-4">🎁</div>
                       <h4 className="text-2xl font-orbitron font-bold text-white mb-2">7-Day Free Trial</h4>
                       <p className="text-cyan-400 text-lg mb-4">No credit card required</p>
-                      <p className="text-gray-400 text-sm">Upgrade to Pro ($9.99/mo) or Premium ($29.99/mo) anytime</p>
+                      <p className="text-gray-400 text-sm">Upgrade to Pro (£7.99/mo) or Premium (£16.99/mo) anytime</p>
                     </CardContent>
                   </Card>
                 </div>
