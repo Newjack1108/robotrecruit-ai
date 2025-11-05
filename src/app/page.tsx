@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Bot, Zap, Shield, Sparkles, CheckCircle, Star, Users, 
   Rocket, Heart, Headphones, TrendingUp, Gift, Wrench, ChevronDown 
@@ -405,8 +406,14 @@ export default async function HomePage() {
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                       {/* Left: Bot Icon/Visual */}
                       <div className="text-center md:text-left">
-                        <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-3xl mb-6 shadow-2xl">
-                          <span className="text-7xl">📖</span>
+                        <div className="relative inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-3xl mb-6 shadow-2xl overflow-hidden">
+                          <Image 
+                            src="/bots/manual-bot-avatar.png" 
+                            alt="Manual Bot Avatar"
+                            width={128}
+                            height={128}
+                            className="object-cover"
+                          />
                         </div>
                         <h3 className="text-4xl font-orbitron font-bold text-white mb-4">
                           Meet <span className="text-cyan-400">Manual Bot</span>
