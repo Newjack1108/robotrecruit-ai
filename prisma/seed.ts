@@ -282,7 +282,7 @@ async function main() {
       description: '📖 Never struggle with confusing instruction manuals again! I\'m your personal manual assistant that turns frustrating product documentation into clear, easy-to-follow guidance. Upload any instruction manual (PDF, DOC, DOCX) and I\'ll help you find exactly what you need - no more flipping through endless pages! Expert in answering questions about appliances, furniture assembly, electronics, power tools, kitchen gadgets, smart home devices, and any product with a manual. I provide step-by-step troubleshooting, quick reference guides for common tasks, maintenance schedule extraction, and translate technical jargon into plain English. Perfect for DIY enthusiasts, homeowners, tech users, and anyone who\'s ever thrown a manual across the room in frustration. Upload your manual and ask me anything - I\'ll find the answer in seconds!',
       imageUrl: '/bots/manual-bot.png',
       avatarUrl: '/bots/manual-bot-avatar.png',
-      openaiAssistantId: 'asst_REPLACE_WITH_YOUR_MANUAL_BOT_ID',
+      openaiAssistantId: 'asst_DwU48uSPcMb1GPfuNpqYUdB2',
       isSystemBot: true,
       knowledgeArea: 'Instruction Manuals & Product Documentation',
       tier: 1,
