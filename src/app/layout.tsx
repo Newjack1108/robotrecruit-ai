@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Orbitron } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from 'sonner';
 import "./globals.css";
 
 export const dynamic = 'force-dynamic';
@@ -113,6 +114,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased`}
         >
           {children}
+          <Toaster richColors position="top-right" />
         </body>
       </html>
     </ClerkProvider>
