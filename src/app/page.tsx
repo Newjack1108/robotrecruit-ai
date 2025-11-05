@@ -42,6 +42,7 @@ export default async function HomePage() {
       "24/7 AI Bot Availability",
       "Email Bot - Professional Email Writing",
       "Social Media Bot - Content Creation",
+      "Manual Bot - Instruction Manual Assistant",
       "Custom Bot Training",
       "Multiple Specialized Bots",
       "Arcade Games & Achievements",
@@ -49,6 +50,8 @@ export default async function HomePage() {
       "Image Recognition Power-Up",
       "Voice Response Power-Up",
       "File Upload Power-Up",
+      "PDF Upload & Analysis",
+      "Product Manual Troubleshooting",
       "Web Search Integration",
       "Scheduling Assistant",
       "Data Export"
@@ -319,6 +322,180 @@ export default async function HomePage() {
                 </div>
                 <p className="text-center text-cyan-400 font-semibold mt-6">
                   👆 One gives you noise. One solves your problem.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Manual Bot Section - Frustration Solver */}
+        <section className="py-20 bg-gradient-to-b from-orange-950/30 via-red-950/20 to-transparent">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              {/* Problem Statement */}
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 bg-red-500/20 px-6 py-3 rounded-full border border-red-500/50 mb-6">
+                  <span className="text-4xl">😤</span>
+                  <span className="text-red-300 font-orbitron font-bold text-lg">COMMON FRUSTRATION</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-orbitron font-bold text-white mb-6">
+                  Frustrated by Confusing <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Instruction Manuals</span>?
+                </h2>
+                <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                  We've all been there. You buy a new product and the manual is impossible to understand.
+                </p>
+              </div>
+
+              {/* Problem Grid */}
+              <div className="grid md:grid-cols-2 gap-6 mb-12">
+                <Card className="bg-red-900/20 backdrop-blur-xl border-red-500/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="text-4xl">🔍</div>
+                      <div>
+                        <h3 className="text-xl font-orbitron font-bold text-red-300 mb-2">Can't Find the Answer?</h3>
+                        <p className="text-gray-300">Flipping through 50+ pages trying to find one simple instruction...</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-red-900/20 backdrop-blur-xl border-red-500/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="text-4xl">🤯</div>
+                      <div>
+                        <h3 className="text-xl font-orbitron font-bold text-red-300 mb-2">Technical Jargon Overload?</h3>
+                        <p className="text-gray-300">Complex terminology that makes no sense to normal people...</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-red-900/20 backdrop-blur-xl border-red-500/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="text-4xl">⏰</div>
+                      <div>
+                        <h3 className="text-xl font-orbitron font-bold text-red-300 mb-2">Wasting 30+ Minutes?</h3>
+                        <p className="text-gray-300">Spending forever searching for a simple answer that should take seconds...</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-red-900/20 backdrop-blur-xl border-red-500/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="text-4xl">📑</div>
+                      <div>
+                        <h3 className="text-xl font-orbitron font-bold text-red-300 mb-2">Lost the Manual?</h3>
+                        <p className="text-gray-300">That appliance from 3 years ago, manual nowhere to be found...</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Solution - Manual Bot */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-3xl"></div>
+                <Card className="relative bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-cyan-500/50 shadow-2xl overflow-hidden">
+                  <CardContent className="p-12">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                      {/* Left: Bot Icon/Visual */}
+                      <div className="text-center md:text-left">
+                        <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-3xl mb-6 shadow-2xl">
+                          <span className="text-7xl">📖</span>
+                        </div>
+                        <h3 className="text-4xl font-orbitron font-bold text-white mb-4">
+                          Meet <span className="text-cyan-400">Manual Bot</span>
+                        </h3>
+                        <p className="text-2xl text-gray-300 italic mb-6">
+                          "Your instruction manual assistant"
+                        </p>
+                        <Link href="/sign-up">
+                          <Button className="px-8 py-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-lg font-bold rounded-xl shadow-xl transition-all hover:scale-105">
+                            <Rocket className="w-5 h-5 mr-2" />
+                            Try Manual Bot Free
+                          </Button>
+                        </Link>
+                      </div>
+
+                      {/* Right: Features */}
+                      <div className="space-y-4">
+                        <h4 className="text-2xl font-orbitron font-bold text-white mb-6">
+                          Stop Struggling. Get Instant Answers.
+                        </h4>
+                        <ul className="space-y-4">
+                          <li className="flex items-start gap-3">
+                            <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                            <div>
+                              <span className="text-white font-semibold">Upload any instruction manual PDF</span>
+                              <p className="text-gray-400 text-sm">Appliances, furniture, electronics, tools - anything!</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                            <div>
+                              <span className="text-white font-semibold">Ask questions in plain English</span>
+                              <p className="text-gray-400 text-sm">No more hunting through pages - just ask!</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                            <div>
+                              <span className="text-white font-semibold">Get step-by-step guidance</span>
+                              <p className="text-gray-400 text-sm">Clear instructions, no confusing jargon</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                            <div>
+                              <span className="text-white font-semibold">Troubleshooting made easy</span>
+                              <p className="text-gray-400 text-sm">Fix problems fast with diagnostic flows</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                            <div>
+                              <span className="text-white font-semibold">Quick reference guides</span>
+                              <p className="text-gray-400 text-sm">Save time with instant common task summaries</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Example Use Case */}
+                    <div className="mt-12 pt-8 border-t border-gray-700">
+                      <h5 className="text-lg font-orbitron font-bold text-cyan-400 mb-4 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        Real Example: Washing Machine Manual
+                      </h5>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                          <p className="text-red-300 font-semibold mb-2 text-sm">❌ Without Manual Bot:</p>
+                          <p className="text-gray-300 text-sm italic">
+                            *Spends 20 minutes flipping through manual, still can't find how to clean the filter...*
+                          </p>
+                        </div>
+                        <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-4">
+                          <p className="text-cyan-300 font-semibold mb-2 text-sm">✅ With Manual Bot:</p>
+                          <p className="text-gray-200 text-sm italic">
+                            "How do I clean the filter?" → Instant answer with step-by-step photos from page 47!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* CTA */}
+              <div className="text-center mt-8">
+                <p className="text-gray-400 text-lg">
+                  Works with <strong className="text-white">any product manual</strong> - appliances, furniture, electronics, tools, gadgets, and more!
                 </p>
               </div>
             </div>
