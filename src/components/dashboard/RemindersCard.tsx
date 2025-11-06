@@ -117,7 +117,7 @@ export function RemindersCard() {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-orange-900/30 to-amber-900/30 border-orange-500/30">
+    <Card className="bg-gradient-to-br from-orange-900/30 to-amber-900/30 border-orange-500/30 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-white flex items-center gap-2">
@@ -142,7 +142,7 @@ export function RemindersCard() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-1 overflow-y-auto">
         {reminders.length === 0 ? (
           <div className="text-center py-6">
             <Bell className="w-12 h-12 text-gray-600 mx-auto mb-2" />

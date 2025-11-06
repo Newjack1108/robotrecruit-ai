@@ -9,10 +9,7 @@ import Link from 'next/link';
 import { BotHireCard } from '@/components/dashboard/BotHireCard';
 import { CustomBotCard } from '@/components/dashboard/CustomBotCard';
 import { TutorialWrapper } from '@/components/tutorial/TutorialWrapper';
-import { ProfileStatsCard } from '@/components/dashboard/ProfileStatsCard';
-import { DailyChallengeCard } from '@/components/challenges/DailyChallengeCard';
-import { StreakCounter } from '@/components/streaks/StreakCounter';
-import { RemindersCard } from '@/components/dashboard/RemindersCard';
+import { DashboardStatsSection } from '@/components/dashboard/DashboardStatsSection';
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -216,31 +213,11 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats & Community Section - Neat Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Profile & Achievements */}
-        <div className="h-full">
-          <ProfileStatsCard 
-            userName={user.clerkId}
-            userTier={effectiveTier}
-          />
-        </div>
-
-        {/* Daily Streak */}
-        <div className="h-full">
-          <StreakCounter variant="dashboard" />
-        </div>
-
-        {/* Daily Challenge */}
-        <div className="h-full">
-          <DailyChallengeCard />
-        </div>
-      </div>
-
-      {/* Reminders - Full Width */}
-      <div className="mt-4">
-        <RemindersCard />
-      </div>
+      {/* Stats & Community Section - Collapsible */}
+      <DashboardStatsSection 
+        userName={user.clerkId}
+        userTier={effectiveTier}
+      />
 
       {/* Hired Bots */}
       {hiredBots.length > 0 && (
