@@ -27,11 +27,22 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const showCompleted = searchParams.get('showCompleted') === 'true';
+    const includeCompleted = searchParams.get('includeCompleted') === 'true';
 
     const reminders = await prisma.reminder.findMany({
       where: {
         userId: user.id,
-        ...(showCompleted ? {} : { isCompleted: false }),
+        ...(includeCompleted ? {} : showCompleted ? {} : { isCompleted: false }),
+      },
+      include: {
+        bot: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            avatarUrl: true,
+          },
+        },
       },
       orderBy: {
         reminderTime: 'asc',

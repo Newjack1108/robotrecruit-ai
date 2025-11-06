@@ -12,6 +12,7 @@ import { TutorialWrapper } from '@/components/tutorial/TutorialWrapper';
 import { ProfileStatsCard } from '@/components/dashboard/ProfileStatsCard';
 import { DailyChallengeCard } from '@/components/challenges/DailyChallengeCard';
 import { StreakCounter } from '@/components/streaks/StreakCounter';
+import { RemindersCard } from '@/components/dashboard/RemindersCard';
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -225,10 +226,11 @@ export default async function DashboardPage() {
           />
         </div>
 
-        {/* Right Column: Streak + Community Builder stacked */}
+        {/* Right Column: Streak + Community Builder + Reminders stacked */}
         <div className="flex flex-col gap-4">
           <StreakCounter variant="dashboard" />
           <DailyChallengeCard />
+          <RemindersCard />
         </div>
       </div>
 
