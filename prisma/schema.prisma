@@ -74,6 +74,9 @@ model User {
   referredBy          Referral?        @relation("ReferredBy")
   referralCode        String?          @unique // User's personal referral code
   welcomeBonusGiven   Boolean          @default(false) // Track if referred user got welcome bonus
+  
+  // CV Profiles (for Apply Bot)
+  cvProfiles          CvProfile[]
 }
 
 model PromoCode {
@@ -543,4 +546,17 @@ model Referral {
   @@index([referralCode])
   @@index([invitedUserId])
   @@index([status])
+}
+
+model CvProfile {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String   // Profile name (e.g., "Software Engineer Profile")
+  data        Json     // CV profile data (fullName, contactInfo, workExperience, etc.)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([createdAt])
 }

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ChefBotTools } from './tools/ChefBotTools';
 import { FishingBotTools } from './tools/FishingBotTools';
 import { BeeBotTools } from './tools/BeeBotTools';
+import { ApplyBotTools } from './tools/ApplyBotTools';
 
 interface BotToolsPanelProps {
   botSlug: string;
@@ -20,6 +21,7 @@ const BOT_TOOLS_MAP: { [key: string]: boolean } = {
   'chef-bot': true,
   'fishing-bot': true,
   'bee-bot': true,
+  'apply-bot': true,
 };
 
 export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClose, itemsToAdd }: BotToolsPanelProps) {
@@ -203,6 +205,15 @@ export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClo
                   onDataChange={handleDataChange}
                   initialData={{
                     inspections: toolsData.inspections,
+                  }}
+                />
+              )}
+              {botSlug === 'apply-bot' && (
+                <ApplyBotTools
+                  conversationId={conversationId}
+                  onDataChange={handleDataChange}
+                  initialData={{
+                    cv_profile: toolsData.cv_profile,
                   }}
                 />
               )}

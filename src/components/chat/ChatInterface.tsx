@@ -1097,7 +1097,7 @@ export function ChatInterface({
               />
               
               {/* Bot Tools Button - Only for bots with tools */}
-              {(botSlug === 'chef-bot' || botSlug === 'fishing-bot' || botSlug === 'bee-bot') && (
+              {(botSlug === 'chef-bot' || botSlug === 'fishing-bot' || botSlug === 'bee-bot' || botSlug === 'apply-bot') && (
                 <Button 
                   onClick={() => setShowBotTools(!showBotTools)} 
                   className={`h-12 w-12 rounded-full shadow-lg flex-shrink-0 ${

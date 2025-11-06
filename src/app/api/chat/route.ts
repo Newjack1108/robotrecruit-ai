@@ -283,12 +283,47 @@ export async function POST(req: Request) {
               const latest = tool.data[0];
               toolContext += `  • Latest: Strength ${latest.colonyStrength}/5, Queen ${latest.queenSpotted ? 'spotted' : 'not seen'}\n`;
             }
+          } else if (tool.toolType === 'cv_profile' && typeof tool.data === 'object') {
+            const cv = tool.data as any;
+            toolContext += `- CV Profile Data:\n`;
+            if (cv.fullName) toolContext += `  • Name: ${cv.fullName}\n`;
+            if (cv.contactInfo) toolContext += `  • Contact: ${cv.contactInfo}\n`;
+            if (cv.professionalSummary) {
+              toolContext += `  • Professional Summary: ${cv.professionalSummary.substring(0, 200)}${cv.professionalSummary.length > 200 ? '...' : ''}\n`;
+            }
+            if (cv.workExperience && Array.isArray(cv.workExperience) && cv.workExperience.length > 0) {
+              toolContext += `  • Work Experience: ${cv.workExperience.length} position(s)\n`;
+              cv.workExperience.forEach((exp: any, idx: number) => {
+                if (exp.company || exp.role) {
+                  toolContext += `    ${idx + 1}. ${exp.role || 'Position'} at ${exp.company || 'Company'}`;
+                  if (exp.duration) toolContext += ` (${exp.duration})`;
+                  toolContext += '\n';
+                }
+              });
+            }
+            if (cv.skillsQualifications) {
+              toolContext += `  • Skills & Qualifications: ${cv.skillsQualifications.substring(0, 150)}${cv.skillsQualifications.length > 150 ? '...' : ''}\n`;
+            }
+            if (cv.jobDescription) {
+              toolContext += `  • Target Job Description: ${cv.jobDescription.substring(0, 300)}${cv.jobDescription.length > 300 ? '...' : ''}\n`;
+            }
           }
           
           toolContext += '\n';
         });
 
         toolContext += '[INSTRUCTION]: Reference this tools data when relevant to provide context-aware responses. You can suggest using tools or updating data when appropriate.\n';
+        
+        // Special instruction for Apply Bot when CV profile data is available
+        if (bot.slug === 'apply-bot' && toolData.some((t: any) => t.toolType === 'cv_profile')) {
+          toolContext += '\n[APPLY BOT SPECIFIC]: Use the CV profile data above to generate tailored CVs and cover letters. When creating documents:\n';
+          toolContext += '- Use the full name and contact information provided\n';
+          toolContext += '- Incorporate the professional summary and work experience details\n';
+          toolContext += '- Highlight relevant skills and qualifications\n';
+          toolContext += '- Tailor the content to match the target job description if provided\n';
+          toolContext += '- Ensure ATS-friendly formatting and keyword optimization\n';
+        }
+        
         enhancedMessage = toolContext + enhancedMessage;
       }
     }
