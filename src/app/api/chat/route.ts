@@ -118,6 +118,15 @@ export async function POST(req: Request) {
       return new NextResponse('Upgrade required to access this bot', { status: 403 });
     }
 
+    // Check if assistant ID is configured (do this early before creating conversation)
+    if (!bot.openaiAssistantId || bot.openaiAssistantId.includes('REPLACE')) {
+      console.error('[CHAT_ERROR] Bot missing OpenAI Assistant ID:', { botId: bot.id, botSlug: bot.slug, assistantId: bot.openaiAssistantId });
+      return new NextResponse(
+        'This bot is not fully configured yet. Please contact an administrator to set up the OpenAI Assistant ID.',
+        { status: 503 }
+      );
+    }
+
     let conversation;
     let threadId: string | undefined;
 
@@ -177,14 +186,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // Check if assistant ID is configured
-    if (!bot.openaiAssistantId || bot.openaiAssistantId.includes('REPLACE')) {
-      return new NextResponse(
-        'This bot is not fully configured yet. Please contact an administrator to set up the OpenAI Assistant ID.',
-        { status: 503 }
-      );
-    }
-
     // Check if image is provided but bot doesn't have image recognition enabled
     if (imageUrl && !bot.imageRecognition) {
       return new NextResponse(
@@ -201,6 +202,8 @@ export async function POST(req: Request) {
     }
 
     console.log('[CHAT_DEBUG] About to send message with threadId:', threadId);
+    console.log('[CHAT_DEBUG] Bot assistant ID:', bot.openaiAssistantId);
+    console.log('[CHAT_DEBUG] Bot slug:', bot.slug);
 
     // Add user context for Email Bot
     let userContext = '';
@@ -290,13 +293,37 @@ export async function POST(req: Request) {
       }
     }
 
-    const assistantResponse = await sendMessage(
-      threadId,
-      bot.openaiAssistantId,
-      enhancedMessage,
-      imageUrl,
-      fileId
-    );
+    let assistantResponse: string;
+    try {
+      console.log('[CHAT_DEBUG] Calling sendMessage with:', {
+        threadId,
+        assistantId: bot.openaiAssistantId,
+        hasImage: !!imageUrl,
+        hasFile: !!fileId,
+        messageLength: enhancedMessage.length,
+      });
+      
+      assistantResponse = await sendMessage(
+        threadId,
+        bot.openaiAssistantId,
+        enhancedMessage,
+        imageUrl,
+        fileId
+      );
+      
+      console.log('[CHAT_DEBUG] Received assistant response, length:', assistantResponse?.length || 0);
+    } catch (error) {
+      console.error('[CHAT_ERROR] Failed to send message to OpenAI:', error);
+      if (error instanceof Error) {
+        console.error('[CHAT_ERROR] OpenAI error details:', {
+          message: error.message,
+          name: error.name,
+          stack: error.stack,
+        });
+      }
+      // Re-throw to be caught by outer catch block
+      throw error;
+    }
 
     const assistantMessage = await prisma.message.create({
       data: {
@@ -343,23 +370,42 @@ export async function POST(req: Request) {
       message: assistantMessage,
     });
   } catch (error) {
-    console.error('[CHAT_ERROR]', error);
+    // Enhanced error logging
+    console.error('[CHAT_ERROR] Full error:', error);
+    console.error('[CHAT_ERROR] Error type:', typeof error);
+    console.error('[CHAT_ERROR] Error instanceof Error:', error instanceof Error);
+    
+    if (error instanceof Error) {
+      console.error('[CHAT_ERROR] Error message:', error.message);
+      console.error('[CHAT_ERROR] Error stack:', error.stack);
+      
+      // Log additional properties if available
+      if ('cause' in error) {
+        console.error('[CHAT_ERROR] Error cause:', (error as any).cause);
+      }
+    } else {
+      console.error('[CHAT_ERROR] Error object:', JSON.stringify(error, null, 2));
+    }
     
     // Provide user-friendly error messages
-    const errorMessage = error instanceof Error ? error.message : 'Internal Error';
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorString = errorMessage.toLowerCase();
     
     // Check for common OpenAI errors and provide friendly messages
-    if (errorMessage.includes('No assistant found') || errorMessage.includes('assistant')) {
+    if (errorString.includes('no assistant found') || errorString.includes('assistant')) {
       return new NextResponse('This bot is temporarily unavailable. Please try another bot or contact support.', { status: 503 });
     }
-    if (errorMessage.includes('No thread found') || errorMessage.includes('thread')) {
+    if (errorString.includes('no thread found') || errorString.includes('thread')) {
       return new NextResponse('Connection lost. Please refresh the page and start a new conversation.', { status: 500 });
     }
-    if (errorMessage.includes('rate_limit')) {
+    if (errorString.includes('rate_limit') || errorString.includes('rate limit')) {
       return new NextResponse('We\'re experiencing high traffic. Please try again in a moment.', { status: 429 });
     }
-    if (errorMessage.includes('invalid_request_error') || errorMessage.includes('Unsupported')) {
+    if (errorString.includes('invalid_request_error') || errorString.includes('unsupported')) {
       return new NextResponse('This bot doesn\'t support that action. Try sending a text message instead.', { status: 400 });
+    }
+    if (errorString.includes('unauthorized') || errorString.includes('api key')) {
+      return new NextResponse('Service configuration error. Please contact support.', { status: 503 });
     }
     
     return new NextResponse('Something went wrong. Please try again or contact support if the issue persists.', { status: 500 });
