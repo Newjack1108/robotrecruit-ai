@@ -57,14 +57,31 @@ export function BotEditForm({ bot }: BotEditFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update bot');
+        // Try to get the error message from the response
+        const errorText = await response.text();
+        let errorMessage = 'Failed to update bot';
+        
+        try {
+          // Try to parse as JSON first
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.message || errorJson.error || errorText;
+        } catch {
+          // If not JSON, use the text directly (but limit length)
+          errorMessage = errorText || 'Failed to update bot';
+          if (errorMessage.length > 200) {
+            errorMessage = errorMessage.substring(0, 200) + '...';
+          }
+        }
+        
+        throw new Error(errorMessage);
       }
 
       setMessage({ type: 'success', text: 'Bot updated successfully!' });
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       console.error('Failed to update bot:', error);
-      setMessage({ type: 'error', text: 'Failed to update bot. Please try again.' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update bot. Please try again.';
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setIsSaving(false);
     }
