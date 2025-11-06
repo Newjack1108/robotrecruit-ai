@@ -216,22 +216,30 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats & Community Section - Aligned Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Profile & Achievements - 2 columns */}
-        <div className="lg:col-span-2">
+      {/* Stats & Community Section - Neat Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Profile & Achievements */}
+        <div className="h-full">
           <ProfileStatsCard 
             userName={user.clerkId}
             userTier={effectiveTier}
           />
         </div>
 
-        {/* Right Column: Streak + Community Builder + Reminders stacked */}
-        <div className="flex flex-col gap-4">
+        {/* Daily Streak */}
+        <div className="h-full">
           <StreakCounter variant="dashboard" />
-          <DailyChallengeCard />
-          <RemindersCard />
         </div>
+
+        {/* Daily Challenge */}
+        <div className="h-full">
+          <DailyChallengeCard />
+        </div>
+      </div>
+
+      {/* Reminders - Full Width */}
+      <div className="mt-4">
+        <RemindersCard />
       </div>
 
       {/* Hired Bots */}

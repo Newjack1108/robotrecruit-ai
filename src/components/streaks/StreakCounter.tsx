@@ -115,11 +115,11 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
 
   // Dashboard variant (full card)
   return (
-    <div className="bg-gradient-to-br from-orange-900/30 via-red-900/30 to-pink-900/30 border border-orange-500/30 rounded-xl p-6 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-orange-900/30 via-red-900/30 to-pink-900/30 border border-orange-500/30 rounded-xl p-6 relative overflow-hidden h-full flex flex-col">
       {/* Animated flame background */}
       <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 via-red-500/5 to-transparent animate-pulse"></div>
 
-      <div className="relative z-10 space-y-4">
+      <div className="relative z-10 space-y-4 flex-1 flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

@@ -93,7 +93,7 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
   };
 
   return (
-    <Card className="bg-gradient-to-br from-yellow-900/30 via-orange-900/30 to-red-900/30 border-yellow-500/30 hover:border-yellow-400/50 transition-all profile-stats-card">
+    <Card className="bg-gradient-to-br from-yellow-900/30 via-orange-900/30 to-red-900/30 border-yellow-500/30 hover:border-yellow-400/50 transition-all profile-stats-card h-full flex flex-col">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -118,7 +118,7 @@ export function ProfileStatsCard({ userName, userTier }: ProfileStatsCardProps) 
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 pt-0">
+      <CardContent className="space-y-3 pt-0 flex-1">
         {/* Stats Grid - Compact */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           <div className="bg-white/5 backdrop-blur-sm rounded p-2 border border-white/10 text-center hover:border-yellow-500/30 transition-colors">
