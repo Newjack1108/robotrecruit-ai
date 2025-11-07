@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Leaderboard } from '@/components/arcade/Leaderboard';
-import { Gamepad2, Trophy, PlayCircle, Target, Zap, Coins, Ghost } from 'lucide-react';
+import { Gamepad2, Trophy, PlayCircle, Target, Zap, Coins, Ghost, Puzzle } from 'lucide-react';
 
 export default async function ArcadePage() {
   const { userId } = await auth();
@@ -209,6 +209,56 @@ export default async function ArcadePage() {
                       Play Now
                     </Button>
                   </Link>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Daily Strategy Puzzle Card */}
+          <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-cyan-500/30 overflow-hidden md:col-span-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 blur-xl" />
+
+              <div className="relative p-6">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                  <div className="flex-1 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
+                        <Puzzle className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-white">Daily Strategy Puzzle</h2>
+                        <p className="text-gray-300 text-sm">15 moves. Smart planning. Streak-saving rewards.</p>
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-3 gap-3 text-sm text-gray-300">
+                      <div className="bg-gray-800/60 border border-gray-700 rounded-lg px-3 py-2">
+                        <p className="text-white font-semibold">Daily Challenge</p>
+                        <p className="text-xs text-gray-400">Resets at midnight UTC</p>
+                      </div>
+                      <div className="bg-gray-800/60 border border-gray-700 rounded-lg px-3 py-2">
+                        <p className="text-white font-semibold">Boost Your Streak</p>
+                        <p className="text-xs text-gray-400">Counts as your daily check-in</p>
+                      </div>
+                      <div className="bg-gray-800/60 border border-gray-700 rounded-lg px-3 py-2">
+                        <p className="text-white font-semibold">Arcade Rewards</p>
+                        <p className="text-xs text-gray-400">Points & powerups incoming</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[220px]">
+                    <Link href="/arcade/daily-puzzle">
+                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-4 rounded-lg transform transition-transform hover:scale-105 group">
+                        <PlayCircle className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                        View Puzzle
+                      </Button>
+                    </Link>
+                    <p className="text-xs text-gray-400 text-center sm:text-left lg:text-center">
+                      Puzzle gameplay landing soon — warm up your strategy muscles!
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

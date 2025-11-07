@@ -64,6 +64,7 @@ model User {
   // Arcade Games
   gameScores          GameScore[]
   lifetimeHighScore   Int      @default(0) // Highest score ever achieved across all arcade games
+  dailyPuzzleSubmissions DailyPuzzleSubmission[]
   
   // Bot Slots Game
   dailySlotSpins      DailySlotSpins[]  @relation("DailySlotSpins")
@@ -509,6 +510,33 @@ model GameScore {
   @@index([userId])
   @@index([gameType, score])
   @@index([createdAt])
+}
+
+model DailyPuzzle {
+  id            String                    @id @default(cuid())
+  date          DateTime                  @unique
+  puzzleConfig  Json
+  solution      Json?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  submissions   DailyPuzzleSubmission[]
+}
+
+model DailyPuzzleSubmission {
+  id               String      @id @default(cuid())
+  userId           String
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  puzzleId         String
+  puzzle           DailyPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
+  score            Int         @default(0)
+  moves            Int?
+  durationSeconds  Int?
+  completedAt      DateTime    @default(now())
+  createdAt        DateTime    @default(now())
+
+  @@unique([userId, puzzleId])
+  @@index([puzzleId])
+  @@index([userId])
 }
 
 model BotToolData {
