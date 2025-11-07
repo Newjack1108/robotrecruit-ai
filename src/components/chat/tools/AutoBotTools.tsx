@@ -111,27 +111,61 @@ export function AutoBotTools({ conversationId, onDataChange, initialData }: Auto
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Make</label>
-            <Input value={make} onChange={(e) => setMake(e.target.value)} placeholder="e.g. Toyota" />
+            <Input
+              value={make}
+              onChange={(e) => setMake(e.target.value)}
+              placeholder="e.g. Toyota"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Model</label>
-            <Input value={model} onChange={(e) => setModel(e.target.value)} placeholder="e.g. Corolla" />
+            <Input
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              placeholder="e.g. Corolla"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Trim / Engine</label>
-            <Input value={trim} onChange={(e) => setTrim(e.target.value)} placeholder="e.g. SE Hybrid" />
+            <Input
+              value={trim}
+              onChange={(e) => setTrim(e.target.value)}
+              placeholder="e.g. SE Hybrid"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Year</label>
-            <Input value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2021" type="number" min="1950" max={new Date().getFullYear() + 1} />
+            <Input
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              placeholder="e.g. 2021"
+              type="number"
+              min="1950"
+              max={new Date().getFullYear() + 1}
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Registration</label>
-            <Input value={friendlyRegistration} onChange={(e) => setRegistration(e.target.value)} placeholder="e.g. AB12 CDE" />
+            <Input
+              value={friendlyRegistration}
+              onChange={(e) => setRegistration(e.target.value)}
+              placeholder="e.g. AB12 CDE"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 uppercase"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Mileage at Last Service</label>
-            <Input value={mileageAtLastService} onChange={(e) => setMileageAtLastService(e.target.value)} placeholder="e.g. 42500" inputMode="numeric" />
+            <Input
+              value={mileageAtLastService}
+              onChange={(e) => setMileageAtLastService(e.target.value)}
+              placeholder="e.g. 42500"
+              inputMode="numeric"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
         </div>
       </Card>
@@ -150,11 +184,21 @@ export function AutoBotTools({ conversationId, onDataChange, initialData }: Auto
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">MOT Due Date</label>
-            <Input value={motDueDate} onChange={(e) => setMotDueDate(e.target.value)} type="date" />
+            <Input
+              value={motDueDate}
+              onChange={(e) => setMotDueDate(e.target.value)}
+              type="date"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-wide text-gray-500">Next Service Date</label>
-            <Input value={nextServiceDate} onChange={(e) => setNextServiceDate(e.target.value)} type="date" />
+            <Input
+              value={nextServiceDate}
+              onChange={(e) => setNextServiceDate(e.target.value)}
+              type="date"
+              className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500"
+            />
           </div>
         </div>
       </Card>
