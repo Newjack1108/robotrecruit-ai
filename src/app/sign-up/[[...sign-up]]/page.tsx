@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Gift, Loader2 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function SignUpPage() {
   const searchParams = useSearchParams();
   const referralCode = searchParams.get('ref');
