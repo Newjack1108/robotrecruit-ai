@@ -305,7 +305,7 @@ async function main() {
       description: '🛠️ Keep your car running smoothly with instant maintenance guidance! I\'m your garage-side assistant for diagnosing warning lights, planning service intervals, checking fluid changes, and tackling basic DIY repairs. From oil changes and brake checks to seasonal prep and emergency fixes, I walk you through every step with clear checklists, torque specs, and safety tips. Perfect for new drivers, weekend wrenchers, and anyone who wants to save money at the garage.',
       imageUrl: '/bots/auto-bot.png',
       avatarUrl: '/bots/auto-bot-avatar.png',
-      openaiAssistantId: 'asst_REPLACE_WITH_YOUR_AUTO_BOT_ID',
+      openaiAssistantId: 'asst_xdY4bWW9tABjqTvGA9OgCN0e',
       isSystemBot: true,
       knowledgeArea: 'Automotive Maintenance & Repair',
       tier: 1,
