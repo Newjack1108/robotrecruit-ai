@@ -7,6 +7,7 @@ import { ChefBotTools } from './tools/ChefBotTools';
 import { FishingBotTools } from './tools/FishingBotTools';
 import { BeeBotTools } from './tools/BeeBotTools';
 import { ApplyBotTools } from './tools/ApplyBotTools';
+import { AutoBotTools } from './tools/AutoBotTools';
 
 interface BotToolsPanelProps {
   botSlug: string;
@@ -22,6 +23,7 @@ const BOT_TOOLS_MAP: { [key: string]: boolean } = {
   'fishing-bot': true,
   'bee-bot': true,
   'apply-bot': true,
+  'auto-bot': true,
 };
 
 export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClose, itemsToAdd }: BotToolsPanelProps) {
@@ -214,6 +216,15 @@ export function BotToolsPanel({ botSlug, conversationId, isVisible = true, onClo
                   onDataChange={handleDataChange}
                   initialData={{
                     cv_profile: toolsData.cv_profile,
+                  }}
+                />
+              )}
+              {botSlug === 'auto-bot' && (
+                <AutoBotTools
+                  conversationId={conversationId ?? ''}
+                  onDataChange={handleDataChange}
+                  initialData={{
+                    vehicle_profile: toolsData.vehicle_profile,
                   }}
                 />
               )}

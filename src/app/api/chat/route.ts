@@ -307,6 +307,29 @@ export async function POST(req: Request) {
             if (cv.jobDescription) {
               toolContext += `  • Target Job Description: ${cv.jobDescription.substring(0, 300)}${cv.jobDescription.length > 300 ? '...' : ''}\n`;
             }
+          } else if (tool.toolType === 'vehicle_profile' && typeof tool.data === 'object') {
+            const vehicle = tool.data as any;
+            toolContext += `- Vehicle Profile:\n`;
+            if (vehicle.make || vehicle.model) {
+              const yearPart = vehicle.year ? `${vehicle.year} ` : '';
+              const trimPart = vehicle.trim ? ` ${vehicle.trim}` : '';
+              toolContext += `  • Vehicle: ${yearPart}${vehicle.make || ''} ${vehicle.model || ''}${trimPart}\n`;
+            }
+            if (vehicle.registration) {
+              toolContext += `  • Registration: ${vehicle.registration}\n`;
+            }
+            if (vehicle.mileageAtLastService) {
+              toolContext += `  • Mileage @ Last Service: ${vehicle.mileageAtLastService} miles\n`;
+            }
+            if (vehicle.motDueDate) {
+              toolContext += `  • MOT Due: ${vehicle.motDueDate}\n`;
+            }
+            if (vehicle.nextServiceDate) {
+              toolContext += `  • Next Service: ${vehicle.nextServiceDate}\n`;
+            }
+            if (vehicle.notes) {
+              toolContext += `  • Notes: ${vehicle.notes.substring(0, 200)}${vehicle.notes.length > 200 ? '...' : ''}\n`;
+            }
           }
           
           toolContext += '\n';
@@ -322,6 +345,15 @@ export async function POST(req: Request) {
           toolContext += '- Highlight relevant skills and qualifications\n';
           toolContext += '- Tailor the content to match the target job description if provided\n';
           toolContext += '- Ensure ATS-friendly formatting and keyword optimization\n';
+        }
+
+        if (bot.slug === 'auto-bot' && toolData.some((t: any) => t.toolType === 'vehicle_profile')) {
+          toolContext += '\n[AUTO BOT SPECIFIC]: Use the vehicle profile data above when answering. Always:\n';
+          toolContext += '- Reference the exact make / model / year when giving advice\n';
+          toolContext += '- Tailor maintenance schedules to the provided MOT and service dates\n';
+          toolContext += '- Mention any upcoming deadlines (MOT or service) and suggest preparation steps\n';
+          toolContext += '- Provide torque specs, fluid types, and safety precautions appropriate for this vehicle\n';
+          toolContext += '- If data is missing, ask follow-up questions before guessing\n';
         }
         
         enhancedMessage = toolContext + enhancedMessage;
