@@ -44,6 +44,7 @@ export default async function HomePage() {
       "Email Bot - Professional Email Writing",
       "Social Media Bot - Content Creation",
       "Manual Bot - Instruction Manual Assistant",
+      "Auto Bot - Car Maintenance & Repair Assistant",
       "ApplyBot - CV & Cover Letter Writing",
       "Professional Resume Creation",
       "ATS-Friendly CV Formatting",
@@ -657,6 +658,21 @@ export default async function HomePage() {
                     <div className="flex items-center gap-2 text-purple-400 text-xs">
                       <Star className="w-4 h-4 fill-purple-400" />
                       <span className="font-semibold">NEW</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Auto Bot */}
+                <Card className="bg-gradient-to-br from-slate-900/40 to-teal-900/30 backdrop-blur-xl border-teal-500/50 hover:border-teal-400 transition-all hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-5xl mb-4">🚗</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">Auto Bot</h3>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                      Diagnose dashboard lights, plan service schedules, and tackle DIY maintenance with step-by-step checklists and safety tips.
+                    </p>
+                    <div className="flex items-center gap-2 text-teal-300 text-xs">
+                      <Wrench className="w-4 h-4" />
+                      <span className="font-semibold">CAR CARE SPECIALIST</span>
                     </div>
                   </CardContent>
                 </Card>

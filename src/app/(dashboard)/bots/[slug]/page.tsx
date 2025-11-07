@@ -355,6 +355,31 @@ const botCVs: Record<string, any> = {
     ],
     testimonials: [],
   },
+  'auto-bot': {
+    tagline: '"Your Garage-Side Mechanic - Confidence Under the Hood"',
+    yearsExperience: '25+ Years Automotive Expertise',
+    availability: 'Available 24/7 - Rain or shine!',
+    skills: [
+      { name: 'Maintenance Scheduling', level: 98 },
+      { name: 'Diagnostics & Troubleshooting', level: 96 },
+      { name: 'DIY Repair Guidance', level: 94 },
+      { name: 'Safety & Compliance', level: 92 },
+      { name: 'Parts & Tools Advice', level: 95 },
+    ],
+    achievements: [
+      '🛠️ Guides you through oil changes, brake care, battery swaps, and seasonal prep',
+      '🚗 Helps decode warning lights and common drivability issues before they become costly repairs',
+      '📋 Provides torque specs, tool lists, and step-by-step checklists for every maintenance task',
+      '⛽ Trained on manufacturer service schedules to extend vehicle life and reliability',
+    ],
+    whyHireMe: [
+      'Save money with confident DIY maintenance and repairs',
+      'Know what to expect before visiting a mechanic or MOT station',
+      'Get tailored service plans based on mileage, vehicle type, and driving habits',
+      'Emergency support anytime — roadside triage, road-trip prep, and safety walkthroughs',
+    ],
+    testimonials: [],
+  },
   'email-bot': {
     tagline: '"Your Professional Communication Expert - Every Word Counts"',
     yearsExperience: '20+ Years Communication Excellence',
