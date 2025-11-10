@@ -45,13 +45,39 @@ export async function GET() {
       // Can check in if haven't checked in today
       canCheckInToday = lastCheckInDay < today;
 
-      // If streak is broken (last check-in was before yesterday), reset it
+      // If streak is broken (last check-in was before yesterday), use freeze or reset
       if (!isStreakActive && user.currentStreak > 0) {
-        await prisma.user.update({
-          where: { clerkId: userId },
-          data: { currentStreak: 0 },
-        });
-        user.currentStreak = 0;
+        // Check if user has streak freezes available
+        if (user.streakFreezes > 0) {
+          // Auto-consume a freeze to protect the streak
+          await prisma.user.update({
+            where: { clerkId: userId },
+            data: {
+              streakFreezes: user.streakFreezes - 1,
+            },
+          });
+          
+          // Create notification about freeze usage
+          await prisma.notification.create({
+            data: {
+              userId: user.id,
+              type: 'streak_freeze_used',
+              title: '❄️ Streak Freeze Used!',
+              message: `Your ${user.currentStreak}-day streak was protected! You have ${user.streakFreezes - 1} freezes remaining.`,
+              link: '/dashboard',
+            },
+          });
+          
+          isStreakActive = true; // Keep streak active
+          canCheckInToday = true; // Allow check-in today
+        } else {
+          // No freezes available, reset streak
+          await prisma.user.update({
+            where: { clerkId: userId },
+            data: { currentStreak: 0 },
+          });
+          user.currentStreak = 0;
+        }
       }
     } else {
       canCheckInToday = true;
@@ -65,6 +91,7 @@ export async function GET() {
       lastCheckIn: user.lastCheckIn,
       isStreakActive,
       canCheckInToday,
+      streakFreezes: user.streakFreezes || 0,
     });
   } catch (error) {
     console.error('[STREAKS_GET]', error);
@@ -148,14 +175,27 @@ export async function POST() {
       30: 500, // 30 day streak = 500 bonus points
       100: 1000, // 100 day streak = 1000 bonus points
     };
+    
+    // Streak freeze rewards at specific milestones
+    const freezeRewards = {
+      7: 1,   // 7 days = 1 freeze
+      30: 1,  // 30 days = 1 freeze
+      100: 1, // 100 days = 1 freeze
+    };
 
     let bonusPoints = 0;
+    let bonusFreezes = 0;
     const milestoneReached = Object.entries(streakRewards).find(
       ([milestone]) => parseInt(milestone) === newStreak
     );
 
     if (milestoneReached) {
       bonusPoints = streakRewards[newStreak as keyof typeof streakRewards];
+    }
+    
+    // Check for freeze rewards
+    if (freezeRewards[newStreak as keyof typeof freezeRewards]) {
+      bonusFreezes = freezeRewards[newStreak as keyof typeof freezeRewards];
     }
 
     // Update user
@@ -167,17 +207,23 @@ export async function POST() {
         lastCheckIn: now,
         totalCheckIns: user.totalCheckIns + 1,
         streakPoints: user.streakPoints + bonusPoints,
+        streakFreezes: (user.streakFreezes || 0) + bonusFreezes,
       },
     }) as any;
 
     // Create notification for milestone if reached
-    if (bonusPoints > 0) {
+    if (bonusPoints > 0 || bonusFreezes > 0) {
+      let message = `Amazing! You've maintained a ${newStreak} day streak`;
+      if (bonusPoints > 0) message += ` and earned ${bonusPoints} bonus points`;
+      if (bonusFreezes > 0) message += ` and received ${bonusFreezes} streak freeze${bonusFreezes > 1 ? 's' : ''}`;
+      message += '!';
+      
       await prisma.notification.create({
         data: {
           userId: user.id,
           type: 'streak_milestone',
           title: `🔥 ${newStreak} Day Streak!`,
-          message: `Amazing! You've maintained a ${newStreak} day streak and earned ${bonusPoints} bonus points!`,
+          message,
           link: '/dashboard',
           isRead: false,
         },
@@ -190,8 +236,10 @@ export async function POST() {
       longestStreak: updatedUser.longestStreak,
       totalCheckIns: updatedUser.totalCheckIns,
       streakPoints: updatedUser.streakPoints,
+      streakFreezes: updatedUser.streakFreezes,
       bonusPoints,
-      milestoneReached: bonusPoints > 0 ? newStreak : null,
+      bonusFreezes,
+      milestoneReached: bonusPoints > 0 || bonusFreezes > 0 ? newStreak : null,
     });
   } catch (error) {
     console.error('[STREAKS_CHECKIN_POST]', error);

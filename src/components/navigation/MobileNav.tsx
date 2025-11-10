@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { MessageSquare, Bot, Sparkles, Gamepad2, Users, Menu, X } from 'lucide-react';
+import { MessageSquare, Bot, Sparkles, Gamepad2, Users, Menu, X, Gift, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function MobileNav() {
@@ -16,6 +16,8 @@ export function MobileNav() {
     { href: '/chat', icon: MessageSquare, label: 'Chat' },
     { href: '/bots', icon: Bot, label: 'Bots' },
     { href: '/arcade', icon: Gamepad2, label: 'Arcade' },
+    { href: '/wheel', icon: Gift, label: 'Daily Wheel' },
+    { href: '/friends', icon: UserPlus, label: 'Friends' },
     { href: '/community', icon: Users, label: 'Community' },
     { 
       href: '/support', 

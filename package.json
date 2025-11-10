@@ -8,7 +8,10 @@
     "start": "prisma migrate deploy && next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
-    "verify-powerups": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} scripts/verify-user-powerups.ts"
+    "verify-powerups": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} scripts/verify-user-powerups.ts",
+    "prisma:migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
+    "prisma:seed:dev": "dotenv -e .env.development -- npx prisma db seed",
+    "dev:local": "dotenv -e .env.development -- next dev"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.33.3",
@@ -38,6 +41,7 @@
     "@types/node": "^20.19.21",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4",

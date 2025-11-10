@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const dailyChallenges = [
+const baseChallenges = [
   // Monday - Start week strong
   {
     key: 'monday_chat_3_bots',
@@ -87,6 +87,81 @@ const dailyChallenges = [
     isActive: true,
   },
 ];
+
+const puzzleChallenges = [
+  {
+    key: 'monday_daily_puzzle',
+    title: 'Puzzle Commander',
+    description: 'Complete the daily strategy puzzle to prove your tactical edge.',
+    dayOfWeek: 1,
+    points: 35,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+  {
+    key: 'tuesday_daily_puzzle',
+    title: 'Tactical Thinker',
+    description: 'Complete the daily strategy puzzle to keep your streak alive.',
+    dayOfWeek: 2,
+    points: 35,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+  {
+    key: 'wednesday_daily_puzzle',
+    title: 'Midweek Mastermind',
+    description: 'Solve the daily puzzle and claim your reward.',
+    dayOfWeek: 3,
+    points: 35,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+  {
+    key: 'thursday_daily_puzzle',
+    title: 'Strategist Supreme',
+    description: 'Complete the daily puzzle to stay sharp.',
+    dayOfWeek: 4,
+    points: 35,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+  {
+    key: 'friday_daily_puzzle',
+    title: 'Friday Formation',
+    description: 'Solve the daily puzzle and secure the weekend bonus.',
+    dayOfWeek: 5,
+    points: 40,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+  {
+    key: 'saturday_daily_puzzle',
+    title: 'Weekend Warden',
+    description: 'Daily puzzle victories keep the arcade streak alive.',
+    dayOfWeek: 6,
+    points: 40,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+  {
+    key: 'sunday_daily_puzzle',
+    title: 'Sunday Solver',
+    description: 'Close out the week with a successful puzzle plan.',
+    dayOfWeek: 0,
+    points: 40,
+    icon: '🧩',
+    requirement: { type: 'daily_puzzle', count: 1 },
+    isActive: true,
+  },
+];
+
+const dailyChallenges = [...baseChallenges, ...puzzleChallenges];
 
 async function main() {
   console.log('🌱 Seeding daily challenges...');

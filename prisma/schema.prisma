@@ -56,6 +56,12 @@ model User {
   lastCheckIn         DateTime? // Last daily check-in
   totalCheckIns       Int      @default(0) // Total days checked in
   streakPoints        Int      @default(0) // Points earned from streaks
+  streakFreezes       Int      @default(0) // Streak protection items available
+  
+  // Daily Reward Wheel
+  lastDailySpinAt     DateTime? // Last time user spun the wheel
+  dailySpinsRemaining Int      @default(1) // Spins available today
+  wheelRewards        DailyWheelReward[]
   
   // Achievement Showcases
   showcases           UserShowcase[]
@@ -78,6 +84,15 @@ model User {
   
   // CV Profiles (for Apply Bot)
   cvProfiles          CvProfile[]
+  
+  // Friend System
+  friendships         Friendship[]      @relation("UserFriendships")
+  friendOf            Friendship[]      @relation("FriendOf")
+  sentFriendRequests  FriendRequest[]   @relation("SentRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedRequests")
+  
+  // Tournaments
+  tournamentEntries   TournamentEntry[]
 }
 
 model PromoCode {
@@ -531,12 +546,15 @@ model DailyPuzzleSubmission {
   score            Int         @default(0)
   moves            Int?
   durationSeconds  Int?
+  submittedAnswer  Json?
+  isCorrect        Boolean     @default(false)
   completedAt      DateTime    @default(now())
   createdAt        DateTime    @default(now())
 
   @@unique([userId, puzzleId])
   @@index([puzzleId])
   @@index([userId])
+  @@index([isCorrect])
 }
 
 model BotToolData {
@@ -590,4 +608,88 @@ model CvProfile {
   
   @@index([userId])
   @@index([createdAt])
+}
+
+// Daily Reward Wheel System
+model DailyWheelReward {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rewardType  String   // "credits", "points", "freeze", "arcade_spin"
+  rewardValue Int      // Amount of reward
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Friend System
+model Friendship {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("UserFriendships", fields: [userId], references: [id], onDelete: Cascade)
+  friendId    String
+  friend      User     @relation("FriendOf", fields: [friendId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
+}
+
+model FriendRequest {
+  id          String   @id @default(cuid())
+  senderId    String
+  sender      User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId  String
+  receiver    User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  status      String   @default("pending") // "pending", "accepted", "rejected"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
+}
+
+// Tournament System
+model Tournament {
+  id          String   @id @default(cuid())
+  name        String   // "Weekly Bot Runner Challenge"
+  description String   @db.Text
+  type        String   // "bot_runner", "bot_battle", "bot_memory", "chat_count", "challenge_streak"
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("upcoming") // "upcoming", "active", "ended"
+  prizes      Json     // { "1st": { credits: 100, badge: "winner" }, "2nd": { credits: 50 }, ... }
+  metadata    Json?    // Additional configuration
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  entries     TournamentEntry[]
+  
+  @@index([status])
+  @@index([type])
+  @@index([startDate])
+  @@index([endDate])
+}
+
+model TournamentEntry {
+  id            String   @id @default(cuid())
+  tournamentId  String
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score         Int      @default(0)
+  rank          Int?     // Calculated rank
+  metadata      Json?    // Additional entry data
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([tournamentId, userId])
+  @@index([tournamentId])
+  @@index([userId])
+  @@index([score])
+  @@index([rank])
 }

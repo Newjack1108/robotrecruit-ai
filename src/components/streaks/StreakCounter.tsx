@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Flame, Loader2, TrendingUp, Award } from 'lucide-react';
+import { Flame, Loader2, TrendingUp, Award, Snowflake, ShoppingCart } from 'lucide-react';
 
 interface StreakData {
   currentStreak: number;
@@ -13,6 +13,7 @@ interface StreakData {
   lastCheckIn: string | null;
   isStreakActive: boolean;
   canCheckInToday: boolean;
+  streakFreezes: number;
 }
 
 interface StreakCounterProps {
@@ -25,6 +26,7 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
   const [streakData, setStreakData] = useState<StreakData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const [isBuyingFreeze, setIsBuyingFreeze] = useState(false);
 
   useEffect(() => {
     fetchStreakData(true); // Initial load with loading state
@@ -67,13 +69,45 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
 
         // Show celebration if milestone reached
         if (data.milestoneReached) {
-          alert(`🎉 ${data.milestoneReached} Day Streak Milestone! +${data.bonusPoints} bonus points!`);
+          const messages = [];
+          if (data.bonusPoints > 0) messages.push(`+${data.bonusPoints} bonus points`);
+          if (data.bonusFreezes > 0) messages.push(`+${data.bonusFreezes} streak freeze${data.bonusFreezes > 1 ? 's' : ''}`);
+          alert(`🎉 ${data.milestoneReached} Day Streak Milestone! ${messages.join(' and ')}!`);
         }
       }
     } catch (error) {
       console.error('Failed to check in:', error);
     } finally {
       setIsCheckingIn(false);
+    }
+  }
+  
+  async function handleBuyFreeze() {
+    if (!confirm('Purchase 1 streak freeze for 5 power-up credits?')) {
+      return;
+    }
+    
+    setIsBuyingFreeze(true);
+    try {
+      const response = await fetch('/api/streaks/buy-freeze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: 1 }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        await fetchStreakData();
+        alert(`✅ ${data.message}`);
+      } else {
+        alert(`❌ ${data.error || 'Failed to purchase freeze'}`);
+      }
+    } catch (error) {
+      console.error('Failed to buy freeze:', error);
+      alert('❌ Failed to purchase freeze');
+    } finally {
+      setIsBuyingFreeze(false);
     }
   }
 
@@ -151,7 +185,7 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
             <div className="flex items-center gap-2 mb-1">
               <Flame className="w-4 h-4 text-orange-400" />
@@ -178,8 +212,48 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
             <p className="text-2xl font-bold text-white font-orbitron">{streakData.streakPoints}</p>
             <p className="text-xs text-gray-500">earned</p>
           </div>
+          
+          <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+            <div className="flex items-center gap-2 mb-1">
+              <Snowflake className="w-4 h-4 text-cyan-400" />
+              <p className="text-xs text-gray-400">Freezes</p>
+            </div>
+            <p className="text-2xl font-bold text-white font-orbitron">{streakData.streakFreezes}</p>
+            <p className="text-xs text-gray-500">available</p>
+          </div>
         </div>
 
+        {/* Streak Protection Info */}
+        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Snowflake className="w-4 h-4 text-cyan-400" />
+              <p className="text-xs text-cyan-300 font-bold">Streak Protection</p>
+            </div>
+            <Button
+              size="sm"
+              onClick={handleBuyFreeze}
+              disabled={isBuyingFreeze}
+              className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs h-7"
+            >
+              {isBuyingFreeze ? (
+                <>
+                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                  Buying...
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-3 h-3 mr-1" />
+                  Buy (5 credits)
+                </>
+              )}
+            </Button>
+          </div>
+          <p className="text-xs text-gray-300">
+            Freezes auto-protect your streak if you miss a day. Earn them at 7, 30, and 100-day milestones!
+          </p>
+        </div>
+        
         {/* Next Milestone */}
         {streakData.currentStreak > 0 && (
           <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
@@ -187,10 +261,10 @@ export function StreakCounter({ variant = 'header', onStreakUpdate, className }:
             <div className="flex items-center justify-between">
               <span className="text-sm text-white">
                 {streakData.currentStreak < 3 && '3 Days: +50 points'}
-                {streakData.currentStreak >= 3 && streakData.currentStreak < 7 && '7 Days: +100 points'}
+                {streakData.currentStreak >= 3 && streakData.currentStreak < 7 && '7 Days: +100 points + 1 freeze'}
                 {streakData.currentStreak >= 7 && streakData.currentStreak < 14 && '14 Days: +250 points'}
-                {streakData.currentStreak >= 14 && streakData.currentStreak < 30 && '30 Days: +500 points'}
-                {streakData.currentStreak >= 30 && streakData.currentStreak < 100 && '100 Days: +1000 points'}
+                {streakData.currentStreak >= 14 && streakData.currentStreak < 30 && '30 Days: +500 points + 1 freeze'}
+                {streakData.currentStreak >= 30 && streakData.currentStreak < 100 && '100 Days: +1000 points + 1 freeze'}
                 {streakData.currentStreak >= 100 && 'Legend Status! Keep going!'}
               </span>
             </div>

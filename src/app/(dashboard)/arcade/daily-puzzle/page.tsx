@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { DailyPuzzleComingSoon } from '@/components/arcade/DailyPuzzleComingSoon';
+import { DailyPuzzleGame } from '@/components/arcade/DailyPuzzleGame';
 import { ArrowLeft, Puzzle, Trophy } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -68,7 +68,7 @@ export default async function DailyPuzzlePage() {
           </div>
         </div>
 
-        <DailyPuzzleComingSoon />
+        <DailyPuzzleGame />
       </div>
     </div>
   );
