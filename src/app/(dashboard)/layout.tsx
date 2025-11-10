@@ -2,7 +2,7 @@ import { auth, clerkClient } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import Link from 'next/link';
-import { MessageSquare, Bot, Crown, Sparkles, Users, Gamepad2, Gift, UserPlus } from 'lucide-react';
+import { MessageSquare, Bot, Crown, Sparkles, Users, Gamepad2 } from 'lucide-react';
 import { UserButtonWrapper } from '@/components/auth/UserButtonWrapper';
 import { Logo } from '@/components/ui/Logo';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
@@ -176,22 +176,6 @@ export default async function DashboardLayout({
                 >
                   <Gamepad2 className="w-4 h-4 group-hover:animate-pulse" />
                   <span className="font-orbitron font-medium">Arcade</span>
-                </Link>
-                
-                <Link 
-                  href="/wheel"
-                  className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition-colors group"
-                >
-                  <Gift className="w-4 h-4 group-hover:animate-bounce" />
-                  <span className="font-orbitron font-medium">Daily Wheel</span>
-                </Link>
-                
-                <Link 
-                  href="/friends"
-                  className="flex items-center gap-2 text-gray-400 hover:text-purple-400 transition-colors group"
-                >
-                  <UserPlus className="w-4 h-4 group-hover:animate-pulse" />
-                  <span className="font-orbitron font-medium">Friends</span>
                 </Link>
 
                 <InviteButton />

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 import { ForumCategoryCard } from '@/components/community/ForumCategoryCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { PlusCircle, MessageSquare } from 'lucide-react';
+import { PlusCircle, MessageSquare, UserPlus } from 'lucide-react';
 
 export default async function CommunityPage() {
   const { userId } = await auth();
@@ -84,6 +84,33 @@ export default async function CommunityPage() {
               <span>{totalReplies} Replies</span>
             </div>
           </div>
+        </div>
+
+        {/* Friends & Social */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <Link href="/friends" className="group">
+            <div className="bg-gradient-to-br from-purple-600/30 via-blue-600/20 to-cyan-500/20 border border-purple-400/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 hover:border-purple-300 flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
+                  <UserPlus className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-orbitron font-bold text-white">Friends Lounge</h2>
+                  <p className="text-sm text-gray-300">
+                    Add fellow recruiters, compare streaks, and cheer each other on.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3 text-xs text-gray-200">
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">Track streaks together</span>
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">Share arcade high scores</span>
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">Friendly kudos & shout-outs</span>
+              </div>
+              <Button className="self-start bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-400 hover:to-cyan-400 text-white font-semibold">
+                Open Friends
+              </Button>
+            </div>
+          </Link>
         </div>
 
         {/* Categories Grid */}
