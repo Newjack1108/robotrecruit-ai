@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Shield, Timer, Target, Zap, Sparkles } from 'lucide-react';
+import { Loader2, Timer, Zap, Sparkles, PartyPopper, Trophy } from 'lucide-react';
 
 type PuzzleTask = {
   id: string;
@@ -225,8 +225,8 @@ export function DailyPuzzleGame() {
   if (isLoading) {
     return (
       <Card className="bg-gray-900/60 border-cyan-500/30 p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-        <Loader2 className="w-8 h-8 text-cyan-300 animate-spin mb-3" />
-        <p className="text-sm text-gray-400">Synchronising today’s tactical puzzle…</p>
+        <Loader2 className="w-8 h-8 text-pink-300 animate-spin mb-3" />
+        <p className="text-sm text-gray-400">Inflating balloons for today’s bot bash…</p>
       </Card>
     );
   }
@@ -251,8 +251,8 @@ export function DailyPuzzleGame() {
       <Card className="bg-gray-900/70 border-cyan-500/30 p-6 space-y-4">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-cyan-300">
-              <Shield className="w-5 h-5" />
+            <div className="flex items-center gap-2 text-pink-300">
+              <PartyPopper className="w-5 h-5" />
               <span className="text-sm uppercase tracking-wide">{puzzle.config.title}</span>
             </div>
             <h2 className="text-2xl font-semibold text-white">{puzzle.config.goal}</h2>
@@ -260,15 +260,15 @@ export function DailyPuzzleGame() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
             <div className="bg-gray-800/80 border border-gray-700 rounded-lg px-3 py-2 text-center">
-              <p className="text-xs text-gray-400">Command Budget</p>
+              <p className="text-xs text-gray-400">Sparkle Minutes</p>
               <p className="text-lg font-semibold text-white">{timeBudget}</p>
             </div>
             <div className="bg-gray-800/80 border border-gray-700 rounded-lg px-3 py-2 text-center">
-              <p className="text-xs text-gray-400">Current Plan</p>
+              <p className="text-xs text-gray-400">Booked Minutes</p>
               <p className={`text-lg font-semibold ${totalTime > timeBudget ? 'text-red-400' : 'text-white'}`}>{totalTime}</p>
             </div>
             <div className="bg-gray-800/80 border border-gray-700 rounded-lg px-3 py-2 text-center">
-              <p className="text-xs text-gray-400">Projected Control</p>
+              <p className="text-xs text-gray-400">Hype Forecast</p>
               <p className="text-lg font-semibold text-emerald-300">{totalReward}</p>
             </div>
           </div>
@@ -276,9 +276,9 @@ export function DailyPuzzleGame() {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-gray-400">
-            <span className="flex items-center gap-2"><Timer className="w-4 h-4" /> Time Allocation</span>
+            <span className="flex items-center gap-2"><Timer className="w-4 h-4" /> Party Timer</span>
             <span>
-              {totalTime}/{timeBudget} units used
+              {totalTime}/{timeBudget} sparkle minutes used
             </span>
           </div>
           <div className="h-2 w-full rounded-full bg-gray-800 overflow-hidden">
@@ -297,7 +297,7 @@ export function DailyPuzzleGame() {
 
         <div className="flex flex-wrap gap-3">
           <Button variant="secondary" onClick={resetSelection} disabled={!selectedIds.length || hasCompleted}>
-            Clear Plan
+            Reset Playlist
           </Button>
           <Button
             onClick={handleSubmit}
@@ -307,10 +307,10 @@ export function DailyPuzzleGame() {
             {submitState === 'submitting' ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                Locking In…
+                Party Planning…
               </>
             ) : (
-              'Execute Plan'
+              'Launch Mini-Party'
             )}
           </Button>
         </div>
@@ -351,18 +351,18 @@ export function DailyPuzzleGame() {
                         : 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/40'
                     }
                   >
-                    {task.risk.toUpperCase()} RISK
+                    {task.risk === 'high' ? 'Spice Level: Wild' : task.risk === 'medium' ? 'Spice Level: Zesty' : 'Spice Level: Chill'}
                   </Badge>
                 </div>
 
                 <div className="flex items-center gap-4 text-sm">
                   <span className="flex items-center gap-1 text-cyan-200">
-                    <Target className="w-4 h-4" />
-                    +{task.reward} influence
+                    <Sparkles className="w-4 h-4" />
+                    +{task.reward} hype
                   </span>
                   <span className="flex items-center gap-1 text-gray-300">
                     <Timer className="w-4 h-4" />
-                    {task.timeCost} time
+                    {task.timeCost} min
                   </span>
                 </div>
               </Card>
@@ -376,18 +376,18 @@ export function DailyPuzzleGame() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Target className="w-5 h-5 text-emerald-300" />
-                Decision Locked
+                <Trophy className="w-5 h-5 text-emerald-300" />
+                Party Locked In
               </h3>
               <p className="text-sm text-gray-300">
                 {result.isCorrect
-                  ? 'Perfect execution! You matched the optimal tactical outcome.'
-                  : `Solid move. You achieved ${result.efficiency}% of the optimal influence.`}
+                  ? 'Perfect vibe check! You planned the ultimate bot celebration.'
+                  : `Nice work! Your party earned ${result.efficiency}% of the maximum hype today.`}
               </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-200">
               <div className="bg-gray-800/50 border border-gray-700 rounded-lg px-3 py-2 text-center">
-                <p className="text-xs text-gray-400">Total Influence</p>
+                <p className="text-xs text-gray-400">Total Hype</p>
                 <p className="text-lg font-semibold text-white">{result.totalReward}</p>
               </div>
               <div className="bg-gray-800/50 border border-gray-700 rounded-lg px-3 py-2 text-center">
@@ -395,11 +395,11 @@ export function DailyPuzzleGame() {
                 <p className="text-lg font-semibold text-emerald-300">{result.optimalReward}</p>
               </div>
               <div className="bg-gray-800/50 border border-gray-700 rounded-lg px-3 py-2 text-center">
-                <p className="text-xs text-gray-400">Time Used</p>
+                <p className="text-xs text-gray-400">Minutes Used</p>
                 <p className="text-lg font-semibold text-white">{result.totalTime}</p>
               </div>
               <div className="bg-gray-800/50 border border-gray-700 rounded-lg px-3 py-2 text-center">
-                <p className="text-xs text-gray-400">Decision Time</p>
+                <p className="text-xs text-gray-400">Party Planning Time</p>
                 <p className="text-lg font-semibold text-white">
                   {result.durationSeconds ? `${result.durationSeconds}s` : `${secondsElapsed}s`}
                 </p>
@@ -449,10 +449,10 @@ export function DailyPuzzleGame() {
           )}
 
           <div className="text-xs text-gray-400">
-            <p>
-              Actions locked: {result.selectedTaskIds.length ? result.selectedTaskIds.length : selectedIds.length}. Come back
-              tomorrow for a fresh tactical scenario.
-            </p>
+              <p>
+                Activities locked: {result.selectedTaskIds.length ? result.selectedTaskIds.length : selectedIds.length}. Come back
+                tomorrow for brand-new bot antics.
+              </p>
           </div>
         </Card>
       )}

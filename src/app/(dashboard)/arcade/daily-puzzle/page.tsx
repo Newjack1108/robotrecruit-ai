@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { DailyPuzzleGame } from '@/components/arcade/DailyPuzzleGame';
-import { ArrowLeft, Puzzle, Trophy } from 'lucide-react';
+import { ArrowLeft, PartyPopper, Trophy } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,12 +19,12 @@ export default async function DailyPuzzlePage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
-              <Puzzle className="w-8 h-8 text-white" />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center shadow-lg">
+              <PartyPopper className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-orbitron font-bold text-white">Daily Strategy Puzzle</h1>
-              <p className="text-gray-400 text-sm">Check in each day, solve the puzzle, and keep your streak alive.</p>
+              <h1 className="text-4xl font-orbitron font-bold text-white">Daily Bot Bash</h1>
+              <p className="text-gray-400 text-sm">Plan the silliest mini-party of the day and keep your hype streak alive.</p>
             </div>
           </div>
 
@@ -41,10 +41,10 @@ export default async function DailyPuzzlePage() {
             <div className="space-y-2">
               <h2 className="text-2xl font-semibold text-white flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-yellow-400" />
-                Daily Rewards
+                Party Perks
               </h2>
               <p className="text-sm text-gray-400 max-w-2xl">
-                Finish the daily puzzle to secure your streak bonus, earn arcade points, and unlock limited-time powerup credits. Puzzles reset every day at midnight UTC.
+                Pull off the perfect line-up to grab streak bonuses, arcade points, and tasty power-up treats. The party resets every midnight UTC!
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs text-gray-300">
@@ -54,7 +54,7 @@ export default async function DailyPuzzlePage() {
               </div>
               <div className="bg-gray-800/80 border border-gray-700 rounded-lg px-3 py-2 text-center">
                 <p className="text-sm text-white font-semibold">+1</p>
-                <p>Powerup Credit</p>
+                <p>Power-Up Credit</p>
               </div>
               <div className="bg-gray-800/80 border border-gray-700 rounded-lg px-3 py-2 text-center">
                 <p className="text-sm text-white font-semibold">Streak</p>

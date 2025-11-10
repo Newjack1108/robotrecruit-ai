@@ -35,85 +35,85 @@ function mulberry32(seed: number) {
 
 const TASK_LIBRARY = [
   {
-    key: 'fortify-outpost',
-    name: 'Fortify Outpost',
+    key: 'confetti-cannon',
+    name: 'Confetti Cannon Crew',
     baseReward: 32,
     baseTime: 4,
     risk: 'medium' as const,
     description:
-      'Reinforce the southern outpost to slow incoming rogue bots and protect the main lane.',
+      'Launch a glitter burst that dazzles enemy sensors and entertains your bot squad.',
   },
   {
-    key: 'supply-run',
-    name: 'Supply Run',
+    key: 'snack-delivery',
+    name: 'Turbo Snack Delivery',
     baseReward: 24,
     baseTime: 3,
     risk: 'low' as const,
     description:
-      'Deliver upgraded servo kits to allied bots. Slight delay, but improves overall efficiency.',
+      'Zoom energy gummies to your bots for a mini sugar rush and morale boost.',
   },
   {
-    key: 'decoy-squad',
-    name: 'Deploy Decoy Squad',
+    key: 'dance-off',
+    name: 'Dance-Off Diversion',
     baseReward: 40,
     baseTime: 5,
     risk: 'high' as const,
     description:
-      'Send agile decoy bots to draw fire away from key objectives. High payoff but consumes time.',
+      'Challenge rival bots to an epic dance battle. Huge crowd control if you nail the finale.',
   },
   {
-    key: 'intel-scan',
-    name: 'Deep Intel Scan',
+    key: 'meme-blast',
+    name: 'Meme Blast Broadcast',
     baseReward: 18,
     baseTime: 2,
     risk: 'low' as const,
     description:
-      'Run predictive pathfinding to reveal the next enemy wave composition and route.',
+      'Hack the loudspeakers with viral memes that distract foes while your team recharges.',
   },
   {
-    key: 'energy-grid',
-    name: 'Stabilise Energy Grid',
+    key: 'balloon-barrier',
+    name: 'Inflatable Balloon Barrier',
     baseReward: 28,
     baseTime: 3,
     risk: 'medium' as const,
     description:
-      'Balance the defence grid to reduce overload risk and unlock bonus utilities for allies.',
+      'Deploy neon balloons that slow enemies and make the battlefield look party-ready.',
   },
   {
-    key: 'precision-strike',
-    name: 'Precision Strike',
+    key: 'laser-parade',
+    name: 'Laser Parade Float',
     baseReward: 36,
     baseTime: 4,
     risk: 'high' as const,
     description:
-      'Coordinate a focused strike on the rogue command unit. High reward if executed swiftly.',
+      'Roll out a laser-light parade float that stuns foes with synchronized sparkle beams.',
   },
   {
-    key: 'recruit-hacker',
-    name: 'Recruit Hacker Bot',
+    key: 'karaoke-kickoff',
+    name: 'Karaoke Kick-Off',
     baseReward: 21,
     baseTime: 2,
     risk: 'medium' as const,
     description:
-      'Pull in a specialist bot to weaken enemy shields for the next confrontation.',
+      'Throw a karaoke party that powers up friendly bots with feel-good vibes.',
   },
   {
-    key: 'repair-colony',
-    name: 'Repair Colony Bots',
+    key: 'glow-up',
+    name: 'Glow-Up Repair Spa',
     baseReward: 26,
     baseTime: 3,
     risk: 'low' as const,
     description:
-      'Restore critical systems for civilian bots to keep morale and resources flowing.',
+      'Pamper tired bots with neon polish and quick repairs—stylish and efficient.',
   },
   {
-    key: 'jammer-net',
-    name: 'Deploy Jammer Net',
+    key: 'bubble-shield',
+    name: 'Bubble Shield Generator',
     baseReward: 30,
     baseTime: 4,
     risk: 'medium' as const,
     description:
-      'Limit enemy communications, slowing their response while your squad repositions.',
+      'Wrap allies in rainbow bubbles that absorb hits and look fabulous doing it.',
   },
 ];
 
@@ -204,10 +204,10 @@ export function generateDailyStrategyPuzzle(date = new Date()) {
     version: 1,
     seed: seedNumber.toString(),
     dateISO: new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())).toISOString(),
-    title: 'Tactical Allocation',
+    title: 'Bot Bash Planner',
     narrative:
-      'Rogue drones are breaching multiple lanes. You lead the defence squad and must decide how to spend your limited command bandwidth this cycle.',
-    goal: 'Select the combination of actions that maximises control while staying within the command time budget.',
+      'The arcade plaza is hosting a pop-up bot festival! You’re in charge of crafting the most hype mini-party schedule before the crowd arrives.',
+    goal: 'Pick the silliest combo of activities to earn maximum hype without running out of sparkle minutes.',
     timeBudget,
     tasks,
   };
