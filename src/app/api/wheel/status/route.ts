@@ -47,7 +47,7 @@ export async function GET() {
     }
 
     // Calculate bonus spins
-    const baseSpins = 1;
+    const defaultSpins = 1;
     let bonusSpins = 0;
     const bonusReasons = [];
 
@@ -78,7 +78,7 @@ export async function GET() {
       bonusReasons.push('completed daily challenge');
     }
 
-    const totalSpins = baseSpins + bonusSpins;
+    const totalSpins = defaultSpins + bonusSpins;
 
     // Reset spins if needed
     if (needsReset) {
@@ -93,7 +93,7 @@ export async function GET() {
 
     return NextResponse.json({
       spinsRemaining,
-      baseSpins,
+      baseSpins: defaultSpins,
       bonusSpins,
       bonusReasons,
       totalSpins,
