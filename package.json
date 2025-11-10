@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "prisma migrate deploy && next start",
+    "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
     "verify-powerups": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} scripts/verify-user-powerups.ts",
