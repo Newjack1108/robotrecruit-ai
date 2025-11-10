@@ -47,9 +47,7 @@ export async function GET() {
     }
 
     // Calculate bonus spins
-    let baseSp
-
-ins = 1;
+    const baseSpins = 1;
     let bonusSpins = 0;
     const bonusReasons = [];
 
