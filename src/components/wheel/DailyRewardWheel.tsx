@@ -186,19 +186,24 @@ export function DailyRewardWheel() {
             {WHEEL_SEGMENTS.map((segment, index) => {
               const segmentAngle = 360 / WHEEL_SEGMENTS.length;
               const rotationAngle = index * segmentAngle + segmentAngle / 2;
+              const angleRad = (rotationAngle - 90) * (Math.PI / 180);
+              const labelRadius = 38; // percentage from center
+              const labelX = 50 + Math.cos(angleRad) * labelRadius;
+              const labelY = 50 + Math.sin(angleRad) * labelRadius;
               const Icon = segment.icon;
 
               return (
                 <div
                   key={`label-${index}`}
-                  className="absolute left-1/2 top-1/2 flex flex-col items-center"
+                  className="absolute flex flex-col items-center text-center pointer-events-none select-none"
                   style={{
-                    transform: `rotate(${rotationAngle}deg) translateY(-42%) rotate(${-rotationAngle}deg)`,
-                    transformOrigin: 'center',
+                    top: `${labelY}%`,
+                    left: `${labelX}%`,
+                    transform: `translate(-50%, -50%) rotate(${-rotationAngle}deg)`,
                   }}
                 >
-                  <Icon className="w-6 h-6 text-white mb-1 drop-shadow" />
-                  <span className="text-white font-bold text-xs whitespace-nowrap drop-shadow">
+                  <Icon className="w-6 h-6 text-white mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]" />
+                  <span className="text-white font-semibold text-xs whitespace-nowrap drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                     {segment.label}
                   </span>
                 </div>
