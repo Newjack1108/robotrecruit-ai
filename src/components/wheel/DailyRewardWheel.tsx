@@ -176,16 +176,31 @@ export function DailyRewardWheel() {
                   style={{
                     clipPath: `polygon(50% 50%, ${50 + 50 * Math.sin((angle * Math.PI) / 180)}% ${50 - 50 * Math.cos((angle * Math.PI) / 180)}%, ${50 + 50 * Math.sin(((angle + 360 / WHEEL_SEGMENTS.length) * Math.PI) / 180)}% ${50 - 50 * Math.cos(((angle + 360 / WHEEL_SEGMENTS.length) * Math.PI) / 180)}%)`,
                   }}
+                />
+              );
+            })}
+          </div>
+
+          {/* Segment Labels */}
+          <div className="absolute inset-0 pointer-events-none">
+            {WHEEL_SEGMENTS.map((segment, index) => {
+              const segmentAngle = 360 / WHEEL_SEGMENTS.length;
+              const rotationAngle = index * segmentAngle + segmentAngle / 2;
+              const Icon = segment.icon;
+
+              return (
+                <div
+                  key={`label-${index}`}
+                  className="absolute left-1/2 top-1/2 flex flex-col items-center"
+                  style={{
+                    transform: `rotate(${rotationAngle}deg) translateY(-42%) rotate(${-rotationAngle}deg)`,
+                    transformOrigin: 'center',
+                  }}
                 >
-                  <div
-                    className="absolute top-1/4 left-1/2 -translate-x-1/2 flex flex-col items-center"
-                    style={{
-                      transform: `rotate(${angle + 360 / WHEEL_SEGMENTS.length / 2}deg)`,
-                    }}
-                  >
-                    <Icon className="w-6 h-6 text-white mb-1" />
-                    <span className="text-white font-bold text-xs whitespace-nowrap">{segment.label}</span>
-                  </div>
+                  <Icon className="w-6 h-6 text-white mb-1 drop-shadow" />
+                  <span className="text-white font-bold text-xs whitespace-nowrap drop-shadow">
+                    {segment.label}
+                  </span>
                 </div>
               );
             })}
