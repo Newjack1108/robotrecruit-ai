@@ -17,7 +17,7 @@ import { EmailActions, EmailPreview } from './EmailActions';
 import { parseSocialPostFromMessage } from '@/lib/social-media-parser';
 import { SocialMediaActions } from './SocialMediaActions';
 import { SocialMediaPreview } from './SocialMediaPreview';
-import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench, ShoppingCart } from 'lucide-react';
+import { Send, Loader2, Info, Image as ImageIcon, X, Download, Flag, BookOpen, Upload, MessageSquare, Settings, Clock, Wrench, ShoppingCart, NotebookPen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -82,6 +82,9 @@ export function ChatInterface({
   const [showBotTools, setShowBotTools] = useState(false);
   const [detectedIngredients, setDetectedIngredients] = useState<Record<string, string[]>>({}); // messageId -> ingredients[]
   const [itemsToAddToList, setItemsToAddToList] = useState<string[]>([]); // Items to pass to ChefBotTools
+  const [isFetchingRecap, setIsFetchingRecap] = useState(false);
+  const [recapError, setRecapError] = useState<string | null>(null);
+  const [recapData, setRecapData] = useState<{ summary: string; highlights: string[]; nextSteps: string[] } | null>(null);
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -500,6 +503,42 @@ export function ChatInterface({
       // await fetch('/api/report-message', { method: 'POST', body: JSON.stringify({ messageId, conversationId }) });
       
       alert('Thank you for your report. Our team will review this content. You can continue using the service safely.');
+    }
+  };
+
+  const handleGenerateRecap = async () => {
+    if (isFetchingRecap) return;
+    if (!conversationId || messages.length === 0) {
+      setRecapError('Start chatting first to unlock a recap.');
+      return;
+    }
+
+    setIsFetchingRecap(true);
+    setRecapError(null);
+
+    try {
+      const response = await fetch('/api/chat/recap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error?.error || 'Failed to generate recap.');
+      }
+
+      const data = await response.json();
+      setRecapData({
+        summary: data.summary,
+        highlights: data.highlights ?? [],
+        nextSteps: data.nextSteps ?? [],
+      });
+    } catch (error: any) {
+      console.error('[CHAT_RECAP]', error);
+      setRecapError(error?.message || 'Failed to generate recap. Try again in a moment.');
+    } finally {
+      setIsFetchingRecap(false);
     }
   };
 
@@ -1124,6 +1163,87 @@ export function ChatInterface({
                   <Send className="w-5 h-5" />
                 )}
               </Button>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div className="text-xs text-gray-400 flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                <span>
+                  {recapData
+                    ? 'Here’s a quick recap of this session.'
+                    : 'Need a recap? Get highlights and next-step ideas instantly.'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                {recapData && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setRecapData(null);
+                      setRecapError(null);
+                    }}
+                    className="text-gray-300 hover:text-white"
+                  >
+                    Clear Recap
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGenerateRecap}
+                  disabled={isFetchingRecap || !conversationId || messages.length === 0}
+                  className="border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10 disabled:opacity-50"
+                >
+                  {isFetchingRecap ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Summarising...
+                    </>
+                  ) : (
+                    <>
+                      <NotebookPen className="w-4 h-4 mr-2" />
+                      Generate Recap
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {recapError && (
+              <div className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+                {recapError}
+              </div>
+            )}
+
+            {recapData && (
+              <div className="bg-gray-800/80 border border-cyan-500/30 rounded-2xl p-4 space-y-3">
+                <p className="text-sm text-white leading-relaxed">{recapData.summary}</p>
+
+                {recapData.highlights.length > 0 && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-cyan-300 mb-1">Highlights</p>
+                    <ul className="space-y-1 text-sm text-gray-200 list-disc list-inside">
+                      {recapData.highlights.map((item, index) => (
+                        <li key={`highlight-${index}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {recapData.nextSteps.length > 0 && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-emerald-300 mb-1">Next Steps</p>
+                    <ul className="space-y-1 text-sm text-gray-200 list-disc list-inside">
+                      {recapData.nextSteps.map((item, index) => (
+                        <li key={`next-${index}`}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
           {/* Active Power-Ups Helper Text */}
